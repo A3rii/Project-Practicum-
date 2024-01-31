@@ -13,6 +13,11 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+import CardMedia from '@mui/material/CardMedia';
+import Button from '@mui/material/Button';
 
 function SelectionOption({ type, option1, option2, option3 }) {
    const [option, setOption] = React.useState('');
@@ -39,59 +44,34 @@ function SelectionOption({ type, option1, option2, option3 }) {
       </Box>
    )
 }
-
-function SportField({ image, title, location, time }) {
-   const [value, setValue] = React.useState(3);
-
-
+function SportFieldCard({ image, title, location, time }) {
    return (
-
-      <div className="booking-category">
-         <div className="container booking-sportCenter" >
-
-            <div className="booking-sportImg" >
-               <img src={image} alt="#" />
-            </div>
-            <div className="booking-information" >
-
-               <div className="booking-detail">
-                  <h2>{title}</h2>
-
-                  <div className="booking-location">
-                     <i className="fa-solid fa-location-dot"></i>
-                     <span> {location}</span>
-                  </div>
-
-                  <div className="booking-time">
-                     <i className="fa-solid fa-clock"></i>
-                     <span> {time}</span>
-                  </div>
-
-                  <div className="booking-type">
-                     <i className="fa-solid fa-volleyball"></i>
-                     <span> Sport field: football, volleyball, basketball, etc</span>
-                  </div>
-
-                  <Box
-                     sx={{
-                        '& > legend': { mt: 2.5 },
-                     }}
-                  >
-                     <Typography component="legend">Rating </Typography>
-                     <Rating name="read-only" value={value} readOnly />
-                  </Box>
-
-
-               </div>
-               <Link to="/sportCenter" >
-                  <button type="button" className="btn btn-danger btn-lg booking-btn"> Book Now </button>
-               </Link>
-            </div>
-
-         </div>
-      </div>
+      <Card sx={{ width: 340 }}>
+         <CardMedia
+            sx={{ height: 250 }}
+            image={image}
+            title={title}
+         />
+         <CardContent>
+            <Typography gutterBottom variant="h5" component="div">
+               {title}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+               {location}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+               {time}
+            </Typography>
+         </CardContent>
+         <CardActions>
+            <Link to="/sportCenter" >
+               <button type="button" className="btn btn-danger  booking-btn"> Book Now </button>
+            </Link>
+         </CardActions>
+      </Card>
    )
 }
+
 
 export default function Booking() {
    return (
@@ -136,36 +116,14 @@ export default function Booking() {
 
 
 
-            <SportField
+            <SportFieldCard
                image={SportCenter}
                title="Phnom Penh Sport Center"
                location="Toul Kork, Phnom Penh"
                time="Time Open:  6am-9pm"
 
             />
-            <SportField
-               image={GreenSport}
-               title="The Green Sport Club "
-               location="Address 51, Sangkat Chroy Chongva, Phnom Penh"
-               time="Time Open:  6am-9pm"
 
-            />
-
-            <SportField
-               image={LightSport}
-               title="The Light Sports"
-               location="Sangkat Prek Pra, Khan Chbar Ampov,Phnom Penh"
-               time="Time Open:  6am-9pm"
-
-            />
-
-            <SportField
-               image={MalisSport}
-               title="Malis Sport Center"
-               location="Chamka Doung Street (St. 217) , Phnom Penh"
-               time="Time Open:  6am-9pm"
-
-            />
          </div>
 
          <Footer />

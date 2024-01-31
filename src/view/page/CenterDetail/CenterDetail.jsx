@@ -128,33 +128,33 @@ function CardSwiper() {
 // eslint-disable-next-line react/prop-types
 function CenterCard({ image, type, time, price }) {
    return (
-      <Card sx={{ width: 300 }}>
-         <CardMedia
-            sx={{ height: 250 }}
-            image={image}
-            title="Sport Category"
-         />
-         <CardContent>
-            <Typography gutterBottom variant="h5" component="div">
-               {type}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-               <i className="fa-regular fa-calendar-check" style={{ marginRight: '12px' }}></i>
-               {time}
-            </Typography>
-            <Typography variant="body2" color="text.secondary" >
-               <i className="fa-solid fa-calendar-days" style={{ marginRight: '12px' }}></i>
-               {price}
-            </Typography>
-         </CardContent>
-         <CardActions>
-            <Link to="/sportField">
-               <Button variant="outlined" color="error" >
-                  Explore more
-               </Button>
-            </Link>
-         </CardActions>
-      </Card>
+         <Card sx={{ width: 300 }}>
+            <CardMedia
+               sx={{ height: 250 }}
+               image={image}
+               title="Sport Category"
+            />
+            <CardContent>
+               <Typography gutterBottom variant="h5" component="div">
+                  {type}
+               </Typography>
+               <Typography variant="body2" color="text.secondary">
+                  <i className="fa-regular fa-calendar-check" style={{ marginRight: '12px' }}></i>
+                  {time}
+               </Typography>
+               <Typography variant="body2" color="text.secondary" >
+                  <i className="fa-solid fa-calendar-days" style={{ marginRight: '12px' }}></i>
+                  {price}
+               </Typography>
+            </CardContent>
+            <CardActions>
+               <Link to="/sportField">
+                  <Button variant="outlined" color="error" >
+                     Explore more
+                  </Button>
+               </Link>
+            </CardActions>
+         </Card>
    )
 }
 export default function CenterDetail() {
