@@ -30,8 +30,12 @@ const rows = [
 
 function AccessibleTable() {
    return (
-      <TableContainer component={Paper}>
-         <Table sx={{ minWidth: 650 }} aria-label="caption table">
+      <TableContainer component={Paper}  >
+         <Table sx={{
+            width: 1200,
+         }}
+            style={{ height: '450px' }}
+            aria-label="caption table">
             <TableHead>
                <TableRow>
                   <TableCell> 30 - NOV - 2024</TableCell>
@@ -55,7 +59,7 @@ function AccessibleTable() {
                ))}
             </TableBody>
          </Table>
-      </TableContainer>
+      </ TableContainer>
    );
 }
 
@@ -108,30 +112,9 @@ export default function SportField() {
                <div className="sport-time">
                   <TimePicker />
                </div>
-
-               <div className="sport-court">
-                  <div className="sport-courtInformation">
-                     <i className="fa-solid fa-basketball"></i>
-                     <span onClick={handleCourtToggle}>{courtType}</span>
-                  </div>
-                  <i
-                     className="fa-solid fa-chevron-down"
-                     onClick={handleCourtToggle}
-                  ></i>
-                  {courtToggle && (
-                     <div className="court-options">
-                        {courtOptions.map((option) => (
-                           <div
-                              key={option}
-                              onClick={() => handleCourtSelection(option)}
-                           >
-                              {option}
-                           </div>
-                        ))}
-                     </div>
-                  )}
+               <div className="date-time-btn">
+                  <button type="button" className="btn btn-danger btn-lg"> Search </button>
                </div>
-
             </div>
          </div>
 
@@ -157,13 +140,13 @@ export default function SportField() {
                   </div>
                   <div className="carousel-inner sportField-carousel">
                      <div className="carousel-item active">
-                        <img src={FootballCourt} className="d-block " alt="#" />
+                        <img src={FootballCourt} className="d-block rounded " alt="#" />
                      </div>
                      <div className="carousel-item">
-                        <img src={FootballCourt} className="d-block" alt="#" />
+                        <img src={FootballCourt} className="d-block rounded" alt="#" />
                      </div>
                      <div className="carousel-item">
-                        <img src={FootballCourt} className="d-block" alt="#" />
+                        <img src={FootballCourt} className="d-block rounded" alt="#" />
                      </div>
                   </div>
                   <button className="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">

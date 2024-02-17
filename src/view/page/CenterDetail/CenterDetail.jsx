@@ -14,11 +14,8 @@ import { red } from '@mui/material/colors';
 import Typography from '@mui/material/Typography';
 import FootBall from "./../../../assets/BookingImags/pic7.jpg"
 import Basketball from "./../../../assets/BookingImags/pic9.jpg"
-import VolleyBall from "./../../../assets/BookingImags/pic8.jpg"
 import Badminton from "./../../../assets/BookingImags/pic10.jpg"
 import { Link } from "react-router-dom"
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Keyboard, Navigation } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/scrollbar';
 import 'swiper/css/navigation';
@@ -36,7 +33,6 @@ function RatingSkeletons() {
                      R
                   </Avatar>
                }
-
                title="Sim Sen Chamroung"
                subheader="September 14, 2016"
             />
@@ -59,102 +55,37 @@ function RatingSkeletons() {
 }
 
 
-function CardSwiper() {
-   return (
-      <>
-         <Swiper
-            slidesPerView={2}
-            centeredSlides={false}
-            slidesPerGroupSkip={2}
-            grabCursor={true}
-            keyboard={{
-               enabled: true,
-            }}
-            breakpoints={{
-               769: {
-                  slidesPerView: 2,
-                  slidesPerGroup: 2,
-               },
-            }}
-            navigation={true}
-
-            modules={[Keyboard, Navigation]}
-            className="mySwiper"
-         >
-            <SwiperSlide>
-               <CenterCard
-                  image={FootBall}
-                  type="FOOTBALL"
-                  time="Available: 7AM - 9PM"
-                  price="20$ per 90 minutes"
-               />
-            </SwiperSlide>
-
-            <SwiperSlide>
-               <CenterCard
-                  image={Basketball}
-                  type="BASKETBALL"
-                  time="Available: 7AM - 9PM"
-                  price="10$ per 60 minutes"
-               />
-            </SwiperSlide>
-
-            <SwiperSlide>
-               <CenterCard
-                  image={VolleyBall}
-                  type="VOLLEYBALL"
-                  time="Available: 7AM - 9PM"
-                  price="20$ per 90 minutes"
-               />
-            </SwiperSlide>
-
-
-            <SwiperSlide>
-               <CenterCard
-                  image={Badminton}
-                  type="BADMINTON"
-                  time="Available: 7AM - 9PM"
-                  price="20$ per 90 minutes"
-               />
-            </SwiperSlide>
-
-         </Swiper>
-      </>
-   )
-}
-
-
 
 // eslint-disable-next-line react/prop-types
 function CenterCard({ image, type, time, price }) {
    return (
-         <Card sx={{ width: 300 }}>
-            <CardMedia
-               sx={{ height: 250 }}
-               image={image}
-               title="Sport Category"
-            />
-            <CardContent>
-               <Typography gutterBottom variant="h5" component="div">
-                  {type}
-               </Typography>
-               <Typography variant="body2" color="text.secondary">
-                  <i className="fa-regular fa-calendar-check" style={{ marginRight: '12px' }}></i>
-                  {time}
-               </Typography>
-               <Typography variant="body2" color="text.secondary" >
-                  <i className="fa-solid fa-calendar-days" style={{ marginRight: '12px' }}></i>
-                  {price}
-               </Typography>
-            </CardContent>
-            <CardActions>
-               <Link to="/sportField">
-                  <Button variant="outlined" color="error" >
-                     Explore more
-                  </Button>
-               </Link>
-            </CardActions>
-         </Card>
+      <Card sx={{ width: 300 }}>
+         <CardMedia
+            sx={{ height: 250 }}
+            image={image}
+            title="Sport Category"
+         />
+         <CardContent>
+            <Typography gutterBottom variant="h5" component="div">
+               {type}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+               <i className="fa-regular fa-calendar-check" style={{ marginRight: '12px' }}></i>
+               {time}
+            </Typography>
+            <Typography variant="body2" color="text.secondary" >
+               <i className="fa-solid fa-calendar-days" style={{ marginRight: '12px' }}></i>
+               {price}
+            </Typography>
+         </CardContent>
+         <CardActions>
+            <Link to="/sportField">
+               <Button variant="outlined" color="error" >
+                  Explore more
+               </Button>
+            </Link>
+         </CardActions>
+      </Card>
    )
 }
 export default function CenterDetail() {
@@ -176,7 +107,27 @@ export default function CenterDetail() {
          <div className="center-category">
             <h2> Our Sport Services </h2>
             <div className="center-cardSport">
-               <CardSwiper />
+               <CenterCard
+                  image={FootBall}
+                  type="FOOTBALL"
+                  time="Available: 7AM - 9PM"
+                  price="20$ per 90 minutes"
+               />
+
+               <CenterCard
+                  image={Basketball}
+                  type="BASKETBALL"
+                  time="Available: 7AM - 9PM"
+                  price="10$ per 60 minutes"
+               />
+
+               <CenterCard
+                  image={Badminton}
+                  type="BADMINTON"
+                  time="Available: 7AM - 9PM"
+                  price="20$ per 90 minutes"
+               />
+
             </div>
          </div>
 

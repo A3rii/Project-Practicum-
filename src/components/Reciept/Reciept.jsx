@@ -1,4 +1,4 @@
-export default function Reciept() {
+export default function Reciept(props) {
 
    return (
       <>
@@ -8,32 +8,29 @@ export default function Reciept() {
             <div className="reciept-sportCenter">
 
                <span> Sport Center Name:</span>
-               <span className="reciept-text" >Akira Sport Centers</span>
+               <span className="reciept-text"> {props.sportCenter}</span>
             </div>
 
             <div className="reciept-detail">
 
 
                <div className="reciept-court">
-                  <span className="reciept-text"> Court :</span>
-                  <span>A</span>
+                  <span className="reciept-text">Court :</span>
+                  <span>{props.court}</span>
                </div>
-
-
-               <div className="reciept-duration">
-                  <span className="reciept-text"> Duration:</span>
-                  <span>2hr</span>
-               </div>
-
 
                <div className="reciept-price">
                   <span className="reciept-text"> Paid Price:</span>
-                  <span>10$</span>
+                  <span>{props.price}</span>
                </div>
 
                <div className="reciept-price">
                   <span className="reciept-text">Date:</span>
-                  <span>12 July 2023</span>
+                  <span>{props.date}</span>
+               </div>
+               <div className="reciept-price">
+                  <span className="reciept-text">Status:</span>
+                  <span>{props.status}</span>
                </div>
 
             </div>

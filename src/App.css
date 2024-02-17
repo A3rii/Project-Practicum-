@@ -12,7 +12,8 @@
    align-items: center;
    max-width: 100%;
    height: 5rem;
-   margin: 2rem 10rem 2rem;
+   margin: 2rem 9rem 1rem;
+   /* Reduce margin for smaller screens */
    background-color: var(--white);
    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
    padding: 2rem;
@@ -20,15 +21,16 @@
 }
 
 .reciept-detail {
+   max-width: 100%;
    display: flex;
+   flex-wrap: wrap;
    justify-content: center;
    align-items: center;
-   column-gap: 1rem;
+   column-gap: 1.6rem;
 }
 
 .reciept-sportCenter,
 .reciept-court,
-.reciept-duration,
 .reciept-price {
    display: flex;
    justify-content: center;
@@ -51,6 +53,22 @@
 
 .reciept-mark i {
    font-size: 1.5rem;
+}
+
+@media screen and (max-width: 1000px) {
+   .reciept-page {
+      font-size: 1rem;
+   }
+
+   .reciept-information {
+      font-size: .8rem;
+      margin: 0.5rem;
+      padding: 0.5rem;
+   }
+
+   .reciept-detail {
+      column-gap: 0.5rem;
+   }
 }
 
 /** Recipet Page */
@@ -704,15 +722,27 @@
    row-gap: 5rem;
 }
 
+.booking-field h2 {
+   font-family: "Roboto", sans-serif;
+   font-weight: 600;
+   font-size: 1.5rem;
+}
+
 .booking-filter {
    position: relative;
    height: 4rem;
    max-width: 100%;
-   width: 66%;
+   width: 65%;
    background: #fff;
-   margin: 0 5px;
    border-radius: 8px;
    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+.booking-topic {
+   width: 100%;
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
 }
 
 .booking-filter i,
@@ -755,14 +785,43 @@
    transform: translateY(-50%) scale(0.98);
 }
 
-.booking-filter-type {
+.booking-filterSport {
    display: flex;
-   justify-content: center;
-   align-items: center;
-   column-gap: 3rem;
+   justify-content: space-between;
+   align-items: flex-start;
+   column-gap: 17rem;
+   max-width: 100%;
 }
 
 
+
+.btn-filter-schedule {
+   max-width: 50%;
+}
+
+.booking-sportFieldCard {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   column-gap: 7rem;
+   row-gap: 4rem;
+   flex-wrap: wrap;
+   max-width: 100%;
+}
+
+
+
+.booking-timeFilter {
+   display: flex;
+   column-gap: 1rem;
+}
+
+.booking-filter-type {
+   display: flex;
+   justify-content: baseline;
+   flex-direction: column;
+   row-gap: 1rem;
+}
 
 /** Booking Page */
 
@@ -816,20 +875,27 @@
 
 }
 
-.center-cardSport {
-   display: flex;
-   column-gap: 4rem;
-   height: 27rem;
-}
-
 .center-category {
    display: flex;
    justify-content: center;
+   align-items: center;
    flex-direction: column;
    margin-top: 2rem;
+   max-width: 100%;
    row-gap: 5rem;
-
+   margin: 3rem;
 }
+
+.center-cardSport {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   flex-wrap: wrap;
+   row-gap: 3rem;
+   column-gap: 6rem;
+}
+
+
 
 .center-category h2 {
    text-align: center;
@@ -839,8 +905,7 @@
    background: rgba(0, 0, 0, 0.4) url('./assets/BookingImags/pic11.png') center/cover;
    background-blend-mode: darken;
    max-width: 100%;
-   min-height: 35rem;
-   height: auto;
+   height: 35rem;
    background-repeat: no-repeat;
    margin-top: 5rem;
    display: flex;
@@ -904,7 +969,7 @@
    align-items: center;
    flex-direction: column;
    row-gap: 2rem;
-   height: 25rem;
+   margin-top: 3rem;
 }
 
 .center-rating h2 {
@@ -924,7 +989,7 @@
 
 .center-client-comments {
    text-align: center;
-   margin-top: 20px;
+   margin-top: 2rem;
    height: 20rem;
 }
 
@@ -1004,9 +1069,8 @@
 
 .date-time {
    max-width: 100%;
-   width: 80%;
-   height: 6rem;
-   margin-top: 4rem;
+   width: 70rem;
+   height: 7rem;
    display: flex;
    justify-content: center;
    align-items: center;
@@ -1041,6 +1105,12 @@
    column-gap: 1rem;
 }
 
+.date-time-btn {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   margin-top: .5rem;
+}
 
 .sport-search {
    display: flex;
@@ -1100,7 +1170,7 @@
    background: rgba(0, 0, 0, 0.5) url('./assets/BookingImags/pic15.jpg') center/cover;
    background-blend-mode: darken;
    max-width: 100%;
-   min-height: 38rem;
+   min-height: 40rem;
    height: auto;
    background-repeat: no-repeat;
    color: var(--white);
@@ -1108,12 +1178,13 @@
    justify-content: center;
    align-items: center;
    flex-direction: column;
-   row-gap: 2rem;
+   row-gap: 1rem;
 }
 
 .sport-schedule h2 {
    font-family: "Roboto", sans-serif;
    font-weight: 600;
+   margin-top: 2rem;
 }
 
 .sportField-Slider {
@@ -1295,6 +1366,8 @@
    min-height: 50rem;
    height: auto;
    background-repeat: no-repeat;
+   height: 60rem;
+
 }
 
 .lessor-banner {
@@ -1388,3 +1461,120 @@
 
 
 /** Lessor Page */
+
+
+
+
+/** Admins Page */
+.admin-sidebar ul {
+   display: flex;
+   flex-direction: column;
+   row-gap: 1rem;
+}
+
+
+.admin-icon {
+   display: flex;
+   align-items: center;
+   column-gap: 1rem;
+   margin-top: .5rem;
+}
+
+
+.admin-logout {
+   display: flex;
+   align-items: center;
+   column-gap: 1rem;
+   margin-top: .5rem;
+}
+
+
+.set-openingTime {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   margin: 1.5rem 15rem 1rem;
+}
+
+.setTime-container {
+   display: flex;
+   justify-content: center;
+   flex-direction: column;
+   align-items: center;
+}
+
+
+.day-label {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+}
+
+.setTime-control {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   column-gap: 1rem;
+}
+
+.setTime-btn-action {
+   margin-top: 2rem;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   gap: 2rem;
+}
+
+.setTime-reset {
+   background-color: var(--primary);
+   outline: none;
+   border: none;
+   width: 6rem;
+   padding: .6rem;
+   color: var(--white);
+   border-radius: 3px;
+}
+
+.setTime-save {
+   background-color: var(--blue);
+   outline: none;
+   border: none;
+   width: 6rem;
+   padding: .6rem;
+   color: var(--white);
+   border-radius: 3px;
+}
+
+
+.setTime-reset:hover {
+   background-color: #800000;
+}
+
+.setTime-save:hover {
+   background-color: #338705;
+}
+
+
+
+.setTime-title {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   margin: 1rem 15rem 1rem;
+}
+
+.setTime-title h4 {
+   font-family: 'Roboto', sans-serif;
+   font-weight: bold;
+   font-size: 1.2rem;
+}
+
+.setTime-switchBtn {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   gap: 1rem;
+}
+
+
+/** Admins Page */
