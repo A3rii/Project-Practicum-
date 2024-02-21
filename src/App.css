@@ -1631,5 +1631,15 @@
    gap: 1rem;
 }
 
+.confirm-nav ul {
+   display: flex;
+   justify-content: baseline;
+   align-items: center;
+   gap: 5rem;
+}
+
+.confirm-nav li {
+   color: var(--dark);
+}
 
 /** Admins Page */

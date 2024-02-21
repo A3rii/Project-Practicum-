@@ -12,7 +12,6 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import HomeIcon from '@mui/icons-material/Home';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import InboxIcon from '@mui/icons-material/Inbox';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import LogoutIcon from '@mui/icons-material/Logout';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
@@ -73,10 +72,7 @@ function AdminCenter(props) {
                      <li onClick={() => handleChangeName("Set Open Hour")}> Set Open Hour</li>
                   </Link>
                </div>
-               <div className='admin-icon'>
-                  <InboxIcon />
-                  <li onClick={() => handleChangeName("Incoming Match")}>Incoming Match</li>
-               </div>
+
             </ul>
          </List>
          <Divider sx={{ mt: 2 }} />
