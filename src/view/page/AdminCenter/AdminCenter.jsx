@@ -15,6 +15,7 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import InboxIcon from '@mui/icons-material/Inbox';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import LogoutIcon from '@mui/icons-material/Logout';
+import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import { Link, Outlet } from "react-router-dom"
 const drawerWidth = 240;
 
@@ -50,10 +51,15 @@ function AdminCenter(props) {
                <div className='admin-icon'>
                   <HomeIcon />
                   <Link to="/dashboard">
-                     <li onClick={() => handleChangeName("Dashboard")}>DashBoard</li>
+                     <li onClick={() => handleChangeName("Home")}>Home</li>
                   </Link>
                </div>
-
+               <div className='admin-icon'>
+                  <PersonAddAlt1Icon />
+                  <Link to="/confirm_match">
+                     <li onClick={() => handleChangeName("Confirm Booking")}>Confirm Booking</li>
+                  </Link>
+               </div>
                <div className='admin-icon'>
                   <CalendarMonthIcon />
                   <Link to="/schedule">
@@ -87,7 +93,6 @@ function AdminCenter(props) {
       </div>
    );
 
-   // Remove this const when copying and pasting into your project.
    const container = window !== undefined ? () => window().document.body : undefined;
 
    return (
@@ -101,6 +106,8 @@ function AdminCenter(props) {
                ml: { sm: `${drawerWidth}px` },
             }}
          >
+
+
             <Toolbar>
                <IconButton
                   aria-label="open drawer"
@@ -114,13 +121,14 @@ function AdminCenter(props) {
                   {name}
                </Typography>
             </Toolbar>
+
+
          </AppBar>
          <Box
             component="nav"
             sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
             aria-label="mailbox folders"
          >
-            {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
             <Drawer
                container={container}
                variant="temporary"
@@ -128,7 +136,7 @@ function AdminCenter(props) {
                onTransitionEnd={handleDrawerTransitionEnd}
                onClose={handleDrawerClose}
                ModalProps={{
-                  keepMounted: true, // Better open performance on mobile.
+                  keepMounted: true,
                }}
                sx={{
                   display: { xs: 'block', sm: 'none' },

@@ -66,8 +66,8 @@ function AccessibleTable() {
 
 
 export default function SportField() {
-   const [courtType, setCourtType] = useState("Select Court Type");
    // eslint-disable-next-line no-unused-vars
+   const [courtType, setCourtType] = useState("Select Court Type");
 
 
    // eslint-disable-next-line no-unused-vars
@@ -75,19 +75,9 @@ export default function SportField() {
       "Indoor Court",
       "Outdoor 6v6",
       "Outdoor 11v11",
-      // Add more court options as needed
    ]);
-   const [courtToggle, setCourtToggle] = useState(false);
 
 
-   const handleCourtToggle = () => {
-      setCourtToggle(!courtToggle);
-   };
-
-   const handleCourtSelection = (selectedCourt) => {
-      setCourtType(selectedCourt);
-      setCourtToggle(false);
-   };
 
 
 
