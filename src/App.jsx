@@ -20,16 +20,19 @@ import ConfirmMatch from "./view/page/AdminCenter/ConfirmMatch"
 function App() {
   return (
     <Router>
+
       <Routes>
 
         <Route path="/" element={<AdminCenter />} exact >
 
+          <Route index element={<HomeDash />} />
           <Route path="/dashboard" element={<HomeDash />} />
 
 
           <Route path="/confirm_match" element={<ConfirmMatch />} >
-            <Route path="/confirm_match/incoming" element={<IncomingMatch />} />
+            <Route index element={<ConfirmPage />} />
             <Route path="/confirm_match/confirm" element={<ConfirmPage />} />
+            <Route path="/confirm_match/incoming" element={<IncomingMatch />} />
           </Route>
 
 
@@ -48,6 +51,7 @@ function App() {
         <Route path="/reciept" element={<Reciept />} />
         <Route path="/Contact" element={<Contact />} />
       </Routes>
+
     </Router>
   )
 }

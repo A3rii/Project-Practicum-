@@ -15,6 +15,9 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import LogoutIcon from '@mui/icons-material/Logout';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
+import AdbIcon from '@mui/icons-material/Adb';
+import Avatar from '@mui/material/Avatar';
+import Tooltip from '@mui/material/Tooltip';
 import { Link, Outlet } from "react-router-dom"
 const drawerWidth = 240;
 
@@ -43,7 +46,6 @@ function AdminCenter(props) {
 
    const drawer = (
       <div className="admin-sidebar">
-         <Toolbar />
          <Divider />
          <List sx={{ mt: 1 }}>
             <ul>
@@ -95,6 +97,7 @@ function AdminCenter(props) {
       <Box sx={{ display: 'flex' }}>
          <CssBaseline />
          <AppBar
+
             position="absolute"
             sx={{
                zIndex: -1,
@@ -104,7 +107,10 @@ function AdminCenter(props) {
          >
 
 
-            <Toolbar>
+            <Toolbar
+               style={{ background: '#2E3B55' }}
+            >
+               <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
                <IconButton
                   aria-label="open drawer"
                   edge="start"
@@ -116,6 +122,15 @@ function AdminCenter(props) {
                <Typography variant="h6" noWrap component="div">
                   {name}
                </Typography>
+
+               <Box sx={{ display: 'flex', alignItems: 'center', marginLeft: 'auto', pr: 2 }}>
+                  <Tooltip title="Open settings">
+                     <IconButton sx={{ p: 0 }}>
+                        <Avatar alt="Remy Sharp" src="" />
+                     </IconButton>
+                  </Tooltip>
+
+               </Box>
             </Toolbar>
 
 

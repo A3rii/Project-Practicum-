@@ -1631,15 +1631,19 @@
    gap: 1rem;
 }
 
+.confirm-nav {
+   display: flex;
+   justify-content: baseline;
+   align-items: baseline;
+}
+
 .confirm-nav ul {
    display: flex;
    justify-content: baseline;
    align-items: center;
-   gap: 5rem;
+   gap: 2.5rem;
 }
 
-.confirm-nav li {
-   color: var(--dark);
-}
+
 
 /** Admins Page */
