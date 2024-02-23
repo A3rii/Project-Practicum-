@@ -3,13 +3,39 @@ import Stack from '@mui/material/Stack';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import Table from "@mui/material/Table";
 import TableCell from "@mui/material/TableCell";
+import TableHead from '@mui/material/TableHead';
+import Paper from '@mui/material/Paper';
+import TableBody from '@mui/material/TableBody';
 import TableContainer from "@mui/material/TableContainer";
 import TableRow from "@mui/material/TableRow";
 import EditIcon from '@mui/icons-material/Edit';
-
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from "@mui/icons-material/Delete";
+import Button from '@mui/material/Button';
+import Divider from "@mui/material/Divider";
 
 
 export default function HomeDash() {
+  const columns = [
+    { id: 'facilities', label: 'Facilities', minWidth: 150 },
+    { id: 'description', label: 'Description', minWidth: 100 },
+    { id: 'court', label: 'Court', minWidth: 100 },
+    { id: 'image', label: 'Surrounding Image', minWidth: 100 },
+    { id: 'action', label: 'Action', minWidth: 100, },
+
+  ];
+
+
+  function createData(facilities) {
+    return { facilities };
+  }
+
+  const rows = [
+    createData('Football'),
+    createData('BasketBall'),
+
+  ]
   return (
     <>
 
@@ -37,6 +63,10 @@ export default function HomeDash() {
         </div>
 
       </div>
+
+
+
+
 
 
 
@@ -94,6 +124,80 @@ export default function HomeDash() {
 
           </Table>
         </TableContainer>
+      </div>
+
+
+      <div className="home-editSportcenter">
+        <h5>Your Sport Facilities</h5>
+
+        <Paper sx={{ width: "50rem", overflow: 'hidden', padding: "15px", marginTop: "1rem" }}>
+          <TableContainer>
+            <Table stickyHeader aria-label="sticky table">
+              <TableHead>
+                <TableRow>
+                  {columns.map((column) => (
+                    <TableCell
+                      key={column.id}
+                      style={{ minWidth: column.minWidth }}
+                    >
+                      {column.label}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+
+              <TableBody>
+                {rows.map((row, index) => (
+                  <TableRow key={index}  >
+                    <TableCell align="left" style={{ minWidth: "100px" }}>{row.facilities}</TableCell>
+
+
+                    <TableCell align="left" style={{ minWidth: "100px" }}>
+                      {row.description}
+                      <Button variant="outlined">Edit </Button>
+                    </TableCell>
+
+
+                    {/*Should be input */}
+                    <TableCell align="left" style={{ minWidth: "100px" }}>
+                      {row.court}
+                      <Button variant="outlined">Add</Button>
+                    </TableCell>
+
+
+                    {/*Should be input */}
+                    <TableCell align="left" style={{ minWidth: "100px" }}>
+                      {row.image}
+                      <Button variant="outlined">Change </Button>
+                    </TableCell>
+
+
+
+
+                    <TableCell align="left" style={{ minWidth: "100px" }} >
+                      <Stack direction="row" spacing={1}>
+                        <CheckCircleIcon
+                          style={{ fontSize: "20px", color: "green", cursor: "pointer" }}
+                        />
+                        <DeleteIcon
+                          style={{ fontSize: "20px", color: "red", cursor: "pointer" }}
+                        />
+                      </Stack>
+                    </TableCell>
+                  </TableRow>
+                ))}
+
+              </TableBody>
+
+            </Table>
+            <Divider />
+
+            <div style={{ display: 'flex', justifyContent: 'flex-start', marginTop: '1rem' }}>
+              <Button variant="outlined" startIcon={<AddIcon />}>Add Facilities</Button>
+            </div>
+          </TableContainer>
+
+        </Paper>
       </div>
 
     </>

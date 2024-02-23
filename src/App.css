@@ -801,7 +801,7 @@
 
 .booking-sportFieldCard {
    display: flex;
-   justify-content: center;
+   justify-content: baseline;
    align-items: center;
    column-gap: 7rem;
    row-gap: 4rem;
@@ -1034,7 +1034,7 @@
    background-blend-mode: darken;
    aspect-ratio: 16;
    max-width: 100%;
-   min-height: 38rem;
+   min-height: 55rem;
    height: auto;
    background-repeat: no-repeat;
    backdrop-filter: blur(5px);
@@ -1046,7 +1046,7 @@
    align-items: center;
    flex-direction: column;
    row-gap: 1.5rem;
-   margin-top: 4rem;
+   margin-top: 1.5rem;
 }
 
 .sportField-banner h2 {
@@ -1067,49 +1067,28 @@
    text-align: justify;
 }
 
+
+
 .date-time {
-   max-width: 100%;
-   width: 70rem;
-   height: 7rem;
+   max-width: 35rem;
+   min-height: 33rem;
    display: flex;
    justify-content: center;
    align-items: center;
-   background-color: var(--white);
-   margin: 5rem auto;
+   flex-direction: column;
+   margin-top: 1.5rem;
    border-radius: 5px;
-   color: var(--dark);
-   column-gap: 2rem;
+   background-color: var(--white);
 
 }
 
-
-
-.sport-court {
-   display: flex;
-   justify-content: space-between;
-   align-items: center;
-   max-width: 100%;
-   width: 25%;
-   height: 3.5rem;
-   margin-top: .5rem;
-   border-radius: 4px;
-   border: 1px solid #aeaeae;
-   padding: 1rem;
-
-}
-
-.sport-courtInformation {
+.sport-time {
+   width: 75%;
    display: flex;
    justify-content: center;
    align-items: center;
-   column-gap: 1rem;
-}
-
-.date-time-btn {
-   display: flex;
-   justify-content: center;
-   align-items: center;
-   margin-top: .5rem;
+   gap: 1rem;
+   margin-bottom: 1rem;
 }
 
 .sport-search {
@@ -1122,49 +1101,12 @@
 }
 
 
-.sport-btn {
+.sport-reserve {
    display: flex;
    justify-content: center;
    align-items: center;
-   border: none;
-   outline: none;
-   background-color: var(--solid-red);
-   border-radius: 5px;
-   width: 90%;
-   height: 100%;
-   color: var(--white);
-   column-gap: .5rem;
+   flex-wrap: wrap;
 }
-
-.court-options {
-   position: absolute;
-   top: 31rem;
-   left: 65.1rem;
-   max-height: 150px;
-   overflow-y: auto;
-   background-color: #fff;
-   border: 1px solid #ccc;
-   border-radius: 5px;
-   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-   z-index: 1;
-}
-
-.court-options>div {
-   width: 21rem;
-   padding: 2rem;
-   cursor: pointer;
-}
-
-.court-options>div:hover {
-   background-color: #f5f5f5;
-}
-
-.sport-btn i {
-   font-size: 1.2rem;
-}
-
-
-
 
 .sport-schedule {
    background: rgba(0, 0, 0, 0.5) url('./assets/BookingImags/pic15.jpg') center/cover;
@@ -1629,6 +1571,18 @@
    justify-content: center;
    align-items: center;
    gap: 1rem;
+}
+
+.home-editSportcenter {
+   margin-top: 4rem;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   flex-direction: column;
+   text-align: center;
+   font-family: "Roboto", sans-serif;
+   font-size: 1.2rem;
+   font-weight: 500;
 }
 
 .confirm-nav {

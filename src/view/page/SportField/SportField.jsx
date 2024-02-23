@@ -1,5 +1,3 @@
-import { useState } from "react";
-import { Link } from "react-router-dom"
 import Header from "../../../components/Header/Header";
 import Footer from "../../../components/Footer/Footer";
 import Table from '@mui/material/Table';
@@ -9,9 +7,21 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import TimePicker from "../../../components/TimePicker/TimePicker";
-import DatePicker from "../../../components/DatePicker/DatePicker";
+import dayjs from 'dayjs';
 import FootballCourt from "./../../../assets/BookingImags/pic12.jpg"
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import { Link } from "react-router-dom"
+import { useState } from "react";
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+
 
 
 
@@ -59,26 +69,27 @@ function AccessibleTable() {
                ))}
             </TableBody>
          </Table>
-      </ TableContainer>
+      </TableContainer>
    );
 }
 
 
 
 export default function SportField() {
-   // eslint-disable-next-line no-unused-vars
-   const [courtType, setCourtType] = useState("Select Court Type");
+   const [value, setValue] = useState(dayjs('2022-04-17'));
+   const [court, setCourt] = useState(null);
 
 
-   // eslint-disable-next-line no-unused-vars
-   const [courtOptions, setCourtOptions] = useState([
-      "Indoor Court",
-      "Outdoor 6v6",
-      "Outdoor 11v11",
-   ]);
+   const handleOnSelectCourt = (e) => {
+      setCourt(e.target.value);
+   }
 
-
-
+   const names = [
+      'Court A',
+      'Court B',
+      'Court 11 v 11',
+      'Court 5 v 5'
+   ];
 
 
    return (
@@ -95,15 +106,48 @@ export default function SportField() {
             </div>
 
             {/** Date and Time */}
-            <div className="date-time">
-               <div className="sport-date">
-                  <DatePicker />
-               </div>
-               <div className="sport-time">
-                  <TimePicker />
-               </div>
-               <div className="date-time-btn">
-                  <button type="button" className="btn btn-danger btn-lg"> Search </button>
+            <div className="sport-reserve">
+
+               <div className="date-time">
+                  <div className="sport-date">
+                     <LocalizationProvider
+                        dateAdapter={AdapterDayjs}>
+                        <DemoContainer
+
+                           components={['DateCalendar', 'DateCalendar']}>
+                           <DateCalendar
+                              value={value}
+                              onChange={(newValue) => setValue(newValue)}
+                           />
+                        </DemoContainer>
+                     </LocalizationProvider>
+                  </div>
+                  <div className="sport-time">
+                     <LocalizationProvider
+                        dateAdapter={AdapterDayjs}>
+                        <TimePicker label="From" />
+                        <TimePicker label="Till" />
+                     </LocalizationProvider>
+
+                     <FormControl sx={{ m: 1, width: 300 }}>
+                        <InputLabel>Court</InputLabel>
+                        <Select
+                           value={court}
+                           onChange={handleOnSelectCourt}
+                           input={<OutlinedInput label="Court" />}
+                        >
+                           {names.map((name) => (
+                              <MenuItem
+                                 key={name}
+                                 value={name}
+                              >
+                                 {name}
+                              </MenuItem>
+                           ))}
+                        </Select>
+                     </FormControl>
+                  </div>
+                  <button type="button" className="btn btn-danger "> Reserve</button>
                </div>
             </div>
          </div>

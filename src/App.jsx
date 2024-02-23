@@ -27,8 +27,6 @@ function App() {
 
           <Route index element={<HomeDash />} />
           <Route path="/dashboard" element={<HomeDash />} />
-
-
           <Route path="/confirm_match" element={<ConfirmMatch />} >
             <Route index element={<ConfirmPage />} />
             <Route path="/confirm_match/confirm" element={<ConfirmPage />} />

@@ -61,7 +61,6 @@ function SelectionOption({ type, option1, option2, option3 }) {
       </Box>
    )
 }
-// eslint-disable-next-line react/prop-types
 function SportFieldCard({ image, title, location, time }) {
    const [value, setValue] = React.useState(2);
 
@@ -187,12 +186,6 @@ export default function Booking() {
                      time="Time Open:  6am-9pm"
                   />
 
-                  <SportFieldCard
-                     image={AkiraSport}
-                     title="Akira Sport Center"
-                     location="Sangkat Stoeng Meanchey, Phnom Penh"
-                     time="Time Open:  6am-9pm"
-                  />
                </div>
             </div>
          </div>
