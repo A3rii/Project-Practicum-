@@ -45,31 +45,33 @@ function AdminCenter(props) {
    };
 
    const drawer = (
-      <div className="admin-sidebar">
+      <div className="admin-sidebar"
+         style={{ backgroundColor: '#2E3B55', height: '100vh' }}
+      >
          <Divider />
          <List sx={{ mt: 1 }}>
             <ul>
                <div className='admin-icon'>
-                  <HomeIcon />
+                  <HomeIcon sx={{ color: "#fff" }} />
                   <Link to="/dashboard">
                      <li onClick={() => handleChangeName("Home")}>Home</li>
                   </Link>
                </div>
                <div className='admin-icon'>
-                  <PersonAddAlt1Icon />
+                  <PersonAddAlt1Icon sx={{ color: "#fff" }} />
                   <Link to="/confirm_match">
                      <li onClick={() => handleChangeName("Confirm Booking")}>Confirm Booking</li>
                   </Link>
                </div>
                <div className='admin-icon'>
-                  <CalendarMonthIcon />
+                  <CalendarMonthIcon sx={{ color: "#fff" }} />
                   <Link to="/schedule">
                      <li onClick={() => handleChangeName("Set Schedule")}>Set Schedule</li>
                   </Link>
                </div>
 
                <div className='admin-icon'>
-                  <AccessTimeIcon />
+                  <AccessTimeIcon sx={{ color: "#fff" }} />
                   <Link to="settime">
                      <li onClick={() => handleChangeName("Set Open Hour")}> Set Open Hour</li>
                   </Link>
@@ -77,12 +79,15 @@ function AdminCenter(props) {
 
             </ul>
          </List>
-         <Divider sx={{ mt: 2 }} />
+         <Divider sx={{
+            color: "white",
+            mt: 2,
+         }} />
 
          <List>
             <ul>
                <div className='admin-logout'>
-                  <LogoutIcon />
+                  <LogoutIcon sx={{ color: "#fff" }} />
                   <li>Log Out</li>
                </div>
 
@@ -94,10 +99,14 @@ function AdminCenter(props) {
    const container = window !== undefined ? () => window().document.body : undefined;
 
    return (
-      <Box sx={{ display: 'flex' }}>
+      <Box
+         sx={{
+            display: 'flex'
+         }}
+      >
+
          <CssBaseline />
          <AppBar
-
             position="absolute"
             sx={{
                zIndex: -1,
@@ -107,10 +116,8 @@ function AdminCenter(props) {
          >
 
 
-            <Toolbar
-               style={{ background: '#2E3B55' }}
-            >
-               <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+            <Toolbar elevation={3} sx={{ backgroundColor: "#fff" }}  >
+               <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1, color: "#000" }} />
                <IconButton
                   aria-label="open drawer"
                   edge="start"
@@ -119,8 +126,10 @@ function AdminCenter(props) {
                >
                   <MenuIcon />
                </IconButton>
-               <Typography variant="h6" noWrap component="div">
-                  {name}
+               <Typography variant="h6" noWrap component="div" sx={{ color: "#000" }}>
+                  {
+                     name ? name : "DashBoard "
+                  }
                </Typography>
 
                <Box sx={{ display: 'flex', alignItems: 'center', marginLeft: 'auto', pr: 2 }}>
@@ -139,6 +148,8 @@ function AdminCenter(props) {
             component="nav"
             sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
             aria-label="mailbox folders"
+
+
          >
             <Drawer
                container={container}

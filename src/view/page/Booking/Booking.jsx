@@ -92,7 +92,7 @@ function SportFieldCard({ image, title, location, time }) {
 
          <CardActions>
             <Link to="/sportCenter" >
-               <button type="button" className="btn btn-danger  booking-btn"> Book Now </button>
+               <button type="button" className="booking-btn"> Book Now </button>
             </Link>
          </CardActions>
       </Card>
@@ -125,8 +125,6 @@ export default function Booking() {
 
                <div className="booking-filter-type">
 
-
-
                   <SelectionOption
                      type="Time Available"
                      option1="All"
@@ -142,7 +140,7 @@ export default function Booking() {
 
                   <TimePickerField time="Open Till" />
 
-                  <button className="btn btn-danger btn-filter-schedule">FIND</button>
+                  <button className="btn-filter-schedule">FIND</button>
 
                </div>
 

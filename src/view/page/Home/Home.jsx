@@ -1,3 +1,4 @@
+import HeaderLogin from "./../../../components/Header/HeaderLogin"
 import Header from "./../../../components/Header/Header"
 import Footer from "./../../../components/Footer/Footer"
 import { Link } from "react-router-dom"
@@ -7,7 +8,7 @@ export default function Home() {
    return (
       <>
          <div className="home-header" >
-            <Header />
+            <HeaderLogin   />
             <div className="home-banner">
                <h2> Welcome to Sport Renting Site</h2>
                <span> This is a site where you can all book your sport field with ease and quick services.</span>
@@ -17,40 +18,12 @@ export default function Home() {
             </div>
          </div>
 
-         {/* <div className="home-searchCenter">
-            <h1>Convenient & Flexible Scheduling</h1>
-            <span> Find and book your courts conveniently with our online system that matches your schedule and location. </span>
-
-            <div className="home-searchLocation">
-               <div className="home-searchCatogory">
-                  <h2>Sport Category</h2>
-                  <input
-                     type="text"
-                     placeholder="Choose Type of Sports"
-                     className="home-inputType"
-
-                  />
-               </div>
-               <div className="home-searchPlace">
-                  <h2>Where</h2>
-                  <input
-                     type="text"
-                     placeholder="Find Your Location"
-                     className="home-inputType"
-
-                  />
-               </div>
-               <button type="submit" className="btn btn-danger btn-search" >
-                  <i className="fa-solid fa-magnifying-glass"></i>
-               </button>
-            </div>
-         </div> */}
 
          <div className="home-map" >
             <div className="home-googleMap" >
                <h2> View The Nearest Sport Center </h2>
                <span> You can find the sport center by viewing through this map</span>
-               <button type="button" className="btn btn-danger btn-lg"> View Map</button>
+               <button type="button" className="home-viewmap"> View Map</button>
             </div>
          </div>
 
@@ -81,8 +54,8 @@ export default function Home() {
          <div className="home-rental">
             <h1>Lessor</h1>
             <div className="home-lessorBtn">
-               <Link to="/Lessor">
-                  <button className="btn btn-danger btn-lg" >Become A Lessor </button>
+               <Link to="/lessor">
+                  <button className="home-rentalButton" >Become A Lessor </button>
                </Link>
                <a href="#"> Contact Us Now</a>
             </div>
@@ -109,7 +82,6 @@ export default function Home() {
 
          <div className="home-service">
             <h2> Explore The  <span className="home-redSpan">Services</span> </h2>
-
             <CardSwiper />
          </div>
 

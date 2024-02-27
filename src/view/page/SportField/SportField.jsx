@@ -9,6 +9,12 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import dayjs from 'dayjs';
 import FootballCourt from "./../../../assets/BookingImags/pic12.jpg"
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import TextField from '@mui/material/TextField';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { Link } from "react-router-dom"
 import { useState } from "react";
@@ -16,13 +22,6 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-
-
 
 
 function createData(name, timeAvailibilty_1, timeAvailibilty_2, timeAvailibilty_3, timeAvailibilty_4) {
@@ -76,13 +75,17 @@ function AccessibleTable() {
 
 
 export default function SportField() {
-   const [value, setValue] = useState(dayjs('2022-04-17'));
+   const [value, setValue] = useState(dayjs());
    const [court, setCourt] = useState(null);
-
 
    const handleOnSelectCourt = (e) => {
       setCourt(e.target.value);
    }
+
+
+   const handleDateChange = (newDate) => {
+      setValue(newDate);
+   };
 
    const names = [
       'Court A',
@@ -113,15 +116,24 @@ export default function SportField() {
                      <LocalizationProvider
                         dateAdapter={AdapterDayjs}>
                         <DemoContainer
-
-                           components={['DateCalendar', 'DateCalendar']}>
+                           components={['DateCalendar']}>
                            <DateCalendar
                               value={value}
-                              onChange={(newValue) => setValue(newValue)}
+                              onChange={handleDateChange}
                            />
                         </DemoContainer>
                      </LocalizationProvider>
+
                   </div>
+
+                  <div className="selected-date">
+                     <TextField
+                        sx={{ marginBottom: "15px", width: "75%" }}
+                        value={value.format('MMMM DD, YYYY')}
+                        readOnly
+                     />
+                  </div>
+
                   <div className="sport-time">
                      <LocalizationProvider
                         dateAdapter={AdapterDayjs}>
@@ -129,7 +141,10 @@ export default function SportField() {
                         <TimePicker label="Till" />
                      </LocalizationProvider>
 
-                     <FormControl sx={{ m: 1, width: 300 }}>
+
+                  </div>
+                  <div className="court-type">
+                     <FormControl sx={{ width: 300 }}>
                         <InputLabel>Court</InputLabel>
                         <Select
                            value={court}
@@ -142,24 +157,25 @@ export default function SportField() {
                                  value={name}
                               >
                                  {name}
+
                               </MenuItem>
                            ))}
                         </Select>
                      </FormControl>
                   </div>
-                  <button type="button" className="btn btn-danger "> Reserve</button>
+                  <Link to="/payment">
+                     <button type="button" className="sportField-reserver"> Reserve</button>
+                  </Link>
+
                </div>
             </div>
-         </div>
+         </div >
 
          <div className="sport-schedule">
             <h2> ALL OF OUR FOOTBALL SCHEDULE </h2>
             <div className="sportField-schedule">
                <AccessibleTable />
             </div>
-            <Link to="/Payment">
-               <button className="btn btn-danger btn-lg" >Book Now</button>
-            </Link>
          </div>
 
 
@@ -194,8 +210,6 @@ export default function SportField() {
                </div>
             </div>
          </div>
-
-
 
          <div className="center-contact">
             <div></div>

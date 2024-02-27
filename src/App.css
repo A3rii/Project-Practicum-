@@ -494,6 +494,16 @@
 
 }
 
+.home-viewmap {
+   background-color: var(--primary);
+   outline: none;
+   border: none;
+   width: 9rem;
+   padding: .6rem;
+   color: var(--white);
+   border-radius: 3px;
+   margin-top: .7rem;
+}
 
 
 .home-processing {
@@ -603,6 +613,16 @@
    flex-wrap: wrap;
    align-items: center;
    column-gap: 2rem;
+}
+
+.home-rentalButton {
+   background-color: var(--primary);
+   outline: none;
+   border: none;
+   width: 10rem;
+   padding: .6rem;
+   color: var(--white);
+   border-radius: 3px;
 }
 
 .home-verify {
@@ -745,6 +765,16 @@
    align-items: center;
 }
 
+.booking-btn {
+   background-color: var(--primary);
+   outline: none;
+   border: none;
+   width: 7rem;
+   padding: .5rem;
+   color: var(--white);
+   border-radius: 3px;
+}
+
 .booking-filter i,
 .booking-filter .button {
    position: absolute;
@@ -797,6 +827,13 @@
 
 .btn-filter-schedule {
    max-width: 50%;
+   background-color: var(--primary);
+   outline: none;
+   border: none;
+   width: 9rem;
+   padding: .6rem;
+   color: var(--white);
+   border-radius: 3px;
 }
 
 .booking-sportFieldCard {
@@ -1034,7 +1071,7 @@
    background-blend-mode: darken;
    aspect-ratio: 16;
    max-width: 100%;
-   min-height: 55rem;
+   min-height: 60rem;
    height: auto;
    background-repeat: no-repeat;
    backdrop-filter: blur(5px);
@@ -1070,8 +1107,8 @@
 
 
 .date-time {
-   max-width: 35rem;
-   min-height: 33rem;
+   max-width: 25rem;
+   min-height: 40rem;
    display: flex;
    justify-content: center;
    align-items: center;
@@ -1080,6 +1117,13 @@
    border-radius: 5px;
    background-color: var(--white);
 
+}
+
+.selected-date {
+   width: 100%;
+   display: flex;
+   justify-content: center;
+   align-items: center;
 }
 
 .sport-time {
@@ -1100,6 +1144,16 @@
    height: 75%;
 }
 
+.sportField-reserver {
+   background-color: var(--primary);
+   outline: none;
+   border: none;
+   width: 7rem;
+   padding: .4rem;
+   color: var(--white);
+   border-radius: 3px;
+   margin-top: .7rem;
+}
 
 .sport-reserve {
    display: flex;
@@ -1239,6 +1293,17 @@
 .payment-form-right img {
    width: 100%;
    height: 22rem;
+}
+
+.payment-confirm {
+   background-color: var(--primary);
+   outline: none;
+   border: none;
+   width: 10rem;
+   padding: .6rem;
+   color: var(--white);
+   border-radius: 3px;
+   margin-top: .7rem;
 }
 
 /** Payment */
@@ -1422,6 +1487,11 @@
    margin-top: .5rem;
 }
 
+.admin-icon li,
+.admin-logout li {
+   color: var(--white);
+}
+
 
 .admin-logout {
    display: flex;
@@ -1598,6 +1668,17 @@
    gap: 2.5rem;
 }
 
+.confirm-matching,
+.confirm-incoming {
+   background-color: var(--blue);
+   outline: none;
+   border: none;
+   width: 9rem;
+   padding: .6rem;
+   color: var(--white);
+   border-radius: 3px;
+   margin-top: .7rem;
+}
 
 
 /** Admins Page */

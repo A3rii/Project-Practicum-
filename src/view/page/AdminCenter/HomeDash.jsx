@@ -65,11 +65,6 @@ export default function HomeDash() {
       </div>
 
 
-
-
-
-
-
       {/* Table Information of Admin  */}
 
       <div className="home-tableInfo">
@@ -81,56 +76,57 @@ export default function HomeDash() {
           />
         </div>
 
+        <Paper sx={{ width: 800 }} elevation={15}>
+          <TableContainer   >
+            <Table stickyHeader aria-label="sticky table">
+              <TableRow >
+                <TableCell align="left">
+                  Owner Name:
+                </TableCell>
+                <TableCell align="right">
+                  Heng Long
+                </TableCell>
+              </TableRow>
 
-        <TableContainer sx={{ maxWidth: 800 }}>
-          <Table stickyHeader aria-label="sticky table">
-            <TableRow >
-              <TableCell align="left">
-                Owner Name:
-              </TableCell>
-              <TableCell align="right">
-                Heng Long
-              </TableCell>
-            </TableRow>
-
-            <TableRow >
-              <TableCell align="left">
-                Sport Center:
-              </TableCell>
-              <TableCell align="right">
-                Complex Sport Center
-              </TableCell>
-            </TableRow>
-
-
-            <TableRow >
-              <TableCell align="left">
-                Contact Number:
-              </TableCell>
-              <TableCell align="right">
-                023-880-880
-              </TableCell>
-            </TableRow>
+              <TableRow >
+                <TableCell align="left">
+                  Sport Center:
+                </TableCell>
+                <TableCell align="right">
+                  Complex Sport Center
+                </TableCell>
+              </TableRow>
 
 
-            <TableRow >
-              <TableCell align="left">
-                Address:
-              </TableCell>
-              <TableCell align="right">
-                Toul Kork, Phnom Penh
-              </TableCell>
-            </TableRow>
+              <TableRow >
+                <TableCell align="left">
+                  Contact Number:
+                </TableCell>
+                <TableCell align="right">
+                  023-880-880
+                </TableCell>
+              </TableRow>
 
-          </Table>
-        </TableContainer>
+
+              <TableRow >
+                <TableCell align="left">
+                  Address:
+                </TableCell>
+                <TableCell align="right">
+                  Toul Kork, Phnom Penh
+                </TableCell>
+              </TableRow>
+
+            </Table>
+          </TableContainer>
+        </Paper>
       </div>
 
 
       <div className="home-editSportcenter">
         <h5>Your Sport Facilities</h5>
 
-        <Paper sx={{ width: "50rem", overflow: 'hidden', padding: "15px", marginTop: "1rem" }}>
+        <Paper sx={{ width: "50rem", overflow: 'hidden', padding: "15px", marginTop: "1rem" }} elevation={20} >
           <TableContainer>
             <Table stickyHeader aria-label="sticky table">
               <TableHead>

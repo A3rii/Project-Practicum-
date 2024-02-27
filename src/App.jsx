@@ -33,7 +33,6 @@ function App() {
             <Route path="/confirm_match/incoming" element={<IncomingMatch />} />
           </Route>
 
-
           <Route path="/schedule" element={<Schedule />} />
           <Route path="/settime" element={<SetTime />} />
 
@@ -41,13 +40,13 @@ function App() {
 
         <Route path="/booking" element={<Booking />} />
         <Route path="/sportCenter" element={<CenterDetail />} />
-        <Route path="/sportField" element={<SportField />} />
-        <Route path="/Payment" element={<Payment />} />
-        <Route path="/Login" element={<Login />} />
-        <Route path="/SignUp" element={<SignUp />} />
-        <Route path="/Lessor" element={<Lessor />} />
+        <Route path="/sportfield" element={<SportField />} />
+        <Route path="/payment" element={<Payment />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/lessor" element={<Lessor />} />
         <Route path="/reciept" element={<Reciept />} />
-        <Route path="/Contact" element={<Contact />} />
+        <Route path="/contact" element={<Contact />} />
       </Routes>
 
     </Router>

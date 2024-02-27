@@ -2,9 +2,9 @@ import { Link } from "react-router-dom"
 export default function Login() {
    return (
       <>
-         <div className="container login-container">
+         <div className="login-container">
             <h2> Welcome to Sport Rental </h2>
-            <Link to="/SignUp">
+            <Link to="/signup">
                <button type="button" className="login-Signup" >SIGN UP NOW </button>
             </Link>
             <div className="login-withSocial">
@@ -44,7 +44,7 @@ export default function Login() {
                   </Link>
                </div>
             </div>
-         </div >
+         </div>
       </>
    )
 }

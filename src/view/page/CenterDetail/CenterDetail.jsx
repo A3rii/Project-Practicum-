@@ -79,7 +79,7 @@ function CenterCard({ image, type, time, price }) {
             </Typography>
          </CardContent>
          <CardActions>
-            <Link to="/sportField">
+            <Link to="/sportfield">
                <Button variant="outlined" color="error" >
                   Explore more
                </Button>

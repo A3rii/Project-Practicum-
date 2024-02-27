@@ -63,7 +63,16 @@ export default function IncomingMatch() {
    return (
       <>
 
-         <Paper sx={{ width: '100%', overflow: 'hidden', padding: "15px" }}>
+         <Paper
+            sx={{
+               width: '75rem',
+               overflow: 'hidden',
+               padding: "15px",
+               marginTop: "2rem",
+               marginLeft: "2rem"
+            }}
+
+            elevation={15}>
             <Typography
                display="flex"
                alignItems="center"

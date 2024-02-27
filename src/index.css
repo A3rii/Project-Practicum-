@@ -76,7 +76,17 @@ a {
    display: flex;
    justify-content: center;
    align-items: center;
-   column-gap: 1.3rem;
+   column-gap: 1rem;
+}
+
+.header-button {
+   background-color: var(--primary);
+   outline: none;
+   border: none;
+   width: 6rem;
+   padding: .6rem;
+   color: var(--white);
+   border-radius: 3px;
 }
 
 .header-login {
@@ -202,6 +212,132 @@ a {
 
 .footer-copyright span {
    color: var(--solid-red)
+}
+
+.app-menu-trigger {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+}
+
+.app-menu-trigger img {
+   position: absolute;
+   height: 2rem;
+   width: 2rem;
+   border-radius: 50%;
+   overflow: hidden;
+   cursor: pointer;
+   background-color: #fff;
+}
+
+.app-dropdown-sidemenu {
+   position: absolute;
+   top: 5rem;
+   right: 1.5rem;
+   background-color: #fff;
+   border-radius: 8px;
+   padding: 10px 20px;
+   width: 200px;
+}
+
+.app-dropdown-sidemenu::before {
+   content: '';
+   position: absolute;
+   top: -5px;
+   right: 20px;
+   height: 20px;
+   width: 20px;
+   background: #fff;
+   transform: rotate(45deg);
+}
+
+.app-dropdown-sidemenu.active {
+   opacity: 1;
+   z-index: 1;
+   visibility: visible;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   margin-right: 1rem;
+   transform: translateY(0);
+   width: 15%;
+   transition: 500ms ease;
+}
+
+.app-dropdown-sidemenu.inactive {
+   opacity: 0;
+   visibility: hidden;
+   transform: translateY(-20px);
+   transition: 500ms ease;
+   z-index: 1;
+
+}
+
+.dealer-name {
+   width: 100%;
+   text-align: center;
+   font-size: 15px;
+   padding: 18px 0;
+   font-weight: 500;
+   font-size: 18px;
+   color: #555;
+   line-height: 1rem;
+}
+
+.dealer-name span {
+   font-size: 14px;
+   color: #cecece;
+   font-weight: 400;
+}
+
+.app-dropdown-sidemenu ul li {
+   padding: 11px 0;
+   color: #000;
+   margin-right: 1rem;
+   text-align: center;
+}
+
+.app-dropdown-sidemenu ul li:hover a {
+   color: rgb(212, 33, 9);
+   cursor: pointer;
+}
+
+.app-dropdown-sidemenu ul li:hover img {
+   opacity: 1;
+   cursor: pointer;
+}
+
+.app-dropdownItem {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   margin: 10px 5px auto;
+}
+
+.app-dropdownItem img {
+   max-width: 20px;
+   margin-right: 10px;
+   opacity: 0.5;
+   transition: 500ms;
+}
+
+.app-dropdownItem a {
+   max-width: 100px;
+   margin-left: 10px;
+   transition: 500ms;
+   color: #000;
+   font-size: 16px;
+
+}
+
+.dealer-option {
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+   width: 100%;
+   margin-right: 2rem;
 }
 
 /*Footer*/

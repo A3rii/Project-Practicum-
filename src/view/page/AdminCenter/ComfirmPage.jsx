@@ -5,62 +5,48 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import DeleteIcon from "@mui/icons-material/Delete";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
+import Button from '@mui/material/Button';
+
 const columns = [
    { id: 'name', label: 'Name', minWidth: 150 },
    { id: 'court', label: 'Court', minWidth: 100 },
-   {
-      id: 'booking_date',
-      label: 'Booking Date',
-      minWidth: 100,
-   },
-   {
-      id: 'booking_hours',
-      label: 'Booking Hours',
-      minWidth: 100,
-
-   },
-   {
-      id: 'incoming_date',
-      label: 'Incoming Date',
-      minWidth: 100,
-   },
-   {
-      id: 'sport_type ',
-      label: 'Sport Type',
-      minWidth: 100,
-   },
-   {
-      id: 'action',
-      label: 'Action',
-      minWidth: 100,
-   },
+   { id: 'price', label: 'Price', minWidth: 100 },
+   { id: 'booking_date', label: 'Booking Date', minWidth: 100, },
+   { id: 'booking_hours', label: 'Booking Hours', minWidth: 100 },
+   { id: 'incoming_date', label: 'Incoming Date', minWidth: 100 },
+   { id: 'sport_type ', label: 'Sport Type', minWidth: 100 },
+   { id: 'action', label: 'Action', minWidth: 100, },
 
 ];
 
 
-function createData(name, court, booking_date, booking_hours, incoming_date, sport_type) {
-   return { name, court, booking_date, booking_hours, incoming_date, sport_type };
+function createData(name, court, price, booking_date, booking_hours, incoming_date, sport_type) {
+   return { name, court, price, booking_date, booking_hours, incoming_date, sport_type };
 }
 
 const rows = [
-   createData('Kimly', 'A', "12. April .2024", 2, "21. April .2024", "football"),
-   createData('Vimean', 'B', "12. April .2024", 3, "21. April .2024", "football"),
-   createData('Limhor', 'B', "12. April .2024", 3, "21. April .2024", "football"),
-   createData('Chamroung', 'B', "12. April .2024", 3, "21. April .2024", "football"),
+   createData('Kimly', 'A', "10$", "12. April .2024", 2, "21. April .2024", "Basketball"),
+   createData('Vimean', 'B', "10$", "12. April .2024", 3, "21. April .2024", "Football"),
+   createData('Limhor', 'B', "10$", "12. April .2024", 3, "21. April .2024", "Volleyball"),
+   createData('Chamroung', 'B', "10$", "12. April .2024", 3, "21. April .2024", "Football"),
 ]
 
 export default function ConfirmPage() {
-
-
    return (
       <>
+         <Paper
+            sx={{
+               width: '75rem',
+               overflow: 'hidden',
+               padding: "15px",
+               marginTop: "2rem",
+               marginLeft: "2rem"
+            }}
 
-         <Paper sx={{ width: '100%', overflow: 'hidden', padding: "15px" }}>
+            elevation={15}>
             <Typography
                display="flex"
                alignItems="center"
@@ -80,8 +66,7 @@ export default function ConfirmPage() {
                         {columns.map((column) => (
                            <TableCell
                               key={column.id}
-                              style={{ minWidth: column.minWidth }}
-                           >
+                              style={{ minWidth: column.minWidth }} >
                               {column.label}
                            </TableCell>
                         ))}
@@ -93,18 +78,15 @@ export default function ConfirmPage() {
                         <TableRow key={index}  >
                            <TableCell align="left" style={{ minWidth: "100px" }}>{row.name}</TableCell>
                            <TableCell align="left" style={{ minWidth: "100px" }}>{row.court}</TableCell>
+                           <TableCell align="left" style={{ minWidth: "100px" }}>{row.price}</TableCell>
                            <TableCell align="left" style={{ minWidth: "100px" }}>{row.booking_date}</TableCell>
                            <TableCell align="left" style={{ minWidth: "100px" }}>{row.booking_hours}</TableCell>
                            <TableCell align="left" style={{ minWidth: "100px" }}>{row.incoming_date}</TableCell>
                            <TableCell align="left" style={{ minWidth: "100px" }}>{row.sport_type}</TableCell>
                            <TableCell align="left" style={{ minWidth: "100px" }} >
                               <Stack direction="row" spacing={2}>
-                                 <CheckCircleIcon
-                                    style={{ fontSize: "20px", color: "green", cursor: "pointer" }}
-                                 />
-                                 <DeleteIcon
-                                    style={{ fontSize: "20px", color: "red", cursor: "pointer" }}
-                                 />
+                                 <Button variant="outlined" color="success">Accept</Button>
+                                 <Button variant="outlined" color="error">Deny</Button>
                               </Stack>
                            </TableCell>
                         </TableRow>

@@ -10,7 +10,6 @@ export default function Payment() {
          <div className="payment-header" >
             <Header />
             <div className="payment-form">
-
                <div className="payment-form-field">
                   <div className="payment-form-left">
                      <h2> Book the Court</h2>
@@ -39,12 +38,11 @@ export default function Payment() {
                   </div>
 
 
-
                   <div className="payment-form-right">
                      <h2> Payment Method </h2>
                      <img src={ABA} alt="#" />
                      <button
-                        className="btn btn-danger btn-lg"
+                        className="payment-confirm"
                         onClick={handle_booking}
                      > Confirm Booking </button>
                   </div>

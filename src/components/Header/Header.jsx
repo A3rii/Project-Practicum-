@@ -12,21 +12,21 @@ export default function Header() {
                <NavLink to="/booking">
                   <li>Renting Facilities</li>
                </NavLink>
-               <NavLink to="/Lessor">
+               <NavLink to="/lessor">
                   <li>Become Lessor</li>
                </NavLink>
-               <NavLink to="/Contact">
+               <NavLink to="/contact">
                   <li>Contact</li>
                </NavLink>
-               <NavLink to="/Reciept">
+               <NavLink to="/reciept">
                   <li>Booking Historys</li>
                </NavLink>
             </ul>
          </nav>
          <div className="header-auth">
-            <NavLink to="/Login" className="header-login">Login </NavLink>
-            <NavLink to="/SignUp">
-               <button className="btn btn-danger btn-lg header-button">Sign Up </button>
+            <NavLink to="/login" className="header-login">Login </NavLink>
+            <NavLink to="/signup">
+               <button className="header-button">Sign Up </button>
             </NavLink>
          </div>
       </header>
