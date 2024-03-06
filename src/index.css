@@ -51,7 +51,14 @@ a {
 
 }
 
+.header-container i {
+   display: none;
+   position: absolute;
+   font-size: 1.6rem;
+}
+
 .header-navbar {
+   max-width: 50%;
    display: flex;
    justify-content: center;
    align-items: center;
@@ -60,6 +67,8 @@ a {
 .header-navbar ul {
    display: flex;
    justify-content: center;
+   align-items: center;
+   font-size: 1rem;
    align-items: center;
    margin-top: 1.4rem;
    column-gap: 2.7rem;
@@ -76,6 +85,7 @@ a {
    display: flex;
    justify-content: center;
    align-items: center;
+   margin-top: .5rem;
    column-gap: 1rem;
 }
 
@@ -91,6 +101,24 @@ a {
 
 .header-login {
    color: var(--white);
+}
+
+@media screen and (max-width: 500px) {}
+
+@media screen and (max-width: 1000px) {
+
+   .header-container i {
+      display: contents;
+   }
+
+   .header-title {
+      display: none;
+
+   }
+
+   .header-navbar ul {
+      display: none;
+   }
 }
 
 /*Header/
@@ -389,4 +417,443 @@ a {
    .swiper[dir="rtl"] .swiper-slide.swiper-slide-next:nth-child(2) {
       transform: translateX(-55%);
    }
+}
+
+/*Footer*/
+
+
+
+@media screen and (max-width: 1400px) {
+   .payment-header {
+      min-height: 40rem;
+      height: 90rem;
+   }
+
+   .payment-form {
+      height: 75%;
+   }
+
+   .payment-form-field {
+      max-width: 75%;
+      min-height: 100%;
+      display: flex;
+      justify-content: baseline;
+      align-items: center;
+      flex-direction: column;
+   }
+
+   .payment-form-right {
+      margin-top: 3rem;
+   }
+
+   .payment-form-field,
+   .payment-form-left,
+   .payment-form-right {
+      max-width: 100%;
+   }
+
+   .payment-form-left h2 {
+      font-size: 1rem;
+   }
+
+   .payment-form-1,
+   .payment-form-2,
+   .payment-form-3 {
+      max-width: 100%;
+
+   }
+
+
+}
+
+
+/*Home Responsive*/
+
+@media screen and (max-width: 1200px) {
+   .home-header {
+      max-width: 100%;
+      min-height: 30rem;
+
+   }
+
+   .home-banner h2 {
+      max-width: 50%;
+      text-align: center;
+      font-size: 1.3rem;
+      font-weight: 800;
+      font-family: "Roboto", sans-serif;
+      color: var(--white);
+   }
+
+   .home-banner span {
+      max-width: 25%;
+      font-size: .8rem;
+      font-weight: lighter;
+      font-family: "Montserrat", sans-serif;
+      color: var(--white);
+      text-align: center;
+   }
+
+   .home-bookBtn {
+      border: none;
+      outline: none;
+      background-color: var(--primary);
+      color: white;
+      font-family: "Roboto", sans-serif;
+      font-size: .9rem;
+      font-weight: bolder;
+      width: 7rem;
+      padding: .6rem;
+      border-radius: 7px;
+   }
+
+   .home-googleMap {
+      width: 15rem;
+      text-align: center;
+      height: 22rem;
+      row-gap: 2rem;
+   }
+
+   .home-googleMap h2 {
+      max-width: 50%;
+      font-size: .9rem;
+      font-weight: 600;
+      text-align: center;
+
+   }
+
+   .home-googleMap span {
+      max-width: 50%;
+      font-size: .8rem;
+      text-align: center;
+
+   }
+
+   .home-viewmap {
+      width: 7rem;
+      padding: .4rem;
+
+   }
+
+   .home-process {
+      max-width: 50%;
+      min-height: 38rem;
+   }
+
+   .home-process h2 {
+      display: none;
+   }
+
+   .home-processes {
+      row-gap: 1rem;
+   }
+
+   .home-mapping,
+   .home-schedule,
+   .home-booking {
+      column-gap: 2rem;
+      max-width: 50%;
+      min-height: 25%;
+
+   }
+
+   .home-mapping i,
+   .home-schedule i,
+   .home-booking i {
+      font-size: 2.5rem;
+   }
+
+   .home-mapping span,
+   .home-schedule span,
+   .home-booking span {
+      font-size: .8rem;
+      max-width: 73%;
+      text-align: center;
+   }
+
+   .home-rental h1 {
+      display: none;
+   }
+
+   .home-rental span {
+      font-size: .8rem;
+      text-align: left;
+   }
+
+   .home-lessorBtn {
+      max-width: 25%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      row-gap: .5rem;
+   }
+
+   .home-rentalButton {
+      max-width: 100%;
+      background-color: var(--primary);
+      outline: none;
+      border: none;
+      width: 10rem;
+      font-size: .8rem;
+      padding: .7rem;
+   }
+
+   .home-checked i,
+   .home-popularity i,
+   .home-offer i {
+      font-size: 1rem;
+   }
+
+   .home-service {
+      display: none;
+   }
+}
+
+/*Home Responsive*/
+
+
+
+/*Booking Responsive*/
+@media screen and (max-width: 1200px) {
+   .booking-header {
+      max-width: 100%;
+      min-height: 30rem;
+   }
+
+   .booking-banner h2 {
+      max-width: 50%;
+      text-align: center;
+      font-size: 2rem;
+   }
+
+   .booking-field h2 {
+      display: none;
+   }
+
+   .booking-topic {
+      width: 80rem;
+      max-width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+   }
+
+   .booking-filter {
+      display: none;
+   }
+
+
+   .booking-filter input {
+      height: 100%;
+      width: 80rem;
+      outline: none;
+      font-size: 18px;
+      background-color: transparent;
+   }
+
+   .booking-filterSport {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      max-width: 100%;
+   }
+
+   .button {
+      display: none;
+   }
+
+   .booking-filter-none {
+      width: 70%;
+      display: flex;
+      justify-content: baseline;
+      align-items: baseline;
+      gap: 1.5rem;
+   }
+
+   .booking-filter-type {
+      display: none;
+   }
+
+   .booking-sportFieldCard {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+   }
+
+   /*Booking Responsive*/
+
+   .center-googleMap {
+      width: 15rem;
+      text-align: center;
+      height: 22rem;
+      row-gap: 2rem;
+   }
+
+   .center-googleMap h2 {
+      max-width: 50%;
+      font-size: .9rem;
+      font-weight: 600;
+      text-align: center;
+
+   }
+
+   .center-googleMap span {
+      max-width: 50%;
+      font-size: .8rem;
+      text-align: center;
+
+   }
+
+   .center-buttonView {
+      width: 6rem;
+      padding: .3rem;
+   }
+
+   .center-contactDetails span {
+      font-size: .8rem;
+   }
+
+   .center-socialMedia i {
+      font-size: 1.5rem;
+   }
+
+
+   .sportField-banner span {
+      display: none;
+   }
+}
+
+
+
+
+@media screen and (max-width: 650px) {
+
+   .payment-form-1,
+   .payment-form-2,
+   .payment-form-3 {
+      max-width: 75%;
+   }
+
+   .payment-form-left {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+   }
+
+   .payment-details-list span {
+      font-size: .8rem;
+   }
+}
+
+
+
+
+
+@media screen and (max-width: 600px) {
+
+   /* center responsive*/
+   .center-banner h2 {
+      font-size: 1.2rem;
+   }
+
+   .center-banner span {
+      font-size: .8rem
+   }
+
+   .center-location span {
+      width: 100%;
+      font-size: .7rem;
+   }
+
+   .center-category h2 {
+      font-size: 1.3rem;
+      font-weight: 500;
+   }
+
+   .center-cardSport {
+      max-width: 100%;
+   }
+
+   .center-buttonContact {
+      width: 6rem;
+      padding: .6rem;
+      font-size: .7rem;
+   }
+
+   .center-contactInfo {
+      display: flex;
+      text-align: center;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem
+   }
+
+   .center-contactDetails {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+   }
+
+   .center-socialMedia i {
+      display: none;
+   }
+
+   .center-client-comments {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+   }
+
+   .center-buttonSubmit {
+      width: 6rem;
+      padding: .6rem;
+      font-size: .7rem;
+   }
+
+   .client-feedback {
+      width: 75%;
+      height: 2rem;
+   }
+
+   .center-client-rating span {
+      font-size: .8rem;
+   }
+
+   /* center responsive*/
+
+
+   /* sport field responsive*/
+
+
+   .date-time {
+      max-width: 100%;
+      display: flex;
+   }
+
+   .court-type {
+      max-width: 75%;
+   }
+
+   .sportField-Slider,
+   .sportField-carousel {
+      max-width: 100%;
+      margin: 1rem;
+   }
+
+   .sportField-Slider h2 {
+      font-size: 1rem;
+      margin-top: 1rem;
+   }
+
+   .sport-schedule h2 {
+      font-size: 1rem;
+      text-align: center;
+   }
+
+   /* sport field responsive*/
+
 }

@@ -8,7 +8,7 @@ export default function Home() {
    return (
       <>
          <div className="home-header" >
-            <HeaderLogin   />
+            <Header />
             <div className="home-banner">
                <h2> Welcome to Sport Renting Site</h2>
                <span> This is a site where you can all book your sport field with ease and quick services.</span>

@@ -40,9 +40,7 @@ const rows = [
 function AccessibleTable() {
    return (
       <TableContainer component={Paper}  >
-         <Table sx={{
-            width: 1200,
-         }}
+         <Table
             style={{ height: '450px' }}
             aria-label="caption table">
             <TableHead>
@@ -118,6 +116,7 @@ export default function SportField() {
                         <DemoContainer
                            components={['DateCalendar']}>
                            <DateCalendar
+                              sx={{ widht: "100%" }}
                               value={value}
                               onChange={handleDateChange}
                            />
@@ -128,7 +127,7 @@ export default function SportField() {
 
                   <div className="selected-date">
                      <TextField
-                        sx={{ marginBottom: "15px", width: "75%" }}
+                        sx={{ marginBottom: "15px", width: "100%" }}
                         value={value.format('MMMM DD, YYYY')}
                         readOnly
                      />
@@ -141,10 +140,11 @@ export default function SportField() {
                         <TimePicker label="Till" />
                      </LocalizationProvider>
 
-
                   </div>
                   <div className="court-type">
-                     <FormControl sx={{ width: 300 }}>
+                     <FormControl
+                        sx={{ width: "100%" }}
+                     >
                         <InputLabel>Court</InputLabel>
                         <Select
                            value={court}
@@ -164,12 +164,12 @@ export default function SportField() {
                      </FormControl>
                   </div>
                   <Link to="/payment">
-                     <button type="button" className="sportField-reserver"> Reserve</button>
+                     <button type="button" className="sportField-reserver">Reserve</button>
                   </Link>
 
                </div>
             </div>
-         </div >
+         </div>
 
          <div className="sport-schedule">
             <h2> ALL OF OUR FOOTBALL SCHEDULE </h2>
@@ -214,7 +214,7 @@ export default function SportField() {
          <div className="center-contact">
             <div></div>
             <div className="center-contactInfo">
-               <button type="button" className="btn btn-success btn-lg"> Contact Now </button>
+               <button type="button" className="center-buttonContact  "> Contact Now </button>
                <div className="center-contactDetails">
                   <span> (+885) 23-880-880 </span>
                   <span> Email: PhnompenhSport Center @gmail.com  </span>

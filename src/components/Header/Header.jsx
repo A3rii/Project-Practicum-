@@ -4,22 +4,23 @@ export default function Header() {
    return (
       <header className="header-container">
          <span className="header-title">Sport Rental</span>
+         <i className="fa-solid fa-bars"></i>
          <nav className="header-navbar">
             <ul>
                <NavLink to="/">
                   <li> Home </li>
                </NavLink>
                <NavLink to="/booking">
-                  <li>Renting Facilities</li>
+                  <li>Renting </li>
                </NavLink>
                <NavLink to="/lessor">
-                  <li>Become Lessor</li>
+                  <li>Lessor</li>
                </NavLink>
                <NavLink to="/contact">
                   <li>Contact</li>
                </NavLink>
                <NavLink to="/reciept">
-                  <li>Booking Historys</li>
+                  <li> Historys</li>
                </NavLink>
             </ul>
          </nav>

@@ -135,7 +135,7 @@ export default function CenterDetail() {
             <div className="center-googleMap" >
                <h2> View the location </h2>
                <span> You can find the sport center by viewing through this map</span>
-               <button type="button" className="btn btn-danger btn-lg"> View Map</button>
+               <button type="button" className="center-buttonView"> View Map</button>
             </div>
          </div>
 
@@ -166,12 +166,12 @@ export default function CenterDetail() {
                   }}
                />
             </div>
-            <button type="submit" className="mt-5 btn btn-danger">Submit</button>
+            <button type="submit" className="center-buttonSubmit">Submit</button>
          </div>
          <div className="center-contact">
             <div></div>
             <div className="center-contactInfo">
-               <button type="button" className="btn btn-success btn-lg"> Contact Now </button>
+               <button type="button" className="center-buttonContact"> Contact Now </button>
                <div className="center-contactDetails">
                   <span> (+885) 23-880-880 </span>
                   <span> Email: PhnompenhSport Center @gmail.com  </span>

@@ -61,11 +61,12 @@ function SelectionOption({ type, option1, option2, option3 }) {
       </Box>
    )
 }
+// eslint-disable-next-line react/prop-types
 function SportFieldCard({ image, title, location, time }) {
    const [value, setValue] = React.useState(2);
 
    return (
-      <Card sx={{ width: 340 }}>
+      <Card sx={{ width: 320 }}>
          <CardMedia
             sx={{ height: 250 }}
             image={image}
@@ -114,13 +115,25 @@ export default function Booking() {
          <div className="container booking-field" >
             <div className='booking-topic'>
                <h2>Sport Field Rental</h2>
+              
+              
                <div className="booking-filter" >
-                  <i className="fa-solid fa-magnifying-glass"></i>
-                  <input type="text" placeholder="Search your sport center..." />
+                  <i className="fa-solid fa-magnifying-glass icon-search"></i>
+                  <input type="text" placeholder="Search....." />
                   <button className="button">Search</button>
                </div>
             </div>
 
+          
+          
+          
+            <div className='booking-filter-none' >
+               <i className="fa-solid fa-bars"></i>
+               <span className=""> Menu</span>
+            </div>
+           
+           
+           
             <div className="booking-filterSport" >
 
                <div className="booking-filter-type">
