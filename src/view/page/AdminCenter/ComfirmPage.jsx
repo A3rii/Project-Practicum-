@@ -39,7 +39,7 @@ export default function ConfirmPage() {
       <>
          <Paper
             sx={{
-               width: '75rem',
+               maxWidth: '100%',
                overflow: 'hidden',
                padding: "15px",
                marginTop: "2rem",
@@ -60,7 +60,7 @@ export default function ConfirmPage() {
             <Divider />
 
             <TableContainer>
-               <Table stickyHeader aria-label="sticky table">
+               <Table stickyHeader aria-label="sticky table" >
                   <TableHead>
                      <TableRow>
                         {columns.map((column) => (

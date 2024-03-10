@@ -722,6 +722,25 @@ a {
    .sportField-banner span {
       display: none;
    }
+
+   .setTime-title h4 {
+      display: none;
+   }
+
+   .setTime-title {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+   }
+
+   .set-openingTime {
+      flex-direction: column;
+      margin-top: 2rem;
+   }
+
+   .table-wrapper {
+      width: 100%;
+   }
 }
 
 
@@ -744,6 +763,7 @@ a {
    .payment-details-list span {
       font-size: .8rem;
    }
+
 }
 
 

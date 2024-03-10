@@ -135,7 +135,7 @@ function AdminCenter(props) {
                <Box sx={{ display: 'flex', alignItems: 'center', marginLeft: 'auto', pr: 2 }}>
                   <Tooltip title="Open settings">
                      <IconButton sx={{ p: 0 }}>
-                        <Avatar alt="Remy Sharp" src="" />
+                        <Avatar alt="K" src="#" />
                      </IconButton>
                   </Tooltip>
 

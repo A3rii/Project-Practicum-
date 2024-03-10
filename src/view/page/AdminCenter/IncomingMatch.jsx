@@ -15,34 +15,11 @@ const label = { inputProps: { 'aria-label': 'Checkbox' } };
 const columns = [
    { id: 'name', label: 'Name', minWidth: 150 },
    { id: 'court', label: 'Court', minWidth: 100 },
-
-   {
-      id: 'booking_hours',
-      label: 'Booking Hours',
-      minWidth: 100,
-
-   },
-   {
-      id: 'incoming_date',
-      label: 'Incoming Date',
-      minWidth: 100,
-   },
-
-   {
-      id: 'sport_type ',
-      label: 'Sport Type',
-      minWidth: 100,
-   },
-   {
-      id: 'status',
-      label: 'Status',
-      minWidth: 100,
-   },
-   {
-      id: 'action',
-      label: 'Action',
-      minWidth: 100,
-   },
+   { id: 'booking_hours', label: 'Booking Hours', minWidth: 100, },
+   { id: 'incoming_date', label: 'Incoming Date', minWidth: 100, },
+   { id: 'sport_type ', label: 'Sport Type', minWidth: 100, },
+   { id: 'status', label: 'Status', minWidth: 100, },
+   { id: 'action', label: 'Action', minWidth: 100, },
 
 ];
 
@@ -65,7 +42,7 @@ export default function IncomingMatch() {
 
          <Paper
             sx={{
-               width: '75rem',
+               maxWidth: '100%',
                overflow: 'hidden',
                padding: "15px",
                marginTop: "2rem",

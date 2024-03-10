@@ -13,18 +13,31 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from "@mui/icons-material/Delete";
 import Button from '@mui/material/Button';
+import Typography from "@mui/material/Typography";
+import Grid from '@mui/material/Grid';
 import Divider from "@mui/material/Divider";
+import Box from '@mui/material/Box';
+import Avatar from '@mui/material/Avatar';
 
 
 export default function HomeDash() {
-  const columns = [
+  const columns_facilities = [
     { id: 'facilities', label: 'Facilities', minWidth: 150 },
     { id: 'description', label: 'Description', minWidth: 100 },
     { id: 'court', label: 'Court', minWidth: 100 },
     { id: 'image', label: 'Surrounding Image', minWidth: 100 },
     { id: 'action', label: 'Action', minWidth: 100, },
-
   ];
+
+  const column_participant = [
+    { id: 1, profile: <Avatar alt="K" src="#" />, name: 'Snow Jon', email: "kimly@gmail.com" },
+    { id: 2, profile: <Avatar alt="K" src="#" />, name: 'Lannister Cersei', email: "kimly@gmail.com" },
+    { id: 3, profile: <Avatar alt="K" src="#" />, name: 'Lannister Jaime', email: "kimly@gmail.com" },
+    { id: 4, profile: <Avatar alt="K" src="#" />, name: 'Stark Arya', email: "kimly@gmail.com" },
+    { id: 5, profile: <Avatar alt="K" src="#" />, name: 'Targaryen Daenerys', email: "kimly@gmail.com" },
+  ];
+
+
 
 
   function createData(facilities) {
@@ -64,137 +77,224 @@ export default function HomeDash() {
 
       </div>
 
+      <Box sx={{ flexGrow: 1, marginTop: "5rem" }}>
+        <Grid container spacing={2} >
+
+
+          <Grid item xl={4} lg={4} sm={12}>
+
+            <Paper sx={{
+              width: "100%", height: "100%", overflow: 'hidden', padding: "15px"
+            }} elevation={10}>
+              <Typography
+                display="flex"
+                alignItems="center"
+                gutterBottom
+                component="div"
+                variant='h6'
+                sx={{ padding: "14px" }}
+              >
+                Basic Information
+                <EditIcon
+                  style={{ fontSize: "15px", cursor: "pointer", marginLeft: "5px" }}
+                />
+              </Typography>
+              <Divider />
+              <TableContainer style={{ height: '100%' }}  >
+                <Table stickyHeader aria-label="sticky table">
+                  <TableRow >
+                    <TableCell align="left">
+                      Owner Name:
+                    </TableCell>
+                    <TableCell align="right">
+                      Heng Long
+                    </TableCell>
+                  </TableRow>
+
+                  <TableRow >
+                    <TableCell align="left">
+                      Sport Center:
+                    </TableCell>
+                    <TableCell align="right">
+                      Complex Sport Center
+                    </TableCell>
+                  </TableRow>
+
+
+                  <TableRow >
+                    <TableCell align="left">
+                      Contact Number:
+                    </TableCell>
+                    <TableCell align="right">
+                      023-880-880
+                    </TableCell>
+                  </TableRow>
+
+
+                  <TableRow >
+                    <TableCell align="left">
+                      Address:
+                    </TableCell>
+                    <TableCell align="right">
+                      Toul Kork, Phnom Penh
+                    </TableCell>
+                  </TableRow>
+
+                </Table>
+              </TableContainer>
+            </Paper>
+
+          </Grid>
+
+          <Grid item xl={8} lg={8} sm={12}>
+
+            <Paper sx={{
+              width: "100%", overflow: 'hidden', padding: "15px",
+            }} elevation={10} >
+              <Typography
+                display="flex"
+                alignItems="center"
+                gutterBottom
+                component="div"
+                variant='h6'
+                sx={{ padding: "14px" }}
+              >
+                Facilities
+              </Typography>
+              <Divider />
+
+              <TableContainer style={{ height: '100%' }}>
+                <Table stickyHeader aria-label="sticky table">
+                  <TableHead>
+                    <TableRow>
+                      {columns_facilities.map((column) => (
+                        <TableCell
+                          key={column.id}
+                          style={{ minWidth: column.minWidth }}
+                        >
+                          {column.label}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  </TableHead>
+
+                  <TableBody>
+                    {rows.map((row, index) => (
+                      <TableRow key={index}  >
+                        <TableCell align="left" style={{ minWidth: "100px" }}>{row.facilities}</TableCell>
+
+
+                        <TableCell align="left" style={{ minWidth: "100px" }}>
+                          {row.description}
+                          <Button variant="outlined">Edit </Button>
+                        </TableCell>
+
+
+                        {/*Should be input */}
+                        <TableCell align="left" style={{ minWidth: "100px" }}>
+                          {row.court}
+                          <Button variant="outlined">Add</Button>
+                        </TableCell>
+
+
+                        {/*Should be input */}
+                        <TableCell align="left" style={{ minWidth: "100px" }}>
+                          {row.image}
+                          <Button variant="outlined">Change </Button>
+                        </TableCell>
+
+                        <TableCell align="left" style={{ minWidth: "100px" }} >
+                          <Stack direction="row" spacing={1}>
+                            <CheckCircleIcon
+                              style={{ fontSize: "20px", color: "green", cursor: "pointer" }}
+                            />
+                            <DeleteIcon
+                              style={{ fontSize: "20px", color: "red", cursor: "pointer" }}
+                            />
+                          </Stack>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+
+                  </TableBody>
+
+                </Table>
+                <Divider />
+
+                <div style={{ display: 'flex', justifyContent: 'flex-start', marginTop: '1rem' }}>
+                  <Button variant="outlined" startIcon={<AddIcon />}>Add Facilities</Button>
+                </div>
+              </TableContainer>
+
+            </Paper>
+
+          </Grid>
+
+
+          {/*Customer Recent books*/}
+          <Grid item xl={12} lg={12} sm={12}>
+            <Paper sx={{
+              width: "100%", overflow: 'hidden', padding: "15px", marginTop: "1rem",
+            }} elevation={20} >
+              <Typography
+                display="flex"
+                alignItems="center"
+                gutterBottom
+                component="div"
+                variant='h6'
+                sx={{ padding: "14px" }}
+              >
+                Customer
+              </Typography>
+              <Divider />
+
+              <TableContainer style={{ height: '100%' }}>
+                <Table stickyHeader aria-label="sticky table">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell align='left'> ID</TableCell>
+                      <TableCell align='left'> Profile</TableCell>
+                      <TableCell align="center">  Name</TableCell>
+                      <TableCell align="center"> Email </TableCell>
+                    </TableRow>
+                  </TableHead>
+
+                  <TableBody>
+                    {column_participant.map((row, index) => (
+                      <TableRow key={index}  >
+                        <TableCell align="left" style={{ minWidth: "100px" }}>{row.id}</TableCell>
+
+                        <TableCell align="left" style={{ minWidth: "100px" }}>{row.profile}</TableCell>
+
+
+                        <TableCell align="center" style={{ minWidth: "100px" }}>
+                          {row.name}
+                        </TableCell>
+
+
+                        <TableCell align="center" style={{ minWidth: "100px" }}>
+                          {row.email}
+                        </TableCell>
+
+                      </TableRow>
+                    ))}
+
+                  </TableBody>
+
+                </Table>
+              </TableContainer>
+            </Paper>
+
+          </Grid>
+
+
+        </Grid>
+      </Box>
 
       {/* Table Information of Admin  */}
 
-      <div className="home-tableInfo">
-
-        <div className='home-editIcon' >
-          <h5>Basic Information </h5>
-          <EditIcon
-            style={{ fontSize: "20px", marginBottom: "10px", cursor: "pointer" }}
-          />
-        </div>
-
-        <Paper sx={{ width: 800 }} elevation={15}>
-          <TableContainer   >
-            <Table stickyHeader aria-label="sticky table">
-              <TableRow >
-                <TableCell align="left">
-                  Owner Name:
-                </TableCell>
-                <TableCell align="right">
-                  Heng Long
-                </TableCell>
-              </TableRow>
-
-              <TableRow >
-                <TableCell align="left">
-                  Sport Center:
-                </TableCell>
-                <TableCell align="right">
-                  Complex Sport Center
-                </TableCell>
-              </TableRow>
 
 
-              <TableRow >
-                <TableCell align="left">
-                  Contact Number:
-                </TableCell>
-                <TableCell align="right">
-                  023-880-880
-                </TableCell>
-              </TableRow>
-
-
-              <TableRow >
-                <TableCell align="left">
-                  Address:
-                </TableCell>
-                <TableCell align="right">
-                  Toul Kork, Phnom Penh
-                </TableCell>
-              </TableRow>
-
-            </Table>
-          </TableContainer>
-        </Paper>
-      </div>
-
-
-      <div className="home-editSportcenter">
-        <h5>Your Sport Facilities</h5>
-
-        <Paper sx={{ width: "50rem", overflow: 'hidden', padding: "15px", marginTop: "1rem" }} elevation={20} >
-          <TableContainer>
-            <Table stickyHeader aria-label="sticky table">
-              <TableHead>
-                <TableRow>
-                  {columns.map((column) => (
-                    <TableCell
-                      key={column.id}
-                      style={{ minWidth: column.minWidth }}
-                    >
-                      {column.label}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              </TableHead>
-
-              <TableBody>
-                {rows.map((row, index) => (
-                  <TableRow key={index}  >
-                    <TableCell align="left" style={{ minWidth: "100px" }}>{row.facilities}</TableCell>
-
-
-                    <TableCell align="left" style={{ minWidth: "100px" }}>
-                      {row.description}
-                      <Button variant="outlined">Edit </Button>
-                    </TableCell>
-
-
-                    {/*Should be input */}
-                    <TableCell align="left" style={{ minWidth: "100px" }}>
-                      {row.court}
-                      <Button variant="outlined">Add</Button>
-                    </TableCell>
-
-
-                    {/*Should be input */}
-                    <TableCell align="left" style={{ minWidth: "100px" }}>
-                      {row.image}
-                      <Button variant="outlined">Change </Button>
-                    </TableCell>
-
-
-
-
-                    <TableCell align="left" style={{ minWidth: "100px" }} >
-                      <Stack direction="row" spacing={1}>
-                        <CheckCircleIcon
-                          style={{ fontSize: "20px", color: "green", cursor: "pointer" }}
-                        />
-                        <DeleteIcon
-                          style={{ fontSize: "20px", color: "red", cursor: "pointer" }}
-                        />
-                      </Stack>
-                    </TableCell>
-                  </TableRow>
-                ))}
-
-              </TableBody>
-
-            </Table>
-            <Divider />
-
-            <div style={{ display: 'flex', justifyContent: 'flex-start', marginTop: '1rem' }}>
-              <Button variant="outlined" startIcon={<AddIcon />}>Add Facilities</Button>
-            </div>
-          </TableContainer>
-
-        </Paper>
-      </div>
 
     </>
 

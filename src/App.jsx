@@ -23,7 +23,7 @@ function App() {
 
       <Routes>
 
-        <Route path="/" element={<Home />} exact >
+        <Route path="/" element={<AdminCenter />} exact >
 
           <Route index element={<HomeDash />} />
           <Route path="/dashboard" element={<HomeDash />} />

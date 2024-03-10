@@ -34,7 +34,9 @@ export default function SetTime() {
         <div className="setTime-switchBtn">
           <FormControlLabel
             sx={{
-              display: 'block',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
             }}
             control={
               <Switch
@@ -49,7 +51,9 @@ export default function SetTime() {
 
           <FormControlLabel
             sx={{
-              display: 'block',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
             }}
             control={
               <Switch
