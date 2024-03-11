@@ -1,199 +1,224 @@
 import * as React from 'react';
-import PropTypes from 'prop-types';
-import AppBar from '@mui/material/AppBar';
+import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-import CssBaseline from '@mui/material/CssBaseline';
-import Divider from '@mui/material/Divider';
-import Drawer from '@mui/material/Drawer';
-import IconButton from '@mui/material/IconButton';
-import List from '@mui/material/List';
-import MenuIcon from '@mui/icons-material/Menu';
+import MuiDrawer from '@mui/material/Drawer';
+import MuiAppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
+import List from '@mui/material/List';
+import CssBaseline from '@mui/material/CssBaseline';
 import Typography from '@mui/material/Typography';
+import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton';
+import MenuIcon from '@mui/icons-material/Menu';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import { Link, Outlet } from "react-router-dom"
 import HomeIcon from '@mui/icons-material/Home';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import LogoutIcon from '@mui/icons-material/Logout';
-import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
-import AdbIcon from '@mui/icons-material/Adb';
 import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
-import { Link, Outlet } from "react-router-dom"
-const drawerWidth = 240;
+import boy from "./../../../assets/BookingImags/boy.jpg"
 
-function AdminCenter(props) {
-   const { window } = props;
-   const [mobileOpen, setMobileOpen] = React.useState(false);
-   const [isClosing, setIsClosing] = React.useState(false);
+
+
+
+const drawerWidth = 250;
+const openedMixin = (theme) => ({
+   width: drawerWidth,
+   transition: theme.transitions.create('width', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+   }),
+   overflowX: 'hidden',
+});
+
+const closedMixin = (theme) => ({
+   transition: theme.transitions.create('width', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+   }),
+   overflowX: 'hidden',
+   width: `calc(${theme.spacing(8)} + 1px)`,
+   [theme.breakpoints.up('xs')]: {
+      width: `calc(${theme.spacing(8)} + 16px)`,
+   },
+});
+
+const DrawerHeader = styled('div')(({ theme }) => ({
+   display: 'flex',
+   alignItems: 'center',
+   justifyContent: 'flex-end',
+   padding: theme.spacing(0, 1),
+   ...theme.mixins.toolbar,
+}));
+
+const AppBar = styled(MuiAppBar, {
+   shouldForwardProp: (prop) => prop !== 'open',
+})(({ theme, open }) => ({
+   zIndex: theme.zIndex.drawer + 1,
+   transition: theme.transitions.create(['width', 'margin'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+   }),
+   ...(open && {
+      marginLeft: drawerWidth,
+      width: `calc(100% - ${drawerWidth}px)`,
+      transition: theme.transitions.create(['width', 'margin'], {
+         easing: theme.transitions.easing.sharp,
+         duration: theme.transitions.duration.enteringScreen,
+      }),
+   }),
+}));
+
+const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
+   ({ theme, open }) => ({
+      width: drawerWidth,
+      flexShrink: 0,
+      whiteSpace: 'nowrap',
+      boxSizing: 'border-box',
+      ...(open && {
+         ...openedMixin(theme),
+         '& .MuiDrawer-paper': openedMixin(theme),
+      }),
+      ...(!open && {
+         ...closedMixin(theme),
+         '& .MuiDrawer-paper': closedMixin(theme),
+      }),
+   }),
+);
+
+
+
+
+export default function AdminCenter() {
+   const theme = useTheme();
+   const [open, setOpen] = React.useState(false);
+
+   const handleDrawerOpen = () => {
+      setOpen(true);
+   };
+
+   const handleDrawerClose = () => {
+      setOpen(false);
+   };
    const [name, setName] = React.useState("");
    const handleChangeName = (sidebar) => {
       setName(sidebar)
    }
-   const handleDrawerClose = () => {
-      setIsClosing(true);
-      setMobileOpen(false);
-   };
-
-   const handleDrawerTransitionEnd = () => {
-      setIsClosing(false);
-   };
-
-   const handleDrawerToggle = () => {
-      if (!isClosing) {
-         setMobileOpen(!mobileOpen);
-      }
-   };
-
-   const drawer = (
-      <div className="admin-sidebar"
-         style={{ backgroundColor: '#2E3B55', height: '100vh' }}
-      >
-         <Divider />
-         <List sx={{ mt: 1 }}>
-            <ul>
-               <div className='admin-icon'>
-                  <HomeIcon sx={{ color: "#fff" }} />
-                  <Link to="/dashboard">
-                     <li onClick={() => handleChangeName("Home")}>Home</li>
-                  </Link>
-               </div>
-               <div className='admin-icon'>
-                  <PersonAddAlt1Icon sx={{ color: "#fff" }} />
-                  <Link to="/confirm_match">
-                     <li onClick={() => handleChangeName("Confirm Booking")}>Confirm Booking</li>
-                  </Link>
-               </div>
-               <div className='admin-icon'>
-                  <CalendarMonthIcon sx={{ color: "#fff" }} />
-                  <Link to="/schedule">
-                     <li onClick={() => handleChangeName("Set Schedule")}>Set Schedule</li>
-                  </Link>
-               </div>
-
-               <div className='admin-icon'>
-                  <AccessTimeIcon sx={{ color: "#fff" }} />
-                  <Link to="settime">
-                     <li onClick={() => handleChangeName("Set Open Hour")}> Set Open Hour</li>
-                  </Link>
-               </div>
-
-            </ul>
-         </List>
-         <Divider sx={{
-            color: "white",
-            mt: 2,
-         }} />
-
-         <List>
-            <ul>
-               <div className='admin-logout'>
-                  <LogoutIcon sx={{ color: "#fff" }} />
-                  <li>Log Out</li>
-               </div>
-
-            </ul>
-         </List>
-      </div>
-   );
-
-   const container = window !== undefined ? () => window().document.body : undefined;
-
    return (
-      <Box
-         sx={{
-            display: 'flex'
-         }}
-      >
-
+      <Box sx={{ display: 'flex' }}>
          <CssBaseline />
-         <AppBar
-            position="absolute"
-            sx={{
-               zIndex: -1,
-               width: { sm: `calc(100% - ${drawerWidth}px)` },
-               ml: { sm: `${drawerWidth}px` },
-            }}
-         >
-
-
-            <Toolbar elevation={3} sx={{ backgroundColor: "#fff" }}  >
-               <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1, color: "#000" }} />
+         <AppBar position="fixed" open={open}>
+            <Toolbar>
                <IconButton
+                  color="inherit"
                   aria-label="open drawer"
+                  onClick={handleDrawerOpen}
                   edge="start"
-                  onClick={handleDrawerToggle}
-                  sx={{ mr: 2, display: { sm: 'none' } }}
+                  sx={{
+                     marginRight: 5,
+                     ...(open && { display: 'none' }),
+                  }}
                >
                   <MenuIcon />
                </IconButton>
-               <Typography variant="h6" noWrap component="div" sx={{ color: "#000" }}>
+               <Typography variant="h6" noWrap component="div">
                   {
-                     name ? name : "DashBoard "
+                     name ? name : "DashBoard"
                   }
                </Typography>
 
                <Box sx={{ display: 'flex', alignItems: 'center', marginLeft: 'auto', pr: 2 }}>
                   <Tooltip title="Open settings">
                      <IconButton sx={{ p: 0 }}>
-                        <Avatar alt="K" src="#" />
+                        <Avatar alt="K" src={boy} />
                      </IconButton>
                   </Tooltip>
 
                </Box>
             </Toolbar>
-
-
          </AppBar>
-         <Box
-            component="nav"
-            sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
-            aria-label="mailbox folders"
+         <Drawer variant="permanent" open={open} elevation={20} >
+            <DrawerHeader style={{ backgroundColor: '#1975d1' }}>
+               <IconButton onClick={handleDrawerClose}>
+                  {theme.direction === 'rtl' ?
+                     <ChevronRightIcon
+                        sx={{ color: "#fff" }}
+                     /> :
+                     <ChevronLeftIcon
+                        sx={{ color: "#fff" }}
+                     />}
+               </IconButton>
+            </DrawerHeader>
 
 
-         >
-            <Drawer
-               container={container}
-               variant="temporary"
-               open={mobileOpen}
-               onTransitionEnd={handleDrawerTransitionEnd}
-               onClose={handleDrawerClose}
-               ModalProps={{
-                  keepMounted: true,
-               }}
-               sx={{
-                  display: { xs: 'block', sm: 'none' },
-                  '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
-               }}
+            <div className="admin-sidebar"
+               style={{ backgroundColor: '#fff', height: '100vh', width: '50vh' }}
             >
-               {drawer}
-            </Drawer>
-            <Drawer
-               variant="permanent"
-               sx={{
-                  display: { xs: 'none', sm: 'block' },
-                  '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
-               }}
-               open
-            >
-               {drawer}
-            </Drawer>
-         </Box>
-         <Box
-            component="main"
-            sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
-         >
+               <List sx={{ mt: 1 }}>
+                  <ul>
+                     <div className='admin-icon'>
+                        <Link to="/dashboard">
+                           <HomeIcon onClick={() => handleChangeName("Home")} sx={{ color: "#000" }} />
+                        </Link>
+                        <Link to="/dashboard">
+                           <li onClick={() => handleChangeName("Home")}>Home</li>
+                        </Link>
+                     </div>
+                     <div className='admin-icon'>
+                        <Link to="/confirm_match">
+                           <PersonAddAlt1Icon onClick={() => handleChangeName("Confirm Booking")} sx={{ color: "#000" }} />
+                        </Link>
+                        <Link to="/confirm_match">
+                           <li onClick={() => handleChangeName("Confirm Booking")}>Confirm Booking</li>
+                        </Link>
+                     </div>
+                     <div className='admin-icon'>
+                        <Link to="/schedule">
+                           <CalendarMonthIcon onClick={() => handleChangeName("Set Schedule")} sx={{ color: "#000" }} />
+                        </Link>
+
+                        <Link to="/schedule">
+                           <li onClick={() => handleChangeName("Set Schedule")}>Set Schedule</li>
+                        </Link>
+                     </div>
+
+                     <div className='admin-icon'>
+                        <Link to="settime">
+                           <AccessTimeIcon onClick={() => handleChangeName("Set Open Hour")} sx={{ color: "#000" }} />
+                        </Link>
+
+
+                        <Link to="settime">
+                           <li onClick={() => handleChangeName("Set Open Hour")}> Set Open Hour</li>
+                        </Link>
+                     </div>
+
+                  </ul>
+               </List>
+               <Divider sx={{
+                  color: "white",
+                  mt: 2,
+               }} />
+
+               <List>
+                  <ul>
+                     <div className='admin-logout'>
+                        <LogoutIcon sx={{ color: "#000" }} />
+                        <li>Log Out</li>
+                     </div>
+
+                  </ul>
+               </List>
+            </div>
+         </Drawer>
+         <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
             <Toolbar />
-
             <Outlet />
-
          </Box>
       </Box>
    );
 }
-
-AdminCenter.propTypes = {
-
-   window: PropTypes.func,
-};
-
-export default AdminCenter;

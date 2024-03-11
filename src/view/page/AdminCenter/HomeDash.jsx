@@ -1,4 +1,3 @@
-import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import Table from "@mui/material/Table";
@@ -18,9 +17,13 @@ import Grid from '@mui/material/Grid';
 import Divider from "@mui/material/Divider";
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
+import boy from "./../../../assets/BookingImags/boy.jpg"
+
 
 
 export default function HomeDash() {
+
+  // Database Management
   const columns_facilities = [
     { id: 'facilities', label: 'Facilities', minWidth: 150 },
     { id: 'description', label: 'Description', minWidth: 100 },
@@ -29,6 +32,8 @@ export default function HomeDash() {
     { id: 'action', label: 'Action', minWidth: 100, },
   ];
 
+
+  // database management
   const column_participant = [
     { id: 1, profile: <Avatar alt="K" src="#" />, name: 'Snow Jon', email: "kimly@gmail.com" },
     { id: 2, profile: <Avatar alt="K" src="#" />, name: 'Lannister Cersei', email: "kimly@gmail.com" },
@@ -57,7 +62,11 @@ export default function HomeDash() {
       <div className='home-mainProfile'>
         <div className="home-profile">
           <Stack className='home-stack' >
-            <Skeleton variant="circular" width={200} height={200} />
+            <Avatar
+              alt="K"
+              src={boy}
+              sx={{ width: 200, height: 200 }}
+            />
           </Stack>
 
           <div className='home-profilePicture'>
@@ -81,7 +90,7 @@ export default function HomeDash() {
         <Grid container spacing={2} >
 
 
-          <Grid item xl={4} lg={4} sm={12}>
+          <Grid item xl={4} lg={4} sm={12} xs={12}>
 
             <Paper sx={{
               width: "100%", height: "100%", overflow: 'hidden', padding: "15px"
@@ -166,11 +175,12 @@ export default function HomeDash() {
               <TableContainer style={{ height: '100%' }}>
                 <Table stickyHeader aria-label="sticky table">
                   <TableHead>
-                    <TableRow>
+                    <TableRow >
                       {columns_facilities.map((column) => (
                         <TableCell
                           key={column.id}
                           style={{ minWidth: column.minWidth }}
+
                         >
                           {column.label}
                         </TableCell>
@@ -186,23 +196,25 @@ export default function HomeDash() {
 
                         <TableCell align="left" style={{ minWidth: "100px" }}>
                           {row.description}
-                          <Button variant="outlined">Edit </Button>
+                          <Button variant="outlined">Edit </Button>   {/*Adding Modal */}
                         </TableCell>
 
 
                         {/*Should be input */}
                         <TableCell align="left" style={{ minWidth: "100px" }}>
                           {row.court}
-                          <Button variant="outlined">Add</Button>
+                          <Button variant="outlined">Add</Button>    {/*Adding Modal */}
                         </TableCell>
 
 
                         {/*Should be input */}
                         <TableCell align="left" style={{ minWidth: "100px" }}>
                           {row.image}
-                          <Button variant="outlined">Change </Button>
+                          <Button variant="outlined">Change </Button>   {/*Adding Modal */}
                         </TableCell>
 
+
+                        {/** Should be added modal When clicking */}
                         <TableCell align="left" style={{ minWidth: "100px" }} >
                           <Stack direction="row" spacing={1}>
                             <CheckCircleIcon
@@ -234,7 +246,7 @@ export default function HomeDash() {
           {/*Customer Recent books*/}
           <Grid item xl={12} lg={12} sm={12}>
             <Paper sx={{
-              width: "100%", overflow: 'hidden', padding: "15px", marginTop: "1rem",
+              maxWidth: "100%", overflow: 'hidden', padding: "15px", marginTop: "1rem",
             }} elevation={20} >
               <Typography
                 display="flex"
@@ -248,7 +260,7 @@ export default function HomeDash() {
               </Typography>
               <Divider />
 
-              <TableContainer style={{ height: '100%' }}>
+              <TableContainer style={{ maxHeight: '20rem' }}>
                 <Table stickyHeader aria-label="sticky table">
                   <TableHead>
                     <TableRow>

@@ -12,6 +12,8 @@ import Checkbox from '@mui/material/Checkbox';
 
 const label = { inputProps: { 'aria-label': 'Checkbox' } };
 
+
+// Data Management
 const columns = [
    { id: 'name', label: 'Name', minWidth: 150 },
    { id: 'court', label: 'Court', minWidth: 100 },
@@ -19,10 +21,11 @@ const columns = [
    { id: 'incoming_date', label: 'Incoming Date', minWidth: 100, },
    { id: 'sport_type ', label: 'Sport Type', minWidth: 100, },
    { id: 'status', label: 'Status', minWidth: 100, },
-   { id: 'action', label: 'Action', minWidth: 100, },
+   { id: 'done', label: 'Mark As Done', minWidth: 100, },
 
 ];
 
+// Data Management
 
 function createData(name, court, booking_hours, incoming_date, sport_type, status) {
    return { name, court, booking_hours, incoming_date, sport_type, status };
@@ -34,9 +37,9 @@ const rows = [
    createData('Chamroung', 'B', 3, "21. April .2024", "football", "Incoming"),
 ]
 
+
+
 export default function IncomingMatch() {
-
-
    return (
       <>
 
@@ -78,21 +81,23 @@ export default function IncomingMatch() {
                   </TableHead>
 
                   <TableBody>
-                     {rows.map((row, index) => (
-                        <TableRow key={index}  >
-                           <TableCell align="left" style={{ minWidth: "100px" }}>{row.name}</TableCell>
-                           <TableCell align="left" style={{ minWidth: "100px" }}>{row.court}</TableCell>
-                           <TableCell align="left" style={{ minWidth: "100px" }}>{row.booking_hours}</TableCell>
-                           <TableCell align="left" style={{ minWidth: "100px" }}>{row.incoming_date}</TableCell>
-                           <TableCell align="left" style={{ minWidth: "100px" }}>{row.sport_type}</TableCell>
-                           <TableCell align="left" style={{ minWidth: "100px" }}>{row.status}</TableCell>
-                           <TableCell align="left" style={{ minWidth: "100px" }} >
-                              <Stack direction="row" >
-                                 <Checkbox {...label} color="success" />
-                              </Stack>
-                           </TableCell>
-                        </TableRow>
-                     ))}
+                     {
+                        rows.length === 0 ? "No Incoming Matches" :
+                           rows.map((row, index) => (
+                              <TableRow key={index}  >
+                                 <TableCell align="left" style={{ minWidth: "100px" }}>{row.name}</TableCell>
+                                 <TableCell align="left" style={{ minWidth: "100px" }}>{row.court}</TableCell>
+                                 <TableCell align="left" style={{ minWidth: "100px" }}>{row.booking_hours}</TableCell>
+                                 <TableCell align="left" style={{ minWidth: "100px" }}>{row.incoming_date}</TableCell>
+                                 <TableCell align="left" style={{ minWidth: "100px" }}>{row.sport_type}</TableCell>
+                                 <TableCell align="left" style={{ minWidth: "100px" }}>{row.status}</TableCell>
+                                 <TableCell align="left" style={{ minWidth: "100px" }} >
+                                    <Stack direction="row" >
+                                       <Checkbox {...label} color="success" />
+                                    </Stack>
+                                 </TableCell>
+                              </TableRow>
+                           ))}
 
                   </TableBody>
 
