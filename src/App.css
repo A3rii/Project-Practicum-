@@ -737,7 +737,7 @@
    justify-content: center;
    align-items: center;
    flex-direction: column;
-   margin-top: 5rem;
+   margin-top: 2rem;
    row-gap: 5rem;
 }
 
@@ -1233,7 +1233,7 @@
 }
 
 .sportField-schedule {
-   max-width: 100%;
+   max-width: 75%;
    width: 90rem;
 }
 

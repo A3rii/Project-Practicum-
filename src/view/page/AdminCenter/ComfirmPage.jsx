@@ -150,7 +150,7 @@ export default function ConfirmPage() {
                </Table>
             </TableContainer>
 
-         </Paper >
+         </Paper>
 
       </>
    );

@@ -21,7 +21,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Home />} exact>
+        <Route path="/" element={<AdminCenter />} exact>
           <Route index element={<HomeDash />} />
           <Route path="/dashboard" element={<HomeDash />} />
           <Route path="/confirm_match" element={<ConfirmMatch />}>

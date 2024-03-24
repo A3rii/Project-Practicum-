@@ -21,10 +21,7 @@ import {
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 
 export default function IncomingMatch() {
-  {
-    /*Popover*/
-  }
-
+  /*Popover*/
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleClick = (event) => {
@@ -37,9 +34,7 @@ export default function IncomingMatch() {
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
-  {
-    /*Popover*/
-  }
+  /*Popover*/
 
   // State variables
   const [selectedRows, setSelectedRows] = useState([]);
@@ -108,23 +103,20 @@ export default function IncomingMatch() {
           marginTop: "2rem",
           marginLeft: "2rem",
         }}
-        elevation={10}
-      >
+        elevation={10}>
         <div
           style={{
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-          }}
-        >
+          }}>
           <Typography
             display="flex"
             alignItems="center"
             gutterBottom
             variant="h5"
             component="div"
-            sx={{ padding: "14px" }}
-          >
+            sx={{ padding: "14px" }}>
             Incoming Match
           </Typography>
 
@@ -134,8 +126,7 @@ export default function IncomingMatch() {
               justifyContent: "center",
               alignContent: "center",
               gap: "1rem",
-            }}
-          >
+            }}>
             <Box sx={{ maxWidth: "100%" }}>
               <TextField
                 size="small"
@@ -162,8 +153,7 @@ export default function IncomingMatch() {
               anchorOrigin={{
                 vertical: "bottom",
                 horizontal: "left",
-              }}
-            >
+              }}>
               {/*Content Filter Here*/}
 
               <FormControl
@@ -173,8 +163,7 @@ export default function IncomingMatch() {
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
-                }}
-              >
+                }}>
                 <RadioGroup name="radio-buttons-group">
                   <FormControlLabel
                     value="female"
@@ -210,8 +199,7 @@ export default function IncomingMatch() {
                 {columns.map((column) => (
                   <TableCell
                     key={column.id}
-                    style={{ minWidth: column.minWidth }}
-                  >
+                    style={{ minWidth: column.minWidth }}>
                     {column.label}
                   </TableCell>
                 ))}
