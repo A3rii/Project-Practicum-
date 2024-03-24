@@ -6,17 +6,10 @@ import GreenSport from "./../../../assets/BookingImags/pic3.jpg"
 import LightSport from "./../../../assets/BookingImags/pic4.jpg"
 import MalisSport from "./../../../assets/BookingImags/pic5.jpg"
 import AkiraSport from "./../../../assets/BookingImags/pic19.jpg"
-import Box from '@mui/material/Box';
-import Rating from '@mui/material/Rating';
-import Typography from '@mui/material/Typography';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
+import {
+   Box, Rating, Typography, InputLabel, MenuItem, FormControl, Select, Card, CardActions, CardContent, CardMedia
+} from '@mui/material';
+
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -96,7 +89,7 @@ function SportFieldCard({ image, title, location, time }) {
          </CardContent>
 
          <CardActions>
-            <Link to="/sportCenter" >
+            <Link to="/sportcenter" >
                <button type="button" className="booking-btn"> Book Now </button>
             </Link>
          </CardActions>

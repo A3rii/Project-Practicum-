@@ -105,6 +105,9 @@ export default function AdminCenter() {
       setOpen(false);
    };
    const [name, setName] = React.useState("");
+  
+  
+  
    const handleChangeName = (sidebar) => {
       setName(sidebar)
    }

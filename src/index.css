@@ -38,6 +38,7 @@ a {
    display: flex;
    justify-content: space-between;
    align-items: center;
+   flex-wrap: wrap;
    padding: 1rem 3rem 1rem;
    background-color: transparent;
    color: var(--white);
@@ -81,6 +82,32 @@ a {
    color: var(--white);
 }
 
+.header-navbar-hover {
+   position: absolute;
+   margin-top: 20rem;
+   background-color: var(--white);
+   max-width: 75%;
+   width: 100%;
+   min-height: 14rem;
+   border-radius: 5px;
+   display: none;
+
+}
+
+.header-navbar-hover ul {
+   display: flex;
+   justify-content: center;
+   align-items: baseline;
+   flex-direction: column;
+   gap: 1rem;
+   margin: 1.2rem 0 0;
+
+}
+
+.header-navbar-hover li {
+   color: var(--dark)
+}
+
 .header-auth {
    display: flex;
    justify-content: center;
@@ -102,8 +129,6 @@ a {
 .header-login {
    color: var(--white);
 }
-
-@media screen and (max-width: 500px) {}
 
 @media screen and (max-width: 1000px) {
 
@@ -526,13 +551,11 @@ a {
       max-width: 50%;
       font-size: .8rem;
       text-align: center;
-
    }
 
    .home-viewmap {
       width: 7rem;
       padding: .4rem;
-
    }
 
    .home-process {
@@ -642,7 +665,6 @@ a {
       display: none;
    }
 
-
    .booking-filter input {
       height: 100%;
       width: 80rem;
@@ -741,9 +763,41 @@ a {
    .table-wrapper {
       width: 100%;
    }
+
+   .sportField-header {
+      min-height: 60rem;
+   }
+
+   .date-time {
+      max-width: 75%;
+      display: flex;
+      flex-direction: column;
+   }
+
+   .sport-date {
+      display: none;
+   }
+
+   .sport-time {
+      width: 100%;
+   }
+
+   .selected-date {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+   }
+
+   .sport-calendar {
+      display: contents;
+   }
+
+   .court-type {
+      width: 100%;
+   }
+
 }
-
-
 
 
 @media screen and (max-width: 650px) {
@@ -849,14 +903,7 @@ a {
    /* sport field responsive*/
 
 
-   .date-time {
-      max-width: 100%;
-      display: flex;
-   }
 
-   .court-type {
-      max-width: 75%;
-   }
 
    .sportField-Slider,
    .sportField-carousel {

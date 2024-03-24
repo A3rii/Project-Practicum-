@@ -1104,14 +1104,13 @@
 
 /** Sport Field */
 .sportField-header {
-   background: rgba(0, 0, 0, 0.4) url('./assets/BookingImags/pic13.jpg') center/cover;
+   background: rgba(0, 0, 0, 0.4) url('./assets/BookingImags/pic1.jpg') center/cover;
    background-blend-mode: darken;
    aspect-ratio: 16;
    max-width: 100%;
-   min-height: 60rem;
+   min-height: 30rem;
    height: auto;
    background-repeat: no-repeat;
-   backdrop-filter: blur(5px);
 }
 
 .sportField-banner {
@@ -1144,32 +1143,33 @@
 
 
 .date-time {
-   max-width: 25rem;
-   min-height: 40rem;
    display: flex;
-   justify-content: center;
+   width: 75%;
+   min-height: 5rem;
+   justify-content: baseline;
    align-items: center;
-   flex-direction: column;
    margin-top: 1.5rem;
    border-radius: 5px;
+   gap: 1rem;
+   padding: 1rem 2rem 1rem;
    background-color: var(--white);
 
 }
 
+.sport-calendar {
+   display: none;
+}
+
 .selected-date {
-   width: 75%;
-   display: flex;
-   justify-content: center;
-   align-items: center;
+   display: none;
 }
 
 .sport-time {
-   width: 75%;
+   width: 50%;
    display: flex;
    justify-content: center;
    align-items: center;
    gap: 1rem;
-   margin-bottom: 1rem;
 }
 
 .sport-search {
@@ -1181,31 +1181,34 @@
    height: 75%;
 }
 
+.sport-date {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+}
+
 .sportField-reserver {
    background-color: var(--primary);
    outline: none;
    border: none;
    width: 7rem;
-   padding: .4rem;
+   height: 3.5rem;
    color: var(--white);
    border-radius: 3px;
-   margin-top: .7rem;
 }
 
 .court-type {
-   max-width: 75%;
-   width: 100%;
+   width: 25%;
    display: flex;
    justify-content: center;
    align-items: center;
-
 }
 
 .sport-reserve {
    display: flex;
    justify-content: center;
    align-items: center;
-   flex-wrap: wrap;
+   margin-top: 2rem;
 }
 
 .sport-schedule {
@@ -1512,9 +1515,7 @@
 .submit-container {
    display: flex;
    justify-content: center;
-   /* Horizontally center the content */
    margin-top: 20px;
-   /* Adjust margin as needed */
 }
 
 

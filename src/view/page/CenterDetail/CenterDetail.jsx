@@ -1,20 +1,11 @@
 import * as React from 'react';
 import Header from "../../../components/Header/Header"
 import Footer from "../../../components/Footer/Footer"
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import Button from '@mui/material/Button';
-import Box from '@mui/material/Box';
-import Avatar from '@mui/material/Avatar';
-import Rating from '@mui/material/Rating';
-import { red } from '@mui/material/colors';
-import Typography from '@mui/material/Typography';
+import {Card ,CardHeader,CardActions,CardContent,CardMedia,Button,Box ,Avatar,Rating,Typography} from '@mui/material'
 import FootBall from "./../../../assets/BookingImags/pic7.jpg"
 import Basketball from "./../../../assets/BookingImags/pic9.jpg"
 import Badminton from "./../../../assets/BookingImags/pic10.jpg"
+import { red } from '@mui/material/colors';
 import { Link } from "react-router-dom"
 import 'swiper/css';
 import 'swiper/css/scrollbar';
