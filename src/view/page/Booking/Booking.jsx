@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useState } from "react";
 import Header from "./../../../components/Header/Header";
 import Footer from "./../../../components/Footer/Footer";
 import SportCenter from "./../../../assets/BookingImags/pic2.jpg";
@@ -18,11 +18,15 @@ import {
   CardActions,
   CardContent,
   CardMedia,
+  TextField,
   Popover,
+  Divider,
+  FormGroup,
+  FormControlLabel,
+  Checkbox,
 } from "@mui/material";
 import TuneIcon from "@mui/icons-material/Tune";
 import CloseIcon from "@mui/icons-material/Close";
-import { useState } from "react";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -42,11 +46,12 @@ function TimePickerField({ time }) {
 
 // eslint-disable-next-line react/prop-types
 function SelectionOption({ type, option1, option2, option3 }) {
-  const [option, setOption] = React.useState("");
+  const [option, setOption] = useState("");
 
   const handleChange = (event) => {
     setOption(event.target.value);
   };
+
   return (
     <Box sx={{ minWidth: "100%" }}>
       <FormControl fullWidth>
@@ -66,33 +71,226 @@ function SelectionOption({ type, option1, option2, option3 }) {
   );
 }
 
+function FilterType() {
+  const [checked, setChecked] = useState({
+    All: false,
+    Open: false,
+    Close: false,
+  });
+  const handleChange = (event) => {
+    setChecked({
+      ...checked,
+      [event.target.name]: event.target.checked,
+    });
+  };
+
+  return (
+    <Card sx={{ minWidth: 275, mb: 4, borderRadius: ".7rem" }} elevation={7}>
+      <CardContent>
+        <Typography sx={{ fontSize: 16, p: 2 }} color="text.secondary">
+          Filter By
+        </Typography>
+        <TextField
+          label="Search"
+          variant="filled"
+          sx={{ m: 1.4 }}
+          size="small"
+        />
+      </CardContent>
+
+      <Divider />
+
+      {/* Time Availability */}
+      <CardContent sx={{ p: 3 }}>
+        <Typography
+          sx={{ fontSize: 16, mt: 1 }}
+          color="text.secondary"
+          component="div">
+          Time Available
+        </Typography>
+        <FormGroup>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={checked.All}
+                onChange={handleChange}
+                name="All"
+              />
+            }
+            label="All"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={checked.Open}
+                onChange={handleChange}
+                name="Open"
+              />
+            }
+            label="Open"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={checked.Close}
+                onChange={handleChange}
+                name="Close"
+              />
+            }
+            label="Close"
+          />
+        </FormGroup>
+      </CardContent>
+
+      <Divider />
+
+      {/*Location */}
+
+      <CardContent sx={{ p: 3 }}>
+        <Typography
+          color="text.secondary"
+          sx={{ fontSize: 16, mt: 1 }}
+          component="div">
+          Location
+        </Typography>
+        <FormGroup>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={checked.All}
+                onChange={handleChange}
+                name="All"
+              />
+            }
+            label="All"
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={checked.Open}
+                onChange={handleChange}
+                name="Nearest"
+              />
+            }
+            label="Nearest"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={checked.Close}
+                onChange={handleChange}
+                name="Close"
+              />
+            }
+            label="Close"
+          />
+        </FormGroup>
+      </CardContent>
+
+      <Divider />
+
+      {/** Time Open  */}
+
+      <CardContent sx={{ p: 3 }}>
+        <Typography
+          color="text.secondary"
+          sx={{ fontSize: 16, mt: 1 }}
+          component="div">
+          Time Open
+        </Typography>
+        <FormGroup>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={checked.All}
+                onChange={handleChange}
+                name="All"
+              />
+            }
+            label="All"
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={checked.Open}
+                onChange={handleChange}
+                name="Open"
+              />
+            }
+            label="6am - 9pm"
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={checked.Open}
+                onChange={handleChange}
+                name="Open"
+              />
+            }
+            label="6am - 10pm"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={checked.Open}
+                onChange={handleChange}
+                name="Open"
+              />
+            }
+            label="6am - 11pm"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={checked.Close}
+                onChange={handleChange}
+                name="Close"
+              />
+            }
+            label="6am - 12pm"
+          />
+        </FormGroup>
+      </CardContent>
+    </Card>
+  );
+}
+
 // eslint-disable-next-line react/prop-types
 function SportFieldCard({ image, title, location, time }) {
   const value = 2;
   return (
-    <Card sx={{ width: 320 }}>
-      <CardMedia sx={{ height: 250 }} image={image} title={title} />
+    <Card sx={{ width: 260, height: 380, marginBottom: "2rem" }} elevation={4}>
+      <CardMedia sx={{ height: 180 }} image={image} title={title} />
 
-      <CardContent sx={{ padding: "20px" }}>
-        <Typography gutterBottom variant="h5" component="div">
+      <CardContent
+        sx={{
+          padding: "1rem",
+          display: "flex",
+          justifyContent: "center",
+          flexDirection: "column",
+        }}>
+        <Typography variant="h6" component="div" sx={{ fontSize: "1rem" }}>
           {title}
         </Typography>
 
         <Typography
           variant="body2"
           color="text.secondary"
-          sx={{ marginBottom: "5px" }}>
+          sx={{ marginBottom: "3px", fontSize: "0.7rem" }}>
           {location}
         </Typography>
 
         <Typography
           variant="body2"
           color="text.secondary"
-          sx={{ marginBottom: "5px" }}>
+          sx={{ marginBottom: "3px", fontSize: "0.7rem" }}>
           {time}
         </Typography>
 
-        <Box sx={{ "& > legend": { mt: 1 } }}>
+        <Box>
           <Rating name="read-only" value={value} readOnly />
         </Box>
       </CardContent>
@@ -109,7 +307,6 @@ function SportFieldCard({ image, title, location, time }) {
 }
 
 export default function Booking() {
-  /*Popover*/
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleClick = (event) => {
@@ -122,28 +319,14 @@ export default function Booking() {
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
-  /*Popover*/
 
   return (
     <>
       <div className="booking-header">
         <Header />
-        <div className="booking-banner">
-          <h2> Welcome to Sport Center</h2>
-        </div>
       </div>
-
       <div className="container booking-field">
-        <div className="booking-topic">
-          <h2>Sport Field Rental</h2>
-
-          <div className="booking-filter">
-            <i className="fa-solid fa-magnifying-glass icon-search"></i>
-            <input type="text" placeholder="Search....." />
-            <button className="button">Search</button>
-          </div>
-        </div>
-
+        {/** Menu */}
         <div className="booking-filter-none">
           <TuneIcon
             aria-describedby={id}
@@ -154,7 +337,6 @@ export default function Booking() {
               cursor: "pointer",
             }}
           />
-
           <Popover
             id={id}
             open={open}
@@ -165,13 +347,12 @@ export default function Booking() {
               vertical: "bottom",
               horizontal: "left",
             }}>
-            {/*Content Filter Here*/}
             <div className="booking-hover-filter">
               <CloseIcon
                 sx={{ fontSize: "1.5rem", mt: 2, ml: 2, cursor: "pointer" }}
                 onClick={handleClose}
               />
-              <h4>Filter By </h4>
+              <h4>Filter By</h4>
             </div>
             <FormControl
               sx={{
@@ -198,51 +379,33 @@ export default function Booking() {
               <button className="btn-filter-schedule">FIND</button>
             </FormControl>
           </Popover>
-          <span className=""> Menu</span>
+          <span className="">Menu</span>
         </div>
+        {/** Menu */}
 
-        <div className="container booking-filterSport">
-          <div className="booking-filter-type">
-            <h4> Filter By:</h4>
-            <SelectionOption
-              type="Time Available"
-              option1="All"
-              option2="Openend"
-              option3="Closed"
-            />
-
-            <SelectionOption
-              type="Location"
-              option1="All"
-              option2="Nearest"
-              option3="Closed"
-            />
-
-            <TimePickerField time="Open Till" />
-
-            <button className="btn-filter-schedule">FIND</button>
+        <div className="booking-sportFieldCard">
+          <div className="booking-filter">
+            <FilterType />
           </div>
 
-          <div className="booking-sportFieldCard">
+          <div className="booking-centerCard">
             <SportFieldCard
               image={SportCenter}
-              title="Phnom Penh Sport Center"
+              title="Phnom Penh Sport "
               location="Toul Kork, Phnom Penh"
               time="Time Open:  6am-12pm"
             />
-
-            <SportFieldCard
-              image={GreenSport}
-              title="Green Sport Center"
-              location="Sangkat Chroy Chongva, Phnom Penh"
-              time="Time Open:  6am-9pm"
-            />
-
             <SportFieldCard
               image={LightSport}
               title="Light Sport Center"
               location="Sangkat Prek Pra,Phnom Penh"
               time="Time Open:  6am-8pm"
+            />
+            <SportFieldCard
+              image={AkiraSport}
+              title="Akira Sport Center"
+              location="Sangkat Stoeng Meanchey, Phnom Penh"
+              time="Time Open:  6am-9pm"
             />
 
             <SportFieldCard
@@ -251,17 +414,22 @@ export default function Booking() {
               location="Toul Kork, Phnom Penh"
               time="Time Open:  6am-11pm"
             />
+            <SportFieldCard
+              image={GreenSport}
+              title="Green Sport Center"
+              location="Sangkat Chroy Chongva, Phnom Penh"
+              time="Time Open:  6am-9pm"
+            />
 
             <SportFieldCard
-              image={AkiraSport}
-              title="Akira Sport Center"
-              location="Sangkat Stoeng Meanchey, Phnom Penh"
-              time="Time Open:  6am-9pm"
+              image={SportCenter}
+              title="Complex Sport Center"
+              location="Toul Kork, Phnom Penh"
+              time="Time Open:  6am-12pm"
             />
           </div>
         </div>
       </div>
-
       <Footer />
     </>
   );

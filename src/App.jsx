@@ -13,25 +13,32 @@ import Lessor from "./view/page/Lessor/Lessor";
 import Reciept from "./view/page/RecieptPage/TicketPage";
 import HomeDash from "./view/page/AdminCenter/HomeDash";
 import SetTime from "./view/page/AdminCenter/SetTime";
-import Schedule from "./view/page/AdminCenter/Schedule";
 import IncomingMatch from "./view/page/AdminCenter/IncomingMatch";
 import ConfirmPage from "./view/page/AdminCenter/ComfirmPage";
 import ConfirmMatch from "./view/page/AdminCenter/ConfirmMatch";
-function App() {
+
+export default function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<AdminCenter />} exact>
+        <Route path="/" element={<Home />} exact />
+
+        <Route path="/admin" element={<AdminCenter />}>
           <Route index element={<HomeDash />} />
-          <Route path="/dashboard" element={<HomeDash />} />
-          <Route path="/confirm_match" element={<ConfirmMatch />}>
+          <Route path="/admin/dashboard" element={<HomeDash />} />
+          <Route path="/admin/confirm_match" element={<ConfirmMatch />}>
             <Route index element={<ConfirmPage />} />
-            <Route path="/confirm_match/confirm" element={<ConfirmPage />} />
-            <Route path="/confirm_match/incoming" element={<IncomingMatch />} />
+            <Route
+              path="/admin/confirm_match/confirm"
+              element={<ConfirmPage />}
+            />
+            <Route
+              path="/admin/confirm_match/incoming"
+              element={<IncomingMatch />}
+            />
           </Route>
 
-          <Route path="/schedule" element={<Schedule />} />
-          <Route path="/settime" element={<SetTime />} />
+          <Route path="/admin/settime" element={<SetTime />} />
         </Route>
 
         <Route path="/booking" element={<Booking />} />
@@ -47,5 +54,3 @@ function App() {
     </Router>
   );
 }
-
-export default App;

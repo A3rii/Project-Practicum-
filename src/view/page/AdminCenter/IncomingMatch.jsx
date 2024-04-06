@@ -116,7 +116,7 @@ export default function IncomingMatch() {
             gutterBottom
             variant="h5"
             component="div"
-            sx={{ padding: "14px" }}>
+            sx={{ padding: "14px", fontWeight: "bold" }}>
             Incoming Match
           </Typography>
 
@@ -166,17 +166,17 @@ export default function IncomingMatch() {
                 }}>
                 <RadioGroup name="radio-buttons-group">
                   <FormControlLabel
-                    value="female"
+                    value="all "
                     control={<Radio />}
                     label="All"
                   />
                   <FormControlLabel
-                    value="female"
+                    value="incoming"
                     control={<Radio />}
                     label="Incoming"
                   />
                   <FormControlLabel
-                    value="male"
+                    value="done"
                     control={<Radio />}
                     label="Done"
                   />

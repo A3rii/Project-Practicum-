@@ -1,5 +1,6 @@
 import Header from "../../../components/Header/Header";
 import Footer from "../../../components/Footer/Footer";
+import ContactInfo from "./../../../components/Contact/ContactInfo";
 import {
   Paper,
   TableContainer,
@@ -26,6 +27,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
+/**  Table Schedule */
 function AccessibleTable() {
   const createData = (
     name,
@@ -83,7 +85,67 @@ function AccessibleTable() {
   );
 }
 
-export default function SportField() {
+/**Slider */
+function CarouselImage() {
+  return (
+    <div className="sportField-slider">
+      <div id="carouselExampleIndicators" className="carousel slide">
+        <div className="carousel-indicators">
+          <button
+            type="button"
+            data-bs-target="#carouselExampleIndicators"
+            data-bs-slide-to="0"
+            className="active"
+            aria-current="true"
+            aria-label="Slide 1"></button>
+          <button
+            type="button"
+            data-bs-target="#carouselExampleIndicators"
+            data-bs-slide-to="1"
+            aria-label="Slide 2"></button>
+          <button
+            type="button"
+            data-bs-target="#carouselExampleIndicators"
+            data-bs-slide-to="2"
+            aria-label="Slide 3"></button>
+        </div>
+        <div className="carousel-inner sportField-carousel">
+          <div className="carousel-item active">
+            <img src={FootballCourt} className="d-block rounded" alt="#" />
+          </div>
+          <div className="carousel-item">
+            <img src={FootballCourt} className="d-block rounded" alt="#" />
+          </div>
+          <div className="carousel-item">
+            <img src={FootballCourt} className="d-block rounded" alt="#" />
+          </div>
+        </div>
+        <button
+          className="carousel-control-prev"
+          type="button"
+          data-bs-target="#carouselExampleIndicators"
+          data-bs-slide="prev">
+          <span
+            className="carousel-control-prev-icon"
+            aria-hidden="true"></span>
+          <span className="visually-hidden">Previous</span>
+        </button>
+        <button
+          className="carousel-control-next"
+          type="button"
+          data-bs-target="#carouselExampleIndicators"
+          data-bs-slide="next">
+          <span
+            className="carousel-control-next-icon"
+            aria-hidden="true"></span>
+          <span className="visually-hidden">Next</span>
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function ReservationDate() {
   const [value, setValue] = useState(dayjs());
   const [court, setCourt] = useState(null);
 
@@ -94,9 +156,74 @@ export default function SportField() {
   const handleDateChange = (newDate) => {
     setValue(newDate);
   };
-
   const names = ["Court A", "Court B", "Court 11 v 11", "Court 5 v 5"];
 
+  return (
+    <div className="date-time">
+      <div className="sport-calendar">
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DemoContainer components={["DateCalendar"]}>
+            <DateCalendar
+              sx={{ widht: "100%" }}
+              value={value}
+              onChange={handleDateChange}
+            />
+          </DemoContainer>
+        </LocalizationProvider>
+      </div>
+
+      <div className="sport-date">
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DatePicker
+            label="Select Date"
+            value={value}
+            onChange={(newValue) => setValue(newValue)}
+          />
+        </LocalizationProvider>
+      </div>
+      <div className="selected-date">
+        <TextField
+          sx={{ marginBottom: "15px", width: "100%" }}
+          value={value.format("MMMM DD, YYYY")}
+          readOnly
+        />
+      </div>
+
+      <div className="sport-time">
+        <LocalizationProvider sx={{ width: "25%" }} dateAdapter={AdapterDayjs}>
+          <TimePicker label="From" />
+          <TimePicker label="Till" />
+        </LocalizationProvider>
+      </div>
+      <div className="court-type">
+        <FormControl sx={{ width: "100%" }}>
+          <InputLabel>Court</InputLabel>
+          <Select
+            value={court}
+            onChange={handleOnSelectCourt}
+            input={<OutlinedInput label="Court" />}>
+            {names.map((name) => (
+              <MenuItem key={name} value={name}>
+                {name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </div>
+
+      <Link to="/payment">
+        <button type="button" className="sportField-reserver">
+          Reserve
+        </button>
+      </Link>
+    </div>
+  );
+}
+
+
+
+
+export default function SportField() {
   return (
     <>
       <div className="sportField-header">
@@ -112,71 +239,12 @@ export default function SportField() {
 
         {/** Date and Time */}
         <div className="sport-reserve">
-          <div className="date-time">
-            <div className="sport-calendar">
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DemoContainer components={["DateCalendar"]}>
-                  <DateCalendar
-                    sx={{ widht: "100%" }}
-                    value={value}
-                    onChange={handleDateChange}
-                  />
-                </DemoContainer>
-              </LocalizationProvider>
-            </div>
-
-            <div className="sport-date">
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker
-                  label="Select Date"
-                  value={value}
-                  onChange={(newValue) => setValue(newValue)}
-                />
-              </LocalizationProvider>
-            </div>
-            <div className="selected-date">
-              <TextField
-                sx={{ marginBottom: "15px", width: "100%" }}
-                value={value.format("MMMM DD, YYYY")}
-                readOnly
-              />
-            </div>
-
-            <div className="sport-time">
-              <LocalizationProvider
-                sx={{ width: "25%" }}
-                dateAdapter={AdapterDayjs}>
-                <TimePicker label="From" />
-                <TimePicker label="Till" />
-              </LocalizationProvider>
-            </div>
-            <div className="court-type">
-              <FormControl sx={{ width: "100%" }}>
-                <InputLabel>Court</InputLabel>
-                <Select
-                  value={court}
-                  onChange={handleOnSelectCourt}
-                  input={<OutlinedInput label="Court" />}>
-                  {names.map((name) => (
-                    <MenuItem key={name} value={name}>
-                      {name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </div>
-
-            <Link to="/payment">
-              <button type="button" className="sportField-reserver">
-                Reserve
-              </button>
-            </Link>
-          </div>
+          <ReservationDate />
         </div>
       </div>
 
       <div className="sport-schedule">
-        <h2> ALL OF OUR FOOTBALL SCHEDULE </h2>
+        <h2> ALL OF OUR FOOTBALL SCHEDULE FOR TODAY </h2>
         <div className="sportField-schedule">
           <AccessibleTable />
         </div>
@@ -184,78 +252,11 @@ export default function SportField() {
 
       <div className="sportField-Slider">
         <h2> Our Football View </h2>
-        <div className="sportField-slider">
-          <div id="carouselExampleIndicators" className="carousel slide">
-            <div className="carousel-indicators">
-              <button
-                type="button"
-                data-bs-target="#carouselExampleIndicators"
-                data-bs-slide-to="0"
-                className="active"
-                aria-current="true"
-                aria-label="Slide 1"></button>
-              <button
-                type="button"
-                data-bs-target="#carouselExampleIndicators"
-                data-bs-slide-to="1"
-                aria-label="Slide 2"></button>
-              <button
-                type="button"
-                data-bs-target="#carouselExampleIndicators"
-                data-bs-slide-to="2"
-                aria-label="Slide 3"></button>
-            </div>
-            <div className="carousel-inner sportField-carousel">
-              <div className="carousel-item active">
-                <img src={FootballCourt} className="d-block rounded" alt="#" />
-              </div>
-              <div className="carousel-item">
-                <img src={FootballCourt} className="d-block rounded" alt="#" />
-              </div>
-              <div className="carousel-item">
-                <img src={FootballCourt} className="d-block rounded" alt="#" />
-              </div>
-            </div>
-            <button
-              className="carousel-control-prev"
-              type="button"
-              data-bs-target="#carouselExampleIndicators"
-              data-bs-slide="prev">
-              <span
-                className="carousel-control-prev-icon"
-                aria-hidden="true"></span>
-              <span className="visually-hidden">Previous</span>
-            </button>
-            <button
-              className="carousel-control-next"
-              type="button"
-              data-bs-target="#carouselExampleIndicators"
-              data-bs-slide="next">
-              <span
-                className="carousel-control-next-icon"
-                aria-hidden="true"></span>
-              <span className="visually-hidden">Next</span>
-            </button>
-          </div>
-        </div>
+        <CarouselImage />
       </div>
 
       <div className="center-contact">
-        <div></div>
-        <div className="center-contactInfo">
-          <button type="button" className="center-buttonContact  ">
-            {" "}
-            Contact Now{" "}
-          </button>
-          <div className="center-contactDetails">
-            <span> (+885) 23-880-880 </span>
-            <span> Email: PhnompenhSport Center @gmail.com </span>
-          </div>
-        </div>
-        <div className="center-socialMedia">
-          <i className="fa-brands fa-telegram"></i>
-          <i className="fa-brands fa-facebook"></i>
-        </div>
+        <ContactInfo />
       </div>
 
       <Footer />
