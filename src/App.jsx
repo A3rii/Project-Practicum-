@@ -16,6 +16,7 @@ import SetTime from "./view/page/AdminCenter/SetTime";
 import IncomingMatch from "./view/page/AdminCenter/IncomingMatch";
 import ConfirmPage from "./view/page/AdminCenter/ComfirmPage";
 import ConfirmMatch from "./view/page/AdminCenter/ConfirmMatch";
+import Schedule from "./view/page/AdminCenter/Schedule";
 
 export default function App() {
   return (
@@ -38,6 +39,7 @@ export default function App() {
             />
           </Route>
 
+          <Route path="/admin/schedule" element={<Schedule />} />
           <Route path="/admin/settime" element={<SetTime />} />
         </Route>
 

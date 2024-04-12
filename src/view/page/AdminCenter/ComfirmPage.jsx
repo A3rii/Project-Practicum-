@@ -204,7 +204,7 @@ export default function ConfirmPage() {
               <TableRow>
                 {columns.map((column) => (
                   <TableCell
-                    align="left"
+                    align="center"
                     key={column.id}
                     style={{ minWidth: column.minWidth }}>
                     {column.label}
@@ -218,28 +218,28 @@ export default function ConfirmPage() {
                 ? "No Matches"
                 : rows.map((row, index) => (
                     <TableRow key={index}>
-                      <TableCell align="left" style={{ minWidth: "100px" }}>
+                      <TableCell align="center" style={{ minWidth: "100px" }}>
                         {row.name}
                       </TableCell>
-                      <TableCell align="left" style={{ minWidth: "100px" }}>
+                      <TableCell align="center" style={{ minWidth: "100px" }}>
                         {row.court}
                       </TableCell>
-                      <TableCell align="left" style={{ minWidth: "100px" }}>
+                      <TableCell align="center" style={{ minWidth: "100px" }}>
                         {row.price}
                       </TableCell>
-                      <TableCell align="left" style={{ minWidth: "100px" }}>
+                      <TableCell align="center" style={{ minWidth: "100px" }}>
                         {row.booking_date}
                       </TableCell>
-                      <TableCell align="left" style={{ minWidth: "100px" }}>
-                        {row.booking_hours}
+                      <TableCell align="center" style={{ minWidth: "100px" }}>
+                        {row.booking_hours} Hours
                       </TableCell>
-                      <TableCell align="left" style={{ minWidth: "100px" }}>
+                      <TableCell align="center" style={{ minWidth: "100px" }}>
                         {row.incoming_date}
                       </TableCell>
-                      <TableCell align="left" style={{ minWidth: "100px" }}>
+                      <TableCell align="center" style={{ minWidth: "100px" }}>
                         {row.sport_type}
                       </TableCell>
-                      <TableCell align="left" style={{ minWidth: "100px" }}>
+                      <TableCell align="right" style={{ minWidth: "100px" }}>
                         <Stack direction="row" spacing={2}>
                           <Button variant="outlined" color="success">
                             Accept
