@@ -1,28 +1,49 @@
 import "./App.css";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Home from "./view/page/Home/Home";
-import AdminCenter from "./view/page/AdminCenter/AdminCenter";
-import Booking from "./view/page/Booking/Booking";
-import CenterDetail from "./view/page/CenterDetail/CenterDetail";
-import SportField from "./view/page/SportField/SportField";
-import Payment from "./view/page/Payment/Payment";
-import Login from "./view/page/Login/Login";
-import SignUp from "./view/page/SignUp/SignUp";
-import Contact from "./view/page/Contact/Contact";
-import Lessor from "./view/page/Lessor/Lessor";
-import Reciept from "./view/page/RecieptPage/TicketPage";
-import HomeDash from "./view/page/AdminCenter/HomeDash";
-import SetTime from "./view/page/AdminCenter/SetTime";
-import IncomingMatch from "./view/page/AdminCenter/IncomingMatch";
-import ConfirmPage from "./view/page/AdminCenter/ComfirmPage";
-import ConfirmMatch from "./view/page/AdminCenter/ConfirmMatch";
-import Schedule from "./view/page/AdminCenter/Schedule";
-
+import Home from "./view/page/Home";
+import AdminCenter from "./view/page/admin/AdminCenter";
+import Applayout from "./view/applayout/Applayout";
+import Booking from "./view/page/Booking";
+import CenterDetail from "./view/page/CenterDetail";
+import SportField from "./view/page/SportField";
+import Payment from "./view/page/Payment";
+import Login from "./view/page/Auth/Login/Login";
+import SignUpCustomer from "./view/page/Auth/SignUp/SignUpCustomer";
+import Contact from "./view/page/Contact";
+import HomeDash from "./view/page/admin/HomeDash";
+import IncomingMatch from "./view/page/admin/IncomingMatch";
+import ConfirmPage from "./view/page/admin/ComfirmPage";
+import ConfirmMatch from "./view/page/admin/ConfirmMatch";
+import Schedule from "./view/page/admin/Schedule";
+import SignInSportAdmin from "./view/page/Auth/Login/SignInSportAdmin";
+import SignUpLessor from "./view/page/Auth/SignUp/SignUpLessor";
+import Facility from "./view/page/admin/Facility";
 export default function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Home />} exact />
+        <Route element={<Applayout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/booking" element={<Booking />} />
+          <Route path="/sportcenter" element={<CenterDetail />}>
+            <Route path=":sportCenterId" element={<CenterDetail />} />
+          </Route>
+
+          <Route path="/facility" element={<SportField />}>
+            <Route
+              path="/facility/:facilityId/sport-center/:sportCenterId"
+              element={<SportField />}
+            />
+          </Route>
+
+          <Route path="/payment" element={<Payment />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/signup-admin" element={<SignUpLessor />} />
+        </Route>
+
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignUpCustomer />} />
+        <Route path="/signin-admin" element={<SignInSportAdmin />} />
 
         <Route path="/admin" element={<AdminCenter />}>
           <Route index element={<HomeDash />} />
@@ -40,18 +61,8 @@ export default function App() {
           </Route>
 
           <Route path="/admin/schedule" element={<Schedule />} />
-          <Route path="/admin/settime" element={<SetTime />} />
+          <Route path="/admin/facility" element={<Facility />} />
         </Route>
-
-        <Route path="/booking" element={<Booking />} />
-        <Route path="/sportcenter" element={<CenterDetail />} />
-        <Route path="/sportfield" element={<SportField />} />
-        <Route path="/payment" element={<Payment />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/lessor" element={<Lessor />} />
-        <Route path="/reciept" element={<Reciept />} />
-        <Route path="/contact" element={<Contact />} />
       </Routes>
     </Router>
   );

@@ -40,13 +40,12 @@ a {
    align-items: center;
    flex-wrap: wrap;
    padding: 1rem 3rem 1rem;
-   background-color: transparent;
+   background-color: var(--dark-blue);
    color: var(--white);
-   z-index: 1;
 }
 
 .header-title {
-   font-size: 1.5rem;
+   font-size: 1rem;
    font-weight: 900;
    font-family: "Roboto", sans-serif;
 
@@ -58,21 +57,13 @@ a {
    font-size: 1.6rem;
 }
 
-.header-navbar {
-   max-width: 50%;
-   display: flex;
-   justify-content: center;
-   align-items: center;
-}
 
 .header-navbar ul {
    display: flex;
-   justify-content: center;
-   align-items: center;
-   font-size: 1rem;
-   align-items: center;
+   font-size: .9rem;
    margin-top: 1.4rem;
-   column-gap: 2.7rem;
+   margin-right: 2rem;
+   column-gap: 2rem;
 }
 
 .header-navbar a {
@@ -896,9 +887,7 @@ a {
    /* center responsive*/
 
 
-   /* sport field responsive*/
-
-
+   /* sport field responsive*
 
 
    .sportField-Slider,

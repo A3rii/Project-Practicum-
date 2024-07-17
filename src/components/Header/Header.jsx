@@ -35,6 +35,7 @@ export default function Header() {
         />
 
         <Popover
+          pover
           id={id}
           open={open}
           anchorEl={anchorEl}
@@ -57,6 +58,7 @@ export default function Header() {
               flexDirection: "column",
               justifyContent: "flex-start",
               alignItems: "center",
+              position: "relative",
               gap: "1.3rem",
               pt: 1,
             }}>
@@ -72,17 +74,12 @@ export default function Header() {
             </NavLink>
             <NavLink to="/lessor">
               <Typography color="textPrimary">
-                <li>Lessor</li>
+                <li>Become Lessor</li>
               </Typography>
             </NavLink>
             <NavLink to="/contact">
               <Typography color="textPrimary">
                 <li>Contact</li>
-              </Typography>
-            </NavLink>
-            <NavLink to="/reciept">
-              <Typography color="textPrimary">
-                <li>Reciept</li>
               </Typography>
             </NavLink>
           </Box>
@@ -97,14 +94,11 @@ export default function Header() {
           <NavLink to="/booking">
             <li>Renting </li>
           </NavLink>
-          <NavLink to="/lessor">
+          <NavLink to="/signup-admin">
             <li>Lessor</li>
           </NavLink>
           <NavLink to="/contact">
             <li>Contact</li>
-          </NavLink>
-          <NavLink to="/reciept">
-            <li> Historys</li>
           </NavLink>
         </ul>
       </nav>

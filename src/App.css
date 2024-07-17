@@ -112,6 +112,18 @@
 
 }
 
+.login-Lessor {
+   outline: none;
+   border: none;
+   background-color: var(--solid-red);
+   color: var(--white);
+   max-width: 100%;
+   width: 25rem;
+   height: 3rem;
+   border-radius: 3px;
+   font-size: 1rem;
+}
+
 .login-FaceBook {
    outline: none;
    border: none;
@@ -347,8 +359,9 @@
    background: rgba(0, 0, 0, 0.6) url('./assets/HomeImages/pic1.jpg') center/cover;
    background-blend-mode: darken;
    max-width: 100%;
-   min-height: 38rem;
+   min-height: 30rem;
    height: auto;
+   object-fit: cover;
    background-repeat: no-repeat;
 }
 
@@ -359,7 +372,8 @@
    align-items: center;
    flex-direction: column;
    row-gap: 1.5rem;
-   margin-top: 6rem;
+   padding-top: 6rem;
+
 }
 
 .home-banner h2 {
@@ -751,6 +765,9 @@
 .booking-btn {
    background-color: var(--primary);
    outline: none;
+   display: flex;
+   justify-content: center;
+   align-items: center;
    border: none;
    width: 7rem;
    padding: .4rem;
@@ -783,6 +800,8 @@
 .booking-sportFieldCard {
    max-width: 100%;
    display: flex;
+   justify-content: space-between;
+   align-items: center;
    gap: 5rem;
    margin-top: 2rem;
 }
@@ -817,7 +836,7 @@
    align-items: center;
    flex-direction: column;
    row-gap: 1.5rem;
-   margin-top: 9rem;
+   padding-top: 9rem;
 }
 
 .center-banner h2 {
@@ -848,6 +867,14 @@
    margin-top: 3rem;
 
 }
+
+.center-address {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   gap: 1rem;
+}
+
 
 .center-category {
    display: flex;
@@ -1049,7 +1076,7 @@
    align-items: center;
    flex-direction: column;
    row-gap: 1.5rem;
-   margin-top: 1.5rem;
+   padding-top: 5rem;
 }
 
 .sportField-banner h2 {
@@ -1193,7 +1220,6 @@
    aspect-ratio: 16;
    max-width: 100%;
    min-height: 40rem;
-   height: 50rem;
    background-repeat: no-repeat;
 }
 
@@ -1207,7 +1233,7 @@
    flex-direction: column;
    border-radius: 5px;
    height: auto;
-   margin: 2rem auto;
+   margin: 0 20rem 0;
 
 }
 
@@ -1300,7 +1326,6 @@
    background-blend-mode: darken;
    max-width: 100%;
    min-height: 38rem;
-   height: 45rem;
    background-repeat: no-repeat;
 }
 
@@ -1309,7 +1334,7 @@
    font-family: "Roboto", sans-serif;
    color: var(--white);
    font-weight: bolder;
-   margin-top: 4rem;
+   padding-top: 6rem;
 }
 
 .contact-banner {
@@ -1350,106 +1375,7 @@
 }
 
 /** Contact Page */
-.lessor-header {
-   background: rgba(0, 0, 0, 0.6) url('./assets/BookingImags/pic17.jpg') center/cover;
-   background-blend-mode: darken;
-   max-width: 100%;
-   min-height: 50rem;
-   height: auto;
-   background-repeat: no-repeat;
-   height: 60rem;
 
-}
-
-.lessor-banner {
-   display: flex;
-   justify-content: center;
-   align-items: center;
-   flex-direction: column;
-   color: var(--white);
-   row-gap: 1rem;
-}
-
-.lessor-banner h2 {
-   font-weight: 600;
-   font-family: "Roboto", sans-serif;
-   margin-top: 2rem;
-}
-
-.lessor-form {
-   display: flex;
-   justify-content: center;
-   align-items: center;
-   flex-direction: column;
-   row-gap: 3rem;
-}
-
-.lessor-name {
-   display: flex;
-   justify-content: space-between;
-   align-items: center;
-   max-width: 100%;
-   column-gap: 7rem;
-}
-
-.lessor-description {
-   display: flex;
-   flex-direction: column;
-
-}
-
-.lessor-description input {
-   outline: none;
-   border: none;
-   border-radius: 5px;
-   width: 30rem;
-   height: 3rem;
-}
-
-
-.lessor-contact {
-   display: flex;
-   justify-content: center;
-   align-items: center;
-   column-gap: 2rem;
-}
-
-.lessor-contact-1 {
-   display: flex;
-   flex-direction: column;
-}
-
-.lessor-contact-1 input {
-   outline: none;
-   border: none;
-   border-radius: 5px;
-   width: 100%;
-   height: 3rem;
-}
-
-.lessor-contact-address,
-.lessor-contact-image {
-   display: flex;
-   flex-direction: column;
-}
-
-.lessor-contact-address input,
-.lessor-contact-image input {
-   outline: none;
-   border: none;
-   border-radius: 5px;
-   width: 67rem;
-   height: 3rem;
-}
-
-.submit-container {
-   display: flex;
-   justify-content: center;
-   margin-top: 20px;
-}
-
-
-/** Lessor Page */
 
 
 
@@ -1664,6 +1590,32 @@
    color: var(--white);
    border-radius: 3px;
    margin-top: .7rem;
+}
+
+
+/*Schedule*/
+.rbc-header {
+   color: var(--white);
+   background: var(--blue);
+}
+
+
+.rbc-header.rbc-today {
+   background-color: var(--primary);
+}
+
+.rbc-toolbar .rbc-btn-group {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   gap: .5rem;
+}
+
+.rbc-toolbar .rbc-btn-group button {
+   font-size: .9rem;
+   color: var(--dark);
+   border: 1px solid var(--primary);
+   border-radius: .5rem;
 }
 
 
