@@ -181,7 +181,7 @@ export const userSlice = createSlice({
       })
       .addCase(registerLessor.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.currentLessor = action.payload.lessor;
+        state.currentLessor = action.payload;
       })
       .addCase(registerLessor.rejected, (state, action) => {
         state.isLoading = false;
@@ -210,7 +210,7 @@ export const userSlice = createSlice({
       })
       .addCase(loginLessor.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.currentLessor = action.payload.lessor;
+        state.currentLessor = action.payload;
       })
       .addCase(loginLessor.rejected, (state, action) => {
         state.isLoading = false;

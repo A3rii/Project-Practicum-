@@ -11,6 +11,7 @@ import {
 import { storage } from "../../../firebase/firebase";
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 import { useState } from "react";
+import { notify, errorAlert } from "./../../../utils/toastAlert";
 import { v4 } from "uuid";
 import axios from "axios";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
@@ -104,10 +105,13 @@ export default function AddCourt({
         }
       );
       console.log("Product posted successfully:", postingProduct.data);
+
       closeModal();
       updateModal();
+      notify("Court Add Successfully");
     } catch (err) {
       console.error("Error posting product:", err);
+      errorAlert("Fail to add court.");
       if (err.response) {
         console.error("Error response data:", err.response.data);
       }

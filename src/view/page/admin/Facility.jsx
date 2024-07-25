@@ -10,11 +10,13 @@ import {
   Typography,
   Divider,
   Box,
+  Tooltip,
   Stack,
 } from "@mui/material";
 import { useEffect, useState, useMemo, useCallback } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import AddFacility from "../../../components/AdminComponent/Facility/AddFacility";
+import AddIcon from "@mui/icons-material/Add";
 import EditModal from "../../../components/AdminComponent/Facility/EditModal";
 import DeleteModal from "../../../components/AdminComponent/Facility/DeleteModal";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -92,6 +94,7 @@ export default function Facility() {
             <img
               src={data.image}
               alt="Facility image"
+              loading="lazy"
               style={{
                 width: "100%",
                 height: "auto",
@@ -115,29 +118,33 @@ export default function Facility() {
 
         <TableCell align="left">
           <Stack direction="row" spacing={1}>
-            <EditIcon
-              onClick={() => {
-                handleOpenEdit();
-                setId(data._id);
-              }}
-              style={{
-                fontSize: "20px",
-                color: "blue",
-                cursor: "pointer",
-              }}
-            />
+            <Tooltip title="Edit Facility">
+              <EditIcon
+                onClick={() => {
+                  handleOpenEdit();
+                  setId(data._id);
+                }}
+                style={{
+                  fontSize: "20px",
+                  color: "blue",
+                  cursor: "pointer",
+                }}
+              />
+            </Tooltip>
 
-            <DeleteIcon
-              onClick={() => {
-                handleOpenDelete();
-                setId(data._id);
-              }}
-              style={{
-                fontSize: "20px",
-                color: "red",
-                cursor: "pointer",
-              }}
-            />
+            <Tooltip title="Delete Facility">
+              <DeleteIcon
+                onClick={() => {
+                  handleOpenDelete();
+                  setId(data._id);
+                }}
+                style={{
+                  fontSize: "20px",
+                  color: "red",
+                  cursor: "pointer",
+                }}
+              />
+            </Tooltip>
           </Stack>
         </TableCell>
       </TableRow>
@@ -146,7 +153,10 @@ export default function Facility() {
 
   return (
     <>
-      <Button variant="contained" onClick={handleOpenAdd}>
+      <Button
+        variant="contained"
+        startIcon={<AddIcon />}
+        onClick={handleOpenAdd}>
         Create Facility
       </Button>
       {openAdd && (
@@ -181,8 +191,7 @@ export default function Facility() {
             overflow: "hidden",
             padding: "15px",
             marginTop: "2rem",
-          }}
-          elevation={5}>
+          }}>
           <Typography
             display="flex"
             alignItems="center"

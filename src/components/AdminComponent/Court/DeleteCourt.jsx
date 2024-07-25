@@ -1,5 +1,7 @@
 /* eslint-disable react/prop-types */
 import { Button, Modal, Divider, Box, Typography } from "@mui/material";
+import { notify, errorAlert } from "./../../../utils/toastAlert";
+
 import axios from "axios";
 import authToken from "../../../utils/authToken";
 
@@ -28,8 +30,10 @@ export default function DeleteCourt({
       console.log(request.data);
       closeModal();
       updateModal();
+      notify("Court Delete Successfully");
     } catch (err) {
       console.log(err.message);
+      errorAlert("Fail to delte court");
     }
   };
   console.log(courtId);

@@ -10,7 +10,8 @@ import {
 } from "@mui/material";
 import { storage } from "../../../firebase/firebase";
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { notify, errorAlert } from "./../../../utils/toastAlert";
 import { v4 } from "uuid";
 import axios from "axios";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
@@ -47,13 +48,13 @@ export default function AddCourt({
     if (courtId && open) {
       getCourtById();
     }
-  }, [courtId, open]);
+  }, [courtId, open, getCourtById]);
 
   const metadata = {
     contentType: "image/*",
   };
 
-  const getCourtById = async () => {
+  const getCourtById = useCallback(async () => {
     try {
       const request = await axios.get(
         `${
@@ -73,7 +74,7 @@ export default function AddCourt({
     } catch (err) {
       console.log(err.message);
     }
-  };
+  }, [courtId, facilityId, token]);
 
   const handlePostingCourt = async (e) => {
     e.preventDefault();
@@ -131,8 +132,10 @@ export default function AddCourt({
       console.log("Product posted successfully:", postingProduct.data);
       closeModal();
       updateModal();
+      notify("Court Update Successfully");
     } catch (err) {
       console.error("Error posting product:", err);
+      errorAlert("Update Failed");
       if (err.response) {
         console.error("Error response data:", err.response.data);
       }

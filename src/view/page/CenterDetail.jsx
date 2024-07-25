@@ -128,22 +128,22 @@ export default function CenterDetail() {
           </div>
         </div>
       </div>
-
-      {sportCenter.facilities.map((data, key) => (
-        <div key={key} className="center-category">
-          <h2> Our Sport Services </h2>
-          <div className="center-cardSport">
+      <div className="center-sport">
+        <h2> Our Sport Services </h2>
+        <div className="center-card">
+          {sportCenter.facilities.map((data, key) => (
             <CenterCard
+              key={key}
               image={data.image}
               type={data.name}
               time={`Available: ${sportCenter.operating_hours.open}-${sportCenter.operating_hours.close}`}
-              price={` ${data.price} per 90 minutes`}
+              price={` $ ${data.price} per 90 minutes`}
               facilityId={data._id}
               sportCenterId={sportCenter._id}
             />
-          </div>
+          ))}
         </div>
-      ))}
+      </div>
 
       <div className="center-map">
         <div className="center-googleMap">

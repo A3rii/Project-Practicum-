@@ -13,6 +13,7 @@ import {
   Typography,
   Divider,
   Box,
+  Tooltip,
   Stack,
 } from "@mui/material";
 import axios from "axios";
@@ -44,10 +45,11 @@ export default function CourtView({ onClose, facilityId }) {
   const handleOpenEdit = () => setOpenEdit(true);
   const handleCloseEdit = () => setOpenEdit(false);
 
+  console.log(facilityId);
   const getCourt = useCallback(async () => {
     try {
       const request = await axios.get(
-        `${import.meta.env.VITE_API_URL}/lessor/court`,
+        `${import.meta.env.VITE_API_URL}/lessor/facility/${facilityId}/courts`,
         {
           headers: {
             Accept: "application/json",
@@ -55,11 +57,12 @@ export default function CourtView({ onClose, facilityId }) {
           },
         }
       );
-      setCourt(request.data.court);
+      setCourt(request.data.facility.courts);
     } catch (err) {
       console.log(err.message);
     }
-  }, [token]);
+  }, [token, facilityId]);
+
   useEffect(() => {
     getCourt();
   }, [getCourt]);
@@ -92,6 +95,7 @@ export default function CourtView({ onClose, facilityId }) {
               }}>
               {data.image.map((image, key) => (
                 <img
+                  loading="lazy"
                   key={key}
                   src={image}
                   width={100}
@@ -105,29 +109,33 @@ export default function CourtView({ onClose, facilityId }) {
 
         <TableCell align="center">
           <Stack direction="row" spacing={1} justifyContent="flex-end">
-            <EditIcon
-              onClick={() => {
-                handleOpenEdit();
-                setCourtId(data._id);
-              }}
-              style={{
-                fontSize: "20px",
-                color: "blue",
-                cursor: "pointer",
-              }}
-            />
+            <Tooltip title="Edit Court">
+              <EditIcon
+                onClick={() => {
+                  handleOpenEdit();
+                  setCourtId(data._id);
+                }}
+                style={{
+                  fontSize: "20px",
+                  color: "blue",
+                  cursor: "pointer",
+                }}
+              />
+            </Tooltip>
 
-            <DeleteIcon
-              onClick={() => {
-                handleOpenDelete();
-                setCourtId(data._id);
-              }}
-              style={{
-                fontSize: "20px",
-                color: "red",
-                cursor: "pointer",
-              }}
-            />
+            <Tooltip title="Delete Court">
+              <DeleteIcon
+                onClick={() => {
+                  handleOpenDelete();
+                  setCourtId(data._id);
+                }}
+                style={{
+                  fontSize: "20px",
+                  color: "red",
+                  cursor: "pointer",
+                }}
+              />
+            </Tooltip>
           </Stack>
         </TableCell>
       </TableRow>
@@ -234,15 +242,69 @@ export default function CourtView({ onClose, facilityId }) {
           </Box>
         </Modal>
       ) : (
-        <tr>
-          <td
-            colSpan="7"
-            className="p-4 border-b border-blue-gray-50 text-center">
-            <p className="block antialiased font-sans text-sm leading-normal text-blue-gray-900 font-bold">
-              There is no court on the list
-            </p>
-          </td>
-        </tr>
+        <Modal
+          keepMounted
+          open={open}
+          aria-labelledby="keep-mounted-modal-title"
+          aria-describedby="keep-mounted-modal-description">
+          <Box
+            sx={{
+              position: "absolute",
+              top: "40%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: "80%",
+              height: 500,
+              p: 4,
+              borderRadius: "5px",
+            }}>
+            <Paper
+              sx={{
+                width: "100%",
+                overflow: "hidden",
+                overflowY: "scroll",
+                padding: "15px",
+                marginTop: "2rem",
+              }}
+              elevation={5}>
+              <ClearIcon
+                style={{
+                  fontSize: "20px",
+                  cursor: "pointer",
+                }}
+                onClick={onClose}
+              />
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}>
+                <Typography
+                  display="flex"
+                  alignItems="center"
+                  gutterBottom
+                  component="div"
+                  variant="h6"
+                  sx={{ padding: "14px", fontWeight: "bold" }}>
+                  Court
+                </Typography>
+                <Button onClick={handleOpenAdd} variant="contained">
+                  Create Court
+                </Button>
+              </Box>
+              <Divider />
+              <Typography
+                display="flex"
+                justifyContent="start"
+                alignItems="center"
+                variant="h6"
+                sx={{ padding: "14px" }}>
+                No Courts
+              </Typography>
+            </Paper>
+          </Box>
+        </Modal>
       )}
     </>
   );

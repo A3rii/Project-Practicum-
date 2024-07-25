@@ -11,6 +11,7 @@ import {
 import { storage } from "../../../firebase/firebase";
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 import { useState, useEffect, useCallback } from "react";
+import { notify, errorAlert } from "./../../../utils/toastAlert";
 import { v4 } from "uuid";
 import axios from "axios";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
@@ -135,8 +136,10 @@ export default function AddFacility({ open, closeModal, updateModal, id }) {
       setLessorImage(null);
       closeModal();
       updateModal();
+      notify("Facility Update Successfully");
     } catch (err) {
       console.error("Error updating product:", err);
+      errorAlert("Fail To Edit");
     }
   };
 

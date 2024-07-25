@@ -1,4 +1,28 @@
+import { useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import axios from "axios";
 export default function ContactInfo() {
+  const { sportCenterId } = useParams();
+  const [sportInformation, setSportInformation] = useState([]);
+
+  // Get Lessor information
+  useEffect(() => {
+    const fetchSportCenter = async () => {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/lessor/auth/users/${sportCenterId}`
+        );
+        const lessor = response.data.lessor;
+        setSportInformation(lessor);
+      } catch (err) {
+        console.error("Error fetching sport center:", err.message);
+        setSportInformation([]);
+      }
+    };
+
+    fetchSportCenter();
+  }, [sportCenterId]);
+
   return (
     <>
       <div></div>
@@ -7,8 +31,8 @@ export default function ContactInfo() {
           Contact Now
         </button>
         <div className="center-contactDetails">
-          <span> (+885) 23-880-880 </span>
-          <span> Email: PhnompenhSport Center @gmail.com </span>
+          <span> {sportInformation.phone_number} </span>
+          <span> Email: {sportInformation.email} </span>
         </div>
       </div>
       <div className="center-socialMedia">

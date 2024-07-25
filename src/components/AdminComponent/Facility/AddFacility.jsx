@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import {
   Button,
   TextField,
@@ -12,6 +11,7 @@ import { storage } from "../../../firebase/firebase";
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 import { useState } from "react";
 import { v4 } from "uuid";
+import { notify, errorAlert } from "./../../../utils/toastAlert";
 import axios from "axios";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
@@ -35,75 +35,74 @@ export default function AddFacility({ open, closeModal, updateModal }) {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
-
-  /**Images Hosting Handling  */
   const [lessorImage, setLessorImage] = useState(null);
   const [photoURL, setPhotoURL] = useState(null);
-  const metadata = {
-    contentType: "image/*",
-  };
-
   const [file, setFile] = useState(null);
 
   const handlePostingFacility = async (e) => {
     e.preventDefault();
 
-    if (!lessorImage) return;
+    if (!lessorImage) {
+      console.error("No image selected.");
+      return;
+    }
 
-    // Upload image to Firebase Storage
-    const imageID = v4();
-    const imageFormat = lessorImage.type.split("/")[1];
-    const imgRef = ref(storage, `lessor_image/${imageID}.${imageFormat}`);
-    const uploadTask = uploadBytesResumable(imgRef, lessorImage, metadata);
+    try {
+      const imageID = v4();
+      const imageFormat = lessorImage.type.split("/")[1];
+      const imgRef = ref(storage, `lessor_image/${imageID}.${imageFormat}`);
+      const uploadTask = uploadBytesResumable(imgRef, lessorImage, {
+        contentType: "image/*",
+      });
 
-    uploadTask.on(
-      "state_changed",
-      (snapshot) => {
-        const progress =
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        console.log("Upload is " + progress + "% done");
-      },
-      (error) => {
-        console.error("Error uploading image:", error);
-      },
-      async () => {
-        try {
-          // Get the download URL after upload completes
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log("Upload is " + progress + "% done");
+        },
+        (error) => {
+          console.error("Error uploading image:", error);
+        },
+        async () => {
           const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-
-          // Update the photoURL state
           setPhotoURL(downloadURL);
 
-          // Once image is uploaded, proceed to post product data
           const credentials = {
-            name: name,
-            price: price,
-            description: description,
+            name,
+            price,
+            description,
             image: downloadURL,
           };
 
-          // Post product data to backend
-          const postingProduct = await axios.post(
-            `${import.meta.env.VITE_API_URL}/lessor/facility`,
-            credentials,
-            {
-              headers: {
-                Accept: `application/json`,
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-          console.log("Product posted successfully:", postingProduct.data);
+          try {
+            const response = await axios.post(
+              `${import.meta.env.VITE_API_URL}/lessor/facility`,
+              credentials,
+              {
+                headers: {
+                  Accept: "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
 
-          closeModal();
-          updateModal();
-        } catch (err) {
-          console.error("Error posting product:", err);
+            console.log("Facility posted successfully:", response.data);
+            notify("Facility created successfully");
+            closeModal();
+            updateModal();
+          } catch (err) {
+            errorAlert("Error Posting Facility");
+            console.error("Error posting facility:", err);
+          }
         }
-      }
-    );
-    console.log(photoURL);
+      );
+    } catch (err) {
+      console.error("Error uploading image:", err);
+    }
   };
+
   return (
     <Modal
       keepMounted
@@ -176,6 +175,7 @@ export default function AddFacility({ open, closeModal, updateModal }) {
             variant="outlined"
           />
         </Box>
+
         <Box
           sx={{
             display: "flex",
@@ -198,6 +198,7 @@ export default function AddFacility({ open, closeModal, updateModal }) {
             <VisuallyHiddenInput type="file" />
           </Button>
         </Box>
+
         <Box
           sx={{
             display: "flex",
@@ -218,7 +219,9 @@ export default function AddFacility({ open, closeModal, updateModal }) {
             </Box>
           )}
         </Box>
+
         <Divider sx={{ margin: "1rem 0", marginTop: "1rem" }} />
+
         <Box
           sx={{
             marginTop: "1rem",

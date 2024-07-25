@@ -1,13 +1,12 @@
-/* eslint-disable react/prop-types */
 import "react-toastify/dist/ReactToastify.css";
 import ContactInfo from "../../components/ContactInfo";
+import CardSwiper from "./../../components/CardSwiper";
 import dayjs from "dayjs";
 import axios from "axios";
 import currentUser from "./../../utils/currentUser";
 import authToken from "./../../utils/authToken";
 import { notify, errorAlert } from "./../../utils/toastAlert";
 import { ToastContainer } from "react-toastify";
-
 import {
   TextField,
   FormControl,
@@ -23,74 +22,6 @@ import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-
-/**Slider */
-function CarouselImage({ court }) {
-  if (!court || court.length === 0) {
-    return <p>No courts available.</p>;
-  }
-  return (
-    <div className="sportField-slider">
-      <div id="carouselExampleIndicators" className="carousel slide">
-        <div className="carousel-indicators">
-          <button
-            type="button"
-            data-bs-target="#carouselExampleIndicators"
-            data-bs-slide-to="0"
-            className="active"
-            aria-current="true"
-            aria-label="Slide 1"></button>
-          <button
-            type="button"
-            data-bs-target="#carouselExampleIndicators"
-            data-bs-slide-to="1"
-            aria-label="Slide 2"></button>
-          <button
-            type="button"
-            data-bs-target="#carouselExampleIndicators"
-            data-bs-slide-to="2"
-            aria-label="Slide 3"></button>
-        </div>
-        <div className="carousel-inner sportField-carousel">
-          {court.map((data, key) => (
-            <div
-              key={key}
-              className={`carousel-item ${key === 0 ? "active" : ""}`}>
-              <img
-                src={data.image[key]}
-                className="d-block rounded"
-                alt="#"
-                width={750}
-                height={450}
-              />
-            </div>
-          ))}
-        </div>
-
-        <button
-          className="carousel-control-prev"
-          type="button"
-          data-bs-target="#carouselExampleIndicators"
-          data-bs-slide="prev">
-          <span
-            className="carousel-control-prev-icon"
-            aria-hidden="true"></span>
-          <span className="visually-hidden">Previous</span>
-        </button>
-        <button
-          className="carousel-control-next"
-          type="button"
-          data-bs-target="#carouselExampleIndicators"
-          data-bs-slide="next">
-          <span
-            className="carousel-control-next-icon"
-            aria-hidden="true"></span>
-          <span className="visually-hidden">Next</span>
-        </button>
-      </div>
-    </div>
-  );
-}
 
 function ReservationDate({ court }) {
   const user = currentUser();
@@ -152,7 +83,7 @@ function ReservationDate({ court }) {
       facility: facility,
       court: selectedCourt,
       date: date.toISOString(),
-      startTime: startTime.format("hh:mm a"),
+      startTime: startTime.format("hh:mm a"), // Format date : 1:00 am  , 12:00 am
       endTime: endTime.format("hh:mm a"),
     };
 
@@ -310,7 +241,7 @@ export default function SportField() {
 
       <div className="sportField-Slider">
         <h2> Our Football View </h2>
-        <CarouselImage court={facilityInformation.court} />
+        <CardSwiper court={facilityInformation.court} />
       </div>
 
       <div className="center-contact">

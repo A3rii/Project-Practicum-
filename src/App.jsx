@@ -10,7 +10,7 @@ import Payment from "./view/page/Payment";
 import Login from "./view/page/Auth/Login/Login";
 import SignUpCustomer from "./view/page/Auth/SignUp/SignUpCustomer";
 import Contact from "./view/page/Contact";
-import HomeDash from "./view/page/admin/HomeDash";
+import HomeDashboard from "./view/page/admin/HomeDashboard";
 import IncomingMatch from "./view/page/admin/IncomingMatch";
 import ConfirmPage from "./view/page/admin/ComfirmPage";
 import ConfirmMatch from "./view/page/admin/ConfirmMatch";
@@ -18,6 +18,7 @@ import Schedule from "./view/page/admin/Schedule";
 import SignInSportAdmin from "./view/page/Auth/Login/SignInSportAdmin";
 import SignUpLessor from "./view/page/Auth/SignUp/SignUpLessor";
 import Facility from "./view/page/admin/Facility";
+import Profile from "./view/page/admin/Profile";
 export default function App() {
   return (
     <Router>
@@ -46,8 +47,8 @@ export default function App() {
         <Route path="/signin-admin" element={<SignInSportAdmin />} />
 
         <Route path="/admin" element={<AdminCenter />}>
-          <Route index element={<HomeDash />} />
-          <Route path="/admin/dashboard" element={<HomeDash />} />
+          <Route index element={<HomeDashboard />} />
+          <Route path="/admin/dashboard" element={<HomeDashboard />} />
           <Route path="/admin/confirm_match" element={<ConfirmMatch />}>
             <Route index element={<ConfirmPage />} />
             <Route
@@ -61,6 +62,7 @@ export default function App() {
           </Route>
 
           <Route path="/admin/schedule" element={<Schedule />} />
+          <Route path="/admin/lessor-profile" element={<Profile />} />
           <Route path="/admin/facility" element={<Facility />} />
         </Route>
       </Routes>

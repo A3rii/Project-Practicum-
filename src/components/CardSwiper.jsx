@@ -3,75 +3,52 @@ import "swiper/css";
 import "swiper/css/scrollbar";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import { Keyboard, Navigation, Pagination } from "swiper/modules";
+import { Navigation, Pagination, EffectFade } from "swiper/modules";
+import { useState, useEffect, useMemo } from "react";
 import "./../App.css";
-import FootBall from "./../assets/HomeImages/pic4.jpg";
-import BasketBall from "./../assets/HomeImages/pic5.jpg";
-import VolleyBall from "./../assets/HomeImages/pic6.jpg";
-import Gym from "./../assets/HomeImages/pic7.png";
-import Futsal from "./../assets/HomeImages/pic8.jpg";
-import Badminton from "./../assets/HomeImages/pic9.jpg";
 
-export default function CardSwiper() {
+export default function CardSwiper({ court }) {
+  const [images, setImages] = useState([]);
+
+  const getCourtImage = useMemo(() => {
+    if (!court) return [];
+    return court.flatMap((data) => data.image);
+  }, [court]);
+
+  useEffect(() => {
+    setImages(getCourtImage);
+  }, [getCourtImage]);
+
+  if (!court || images.length === 0) return <p>No images</p>;
+
   return (
-    <>
-      <Swiper
-        slidesPerView={2}
-        centeredSlides={false}
-        slidesPerGroupSkip={1}
-        grabCursor={true}
-        keyboard={{
-          enabled: true,
-        }}
-        breakpoints={{
-          769: {
-            slidesPerView: 2,
-            slidesPerGroup: 2,
-          },
-        }}
-        navigation={true}
-        pagination={{
-          clickable: true,
-        }}
-        modules={[Keyboard, Navigation, Pagination]}
-        className="mySwiper">
-        <SwiperSlide>
-          <div className="home-swiper-1">
-            <img src={FootBall} alt="#" />
-            <span>Football</span>
-          </div>
+    <Swiper
+      speed={600}
+      spaceBetween={30}
+      grabCursor={true}
+      slidesPerView={1}
+      effect={"fade"}
+      fadeEffect={{ crossFade: true }}
+      keyboard={{
+        enabled: true,
+      }}
+      breakpoints={{
+        769: {
+          slidesPerView: 1,
+          slidesPerGroup: 1,
+        },
+      }}
+      navigation={true}
+      pagination={{
+        clickable: true,
+      }}
+      modules={[EffectFade, Navigation, Pagination]}
+      className="mySwiper">
+      {images.map((image, index) => (
+        <SwiperSlide key={index}>
+          <img src={image} alt={`Slide ${index + 1}`} />
         </SwiperSlide>
-        <SwiperSlide>
-          <div className="home-swiper-2">
-            <img src={BasketBall} alt="#" />
-            <span>Basketball</span>
-          </div>
-        </SwiperSlide>
-        <SwiperSlide>
-          <div className="home-swiper-3">
-            <img src={VolleyBall} alt="#" />
-            <span>VolleyBall</span>
-          </div>
-        </SwiperSlide>
-        <SwiperSlide>
-          <div className="home-swiper-1">
-            <img src={Gym} alt="#" />
-            <span>Gym</span>
-          </div>
-        </SwiperSlide>
-        <SwiperSlide>
-          <div className="home-swiper-1">
-            <img src={Futsal} alt="#" />
-            <span>Futsal</span>
-          </div>
-        </SwiperSlide>
-        <SwiperSlide>
-          <div className="home-swiper-1">
-            <img src={Badminton} alt="#" />
-            <span>Badminton</span>
-          </div>
-        </SwiperSlide>
-      </Swiper>
-    </>
+      ))}
+    </Swiper>
   );
 }

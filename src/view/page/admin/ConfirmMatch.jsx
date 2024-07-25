@@ -4,13 +4,12 @@ export default function ComfirmMatch() {
     <>
       <nav className="confirm-nav">
         <ul>
-         
           <Link to="/admin/confirm_match/confirm">
             <button className="confirm-matching">Comfirm Match</button>
           </Link>
-          
+
           <Link to="/admin/confirm_match/incoming">
-            <button className="confirm-incoming"> Incoming Match </button>
+            <button className="confirm-incoming"> Match Acception </button>
           </Link>
         </ul>
       </nav>

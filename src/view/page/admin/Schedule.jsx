@@ -1,11 +1,10 @@
-import "react-datepicker/dist/react-datepicker.css";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { Calendar, dateFnsLocalizer, Views } from "react-big-calendar";
-import { useState, useEffect } from "react";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { TimePicker, DatePicker } from "@mui/x-date-pickers";
+import { parseISO } from "date-fns";
 import dayjs from "dayjs";
 import format from "date-fns/format";
 import getDay from "date-fns/getDay";
@@ -28,7 +27,8 @@ import {
 } from "@mui/material";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import AddIcon from "@mui/icons-material/Add";
-import { parseISO } from "date-fns";
+import ObjectID from "bson-objectid";
+import { notify, errorAlert } from "./../../../utils/toastAlert";
 
 //* React Big Calendar Formatation
 const locales = {
@@ -65,48 +65,47 @@ const parseTimeString = (dateString, timeString) => {
 
 export default function Schedule() {
   const token = authToken();
-
   const currentLessor = useCurrentLessor();
-  console.log(currentLessor);
 
-  // Get Facility
-  const facilitiesData = currentLessor?.facilities;
   const [events, setEvents] = useState([]);
 
-  // Requirements for booking
+  //* Requirements for booking
   const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [court, setCourt] = useState([]);
   const [facility, setFacility] = useState("");
   const [date, setDate] = useState(dayjs());
   const [selectedCourt, setSelectedCourt] = useState("");
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
+  const [startTime, setStartTime] = useState(dayjs());
+  const [endTime, setEndTime] = useState(dayjs());
 
-  // Court Selection
+  //* Court and Facility Selection
   const handleOnSelectCourt = (e) => {
     setSelectedCourt(e.target.value);
   };
 
   const handleOnSelectFacility = (e) => {
     setFacility(e.target.value);
+    setSelectedCourt(""); // Reset the selected court
   };
-  // Date Selection
+
   const handleDateChange = (newDate) => {
     setDate(newDate);
   };
 
-  const getFacilities = currentLessor?.facilities.map(
-    (facility) => facility.name
-  );
-  const getCourts = facilitiesData?.flatMap((facility) =>
-    facility.court.map((court) => court.name)
-  );
+  //* Get facility from lessor
+  const getFacilities = useMemo(() => {
+    return currentLessor?.facilities || [];
+  }, [currentLessor?.facilities]);
 
-  //* Fetching all the booking of lessor
-  useEffect(() => {
-    const fetchBooking = async () => {
+  //* Get court from lessor
+  const getCourts = useCallback(
+    async (facilityId) => {
       try {
-        const getBooking = await axios.get(
-          `${import.meta.env.VITE_API_URL}/books/sport-center`,
+        const fetchCourts = await axios.get(
+          `${
+            import.meta.env.VITE_API_URL
+          }/lessor/facility/${facilityId}/courts`,
           {
             headers: {
               Accept: "application/json",
@@ -114,33 +113,78 @@ export default function Schedule() {
             },
           }
         );
-        const transformedEvents = getBooking.data.bookings.map((booking) => ({
-          title: `Customer: ${booking.user.name} , Facility: ${booking.facility} , Court: ${booking.court}`,
-          start: parseTimeString(booking.date, booking.startTime),
-          end: parseTimeString(booking.date, booking.endTime),
-        }));
-        setEvents(transformedEvents);
+        setCourt(fetchCourts.data.facility.courts);
       } catch (err) {
         console.log(err.message);
       }
-    };
-    fetchBooking();
+    },
+    [token]
+  );
+
+  //* Checking each facility and get each of the courts from it
+  useEffect(() => {
+    if (facility) {
+      // Find the selected facility ID
+      const selectedFacility = getFacilities.find(
+        (fac) => fac.name === facility
+      );
+      if (selectedFacility) {
+        getCourts(selectedFacility._id); // Facility ID
+      }
+    }
+  }, [facility, getFacilities, getCourts]);
+
+  //* Fetching all the booking of lessor
+  const fetchBooking = useCallback(async () => {
+    try {
+      const getBooking = await axios.get(
+        `${import.meta.env.VITE_API_URL}/books/sport-center`,
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      // Formatation of react big calendar  {title , start , ends}
+      const transformedEvents = getBooking.data.bookings.map((booking) => ({
+        title: `Customer: ${
+          booking?.user?.name || booking?.outside_user?.name
+        } , Facility: ${booking.facility} , Court: ${booking.court}`,
+        start: parseTimeString(booking.date, booking.startTime),
+        end: parseTimeString(booking.date, booking.endTime),
+      }));
+      setEvents(transformedEvents);
+    } catch (err) {
+      console.log(err.message);
+    }
   }, [token]);
 
-  // TODO: handle adding event
+  useEffect(() => {
+    if (!currentLessor) return;
+    fetchBooking();
+  }, [currentLessor, fetchBooking]);
+
+  //* Open modal
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  //TODO : Add API
-  const handleAddEvent = async () => {
+  // Handle events for adding new booking for contact users
+  const handleAddEvent = async (e) => {
+    e.preventDefault();
     const bookingRequirement = {
-      user_name: name,
+      user: new ObjectID().toString(), // Random Bson Id if user contacts
+      outside_user: {
+        name: name,
+        phone_number: phone,
+      },
       lessor: currentLessor._id,
       facility: facility,
       court: selectedCourt,
       date: date.toISOString(),
-      startTime: startTime.format("hh:mm a"),
+      startTime: startTime.format("hh:mm a"), // format date {1:00 am/pm}
       endTime: endTime.format("hh:mm a"),
     };
     try {
@@ -154,9 +198,19 @@ export default function Schedule() {
           },
         }
       );
-      console.log(booking.data);
+      console.log(booking.data.message);
+      fetchBooking(); // Update data immediately
+      setName("");
+      setPhone("");
+      setFacility("");
+      setDate(dayjs());
+      setSelectedCourt("");
+      setStartTime(dayjs());
+      setEndTime(dayjs());
       handleClose();
+      notify("Booking Successfully");
     } catch (err) {
+      errorAlert("Booking Failed");
       console.log(err.message);
     }
   };
@@ -183,7 +237,6 @@ export default function Schedule() {
               left: "50%",
               transform: "translate(-50%, -50%)",
               width: 600,
-              height: 400,
               bgcolor: "background.paper",
               boxShadow: 24,
               p: 4,
@@ -200,98 +253,106 @@ export default function Schedule() {
             <Box
               sx={{
                 display: "flex",
-                justifyContent: "center",
+                justifyContent: "space-between",
                 alignItems: "center",
                 gap: "1.5rem",
                 marginTop: ".5rem",
               }}>
+              <TextField
+                sx={{ flex: 1 }}
+                InputProps={{
+                  endAdornment: <AccountBoxIcon style={{ color: "#888" }} />,
+                }}
+                label="Enter Name"
+                variant="outlined"
+                onChange={(e) => setName(e.target.value)}
+                value={name}
+              />
+              <TextField
+                sx={{ flex: 1 }}
+                InputProps={{
+                  endAdornment: <AccountBoxIcon style={{ color: "#888" }} />,
+                }}
+                label="Phone"
+                variant="outlined"
+                onChange={(e) => setPhone(e.target.value)}
+                value={phone}
+              />
+            </Box>
+            <Box sx={{ marginTop: "1rem" }}>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DemoContainer components={["DatePicker"]}>
-                  <TextField
-                    sx={{ width: 260 }}
-                    InputProps={{
-                      endAdornment: (
-                        <AccountBoxIcon style={{ color: "#888" }} />
-                      ),
-                    }}
-                    label="Enter Name"
-                    variant="outlined"
-                    onChange={(e) => setName(e.target.value)}
-                  />
-                  <DatePicker
-                    label="Select Date"
-                    value={date}
-                    onChange={handleDateChange}
-                  />
-                </DemoContainer>
+                <DatePicker
+                  label="Select Date"
+                  value={date}
+                  onChange={handleDateChange}
+                  sx={{ width: "100%" }}
+                />
               </LocalizationProvider>
             </Box>
+
             {/** Court and Facility Picker */}
             <Box
               sx={{
                 display: "flex",
-                justifyContent: "center",
+                justifyContent: "space-between",
                 alignItems: "center",
                 gap: "1rem",
                 marginTop: "1rem",
               }}>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <FormControl sx={{ width: "100%" }}>
-                  <InputLabel>Facility</InputLabel>
-                  <Select value={facility} onChange={handleOnSelectFacility}>
-                    {getFacilities.map((name) => (
-                      <MenuItem key={name} value={name}>
-                        {name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+              <FormControl sx={{ flex: 1 }}>
+                <InputLabel>Facility</InputLabel>
+                <Select value={facility} onChange={handleOnSelectFacility}>
+                  {getFacilities.map((facility, key) => (
+                    <MenuItem key={key} value={facility.name}>
+                      {facility.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
 
-                <FormControl sx={{ width: "100%" }}>
-                  <InputLabel>Court</InputLabel>
-                  <Select value={selectedCourt} onChange={handleOnSelectCourt}>
-                    {getCourts.map((name) => (
-                      <MenuItem key={name} value={name}>
-                        {name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </LocalizationProvider>
+              <FormControl sx={{ flex: 1 }}>
+                <InputLabel>Court</InputLabel>
+                <Select value={selectedCourt} onChange={handleOnSelectCourt}>
+                  {court.map((data, key) => (
+                    <MenuItem key={key} value={data.name}>
+                      {data.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </Box>
 
             {/** Time Picker */}
             <Box
               sx={{
                 display: "flex",
-                justifyContent: "center",
+                justifyContent: "space-between",
                 alignItems: "center",
                 gap: "1rem",
-                marginTop: ".5rem",
+                marginTop: "1rem",
               }}>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DemoContainer components={["TimePicker", "TimePicker"]}>
-                  <TimePicker
-                    value={startTime}
-                    onChange={(newTime) => setStartTime(newTime)}
-                    label="Start Time"
-                  />
-                  <TimePicker
-                    value={endTime}
-                    onChange={(newTime) => setEndTime(newTime)}
-                    label="End Time"
-                  />
-                </DemoContainer>
+                <TimePicker
+                  value={startTime}
+                  onChange={(newTime) => setStartTime(newTime)}
+                  label="Start Time"
+                  sx={{ flex: 1 }}
+                />
+                <TimePicker
+                  value={endTime}
+                  onChange={(newTime) => setEndTime(newTime)}
+                  label="End Time"
+                  sx={{ flex: 1 }}
+                />
               </LocalizationProvider>
             </Box>
 
             <Divider sx={{ margin: "1rem 0" }} />
             <Box
               sx={{
-                marginTop: "1rem",
                 display: "flex",
                 justifyContent: "flex-end",
-                alignItems: "flex-end",
+                alignItems: "center",
                 gap: "1rem",
               }}>
               <Button variant="outlined" color="error" onClick={handleClose}>

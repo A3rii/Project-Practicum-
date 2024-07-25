@@ -690,27 +690,27 @@
    color: var(--primary)
 }
 
-.home-swiper-1,
-.home-swiper-2,
-.home-swiper-3 {
-   display: flex;
-   flex-direction: column;
-   justify-content: center;
-   align-items: center;
-   row-gap: 1.5rem;
-}
-
 .swiper {
-   width: 65%;
-   height: 100%;
+   width: 75%;
+   height: 30rem;
+   margin-left: auto;
+   margin-right: auto;
 }
 
+.swiper-slide {
+   text-align: center;
+   font-size: 18px;
+   background: #fff;
+}
 
 .swiper-slide img {
-   width: 19rem;
-   height: 27rem;
-   border-radius: .5rem;
+   display: block;
+   width: 100%;
+   height: 100%;
+   object-fit: cover;
 }
+
+
 
 
 /**Home Page*/
@@ -876,31 +876,23 @@
 }
 
 
-.center-category {
+.center-sport {
    display: flex;
    justify-content: center;
    align-items: center;
    flex-direction: column;
    margin-top: 2rem;
-   max-width: 100%;
-   row-gap: 5rem;
-   margin: 3rem;
 }
 
-.center-cardSport {
+.center-card {
    display: flex;
    justify-content: center;
    align-items: center;
-   flex-wrap: wrap;
-   row-gap: 3rem;
-   column-gap: 6rem;
+   gap: 4rem;
+   margin-top: 2rem;
 }
 
 
-
-.center-category h2 {
-   text-align: center;
-}
 
 .center-map {
    background: rgba(0, 0, 0, 0.4) url('./assets/BookingImags/pic11.png') center/cover;
@@ -1004,9 +996,6 @@
    font-weight: 600;
 }
 
-
-
-
 .center-client-comments {
    text-align: center;
    margin-top: 2rem;
@@ -1096,7 +1085,6 @@
    color: var(--white);
    text-align: justify;
 }
-
 
 
 .date-time {
@@ -1207,6 +1195,7 @@
    font-weight: 600;
    font-family: "Roboto", sans-serif;
 }
+
 
 
 
@@ -1498,65 +1487,7 @@
 }
 
 /*Home Dash*/
-.home-mainProfile {
-   display: flex;
-   justify-content: center;
-   align-items: center;
-   flex-direction: column;
-   gap: 1rem;
-}
 
-.home-profile {
-   display: flex;
-   justify-content: center;
-   align-items: center;
-}
-
-
-
-.home-addPictureLabel {
-   display: inline-block;
-   position: relative;
-   top: 5.5rem;
-   width: 50px;
-   height: 50px;
-   text-align: center;
-   line-height: 50px;
-   cursor: pointer;
-}
-
-.home-addPicture {
-   display: none;
-}
-
-.home-profileName {
-   font-family: "Roboto", sans-serif;
-   font-size: 1.2rem;
-   font-weight: 500;
-   margin-right: 2rem;
-}
-
-.home-tableInfo {
-   display: flex;
-   justify-content: center;
-   align-items: center;
-   flex-direction: column;
-   margin-top: 4rem;
-}
-
-
-
-.home-editSportcenter {
-   margin-top: 4rem;
-   display: flex;
-   justify-content: center;
-   align-items: center;
-   flex-direction: column;
-   text-align: center;
-   font-family: "Roboto", sans-serif;
-   font-size: 1.2rem;
-   font-weight: 500;
-}
 
 .admin-totalCustomer,
 .admin-totalBooking,
@@ -1618,6 +1549,13 @@
    border-radius: .5rem;
 }
 
+.rbc-time-slot {
+   background-color: var(--white);
+}
+
+.rbc-time-view {
+   border: 2px solid var(--dark);
+}
 
 /*Schedule*/
 

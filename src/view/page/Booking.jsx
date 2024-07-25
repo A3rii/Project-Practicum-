@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect, useCallback, useMemo } from "react";
-import SportCenter from "./../../assets/BookingImags/pic2.jpg";
 import axios from "axios";
 import {
   Box,
@@ -279,7 +278,7 @@ function SportFieldCard() {
         key={key}
         sx={{ width: 260, height: 380, marginBottom: "2rem" }}
         elevation={4}>
-        <CardMedia sx={{ height: 180 }} image={SportCenter} />
+        <CardMedia sx={{ height: 180 }} image={data.logo} />
 
         <CardContent
           sx={{

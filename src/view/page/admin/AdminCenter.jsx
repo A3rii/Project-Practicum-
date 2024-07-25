@@ -5,6 +5,7 @@ import { styled, useTheme } from "@mui/material/styles";
 import {
   Box,
   Toolbar,
+  Paper,
   List,
   CssBaseline,
   Typography,
@@ -12,7 +13,9 @@ import {
   IconButton,
   Avatar,
   Tooltip,
+  InputBase,
 } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
 import { useDispatch } from "react-redux";
 import { logout } from "./../../../app/slice.js";
 import MuiDrawer from "@mui/material/Drawer";
@@ -24,7 +27,9 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import HomeIcon from "@mui/icons-material/Home";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import LogoutIcon from "@mui/icons-material/Logout";
-import boy from "./../../../assets/BookingImags/boy.jpg";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import useCurrentLessor from "../../../utils/useCurrentLessor.jsx";
+import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 
 const drawerWidth = 250;
 const openedMixin = (theme) => ({
@@ -92,10 +97,11 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 export default function AdminCenter() {
+  const currentLessor = useCurrentLessor();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [name, setName] = React.useState("");
   const theme = useTheme();
+
   const [open, setOpen] = React.useState(false);
 
   const handleDrawerOpen = () => {
@@ -105,10 +111,6 @@ export default function AdminCenter() {
     setOpen(false);
   };
 
-  const handleChangeName = (sidebar) => {
-    setName(sidebar);
-  };
-
   const handleLogOut = () => {
     dispatch(logout());
     localStorage.clear();
@@ -116,10 +118,18 @@ export default function AdminCenter() {
     console.log("logout");
   };
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box
+      sx={{
+        display: "flex",
+        height: "auto",
+        backgroundColor: (theme) =>
+          theme.palette.mode === "light"
+            ? theme.palette.grey[100]
+            : theme.palette.grey[900],
+      }}>
       <CssBaseline />
       <AppBar position="fixed" open={open}>
-        <Toolbar>
+        <Toolbar style={{ backgroundColor: "#1A43BF" }}>
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -131,27 +141,53 @@ export default function AdminCenter() {
             }}>
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            {name ? name : "DashBoard"}
-          </Typography>
 
           <Box
             sx={{
               display: "flex",
               alignItems: "center",
+              gap: ".8rem",
               marginLeft: "auto",
-              pr: 2,
+              pr: 1,
             }}>
-            <Tooltip title="Open settings">
+            <Paper
+              component="form"
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                width: 400,
+              }}>
+              <InputBase
+                sx={{ ml: 1, flex: 1 }}
+                placeholder="Search"
+                inputProps={{ "aria-label": "search" }}
+              />
+              <IconButton type="button" sx={{ p: "6px" }} aria-label="search">
+                <SearchIcon />
+              </IconButton>
+              <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+            </Paper>
+
+            <Tooltip title="Notification">
+              <NotificationsActiveIcon sx={{ fontSize: "1.4rem" }} />
+            </Tooltip>
+            <Tooltip title={currentLessor?.sportcenter_name}>
               <IconButton sx={{ p: 0 }}>
-                <Avatar alt="K" src={boy} />
+                <Avatar
+                  sx={{ width: 32, height: 32, fontSize: ".5rem" }}
+                  alt="#"
+                  src={currentLessor?.logo || ""}
+                />
               </IconButton>
             </Tooltip>
+            <Typography sx={{ fontSize: ".8rem" }} noWrap component="div">
+              {currentLessor?.email}
+            </Typography>
           </Box>
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open} elevation={20}>
-        <DrawerHeader style={{ backgroundColor: "#1975d1" }}>
+        <DrawerHeader style={{ backgroundColor: "#1A43BF" }}>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === "rtl" ? (
               <ChevronRightIcon sx={{ color: "#fff" }} />
@@ -163,58 +199,56 @@ export default function AdminCenter() {
 
         <div
           className="admin-sidebar"
-          style={{ backgroundColor: "#fff", height: "100vh", width: "50vh" }}>
+          style={{
+            backgroundColor: "#fff",
+            height: "100vh",
+            width: "50vh",
+          }}>
           <List sx={{ mt: 1 }}>
             <ul>
               <div className="admin-icon">
                 <Link to="/admin/dashboard">
-                  <HomeIcon
-                    onClick={() => handleChangeName("Home")}
-                    sx={{ color: "#000" }}
-                  />
+                  <HomeIcon sx={{ color: "#444444" }} />
                 </Link>
-                <Link to="/admin//dashboard">
-                  <li onClick={() => handleChangeName("Home")}>Home</li>
+                <Link to="/admin/dashboard">
+                  <li>Home</li>
                 </Link>
               </div>
               <div className="admin-icon">
                 <Link to="/admin/confirm_match">
-                  <PersonAddAlt1Icon
-                    onClick={() => handleChangeName("Confirm Booking")}
-                    sx={{ color: "#000" }}
-                  />
+                  <PersonAddAlt1Icon sx={{ color: "#444444" }} />
                 </Link>
                 <Link to="/admin/confirm_match">
-                  <li onClick={() => handleChangeName("Confirm Booking")}>
-                    Confirm Booking
-                  </li>
+                  <li>Confirm Booking</li>
                 </Link>
               </div>
               <div className="admin-icon">
                 <Link to="/admin/schedule">
-                  <CalendarMonthIcon
-                    onClick={() => handleChangeName("Set Schedule")}
-                    sx={{ color: "#000" }}
-                  />
+                  <CalendarMonthIcon sx={{ color: "#444444" }} />
                 </Link>
 
                 <Link to="/admin/schedule">
-                  <li onClick={() => handleChangeName("Set Schedule")}>
-                    Set Schedule
-                  </li>
+                  <li>Set Schedule</li>
                 </Link>
               </div>
 
               <div className="admin-icon">
                 <Link to="/admin/facility">
-                  <SportsBaseballIcon
-                    onClick={() => handleChangeName("Set Open Hour")}
-                    sx={{ color: "#000" }}
-                  />
+                  <SportsBaseballIcon sx={{ color: "#444444" }} />
                 </Link>
 
                 <Link to="/admin/facility">
-                  <li onClick={() => handleChangeName("Facility")}>Facility</li>
+                  <li>Facility</li>
+                </Link>
+              </div>
+
+              <div className="admin-icon">
+                <Link to="/admin/lessor-profile">
+                  <AccountCircleIcon sx={{ color: "#444444" }} />
+                </Link>
+
+                <Link to="/admin/lessor-profile">
+                  <li>Profile</li>
                 </Link>
               </div>
             </ul>
@@ -229,7 +263,9 @@ export default function AdminCenter() {
           <List>
             <ul>
               <div onClick={handleLogOut} className="admin-logout">
-                <LogoutIcon sx={{ color: "#000" }} />
+                <Tooltip title="Log Out">
+                  <LogoutIcon sx={{ color: "#000" }} />
+                </Tooltip>
                 <li>Log Out</li>
               </div>
             </ul>

@@ -17,14 +17,19 @@ import {
   RadioGroup,
   FormControlLabel,
   FormControl,
+  Pagination,
+  PaginationItem,
 } from "@mui/material";
-import { useState, useEffect, useCallback, useMemo } from "react";
 import authToken from "./../../../utils/authToken";
 import axios from "axios";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import dayjs from "dayjs";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { ToastContainer } from "react-toastify";
-import { notify, errorAlert } from "./../../../utils/toastAlert"; // Adjust the path as needed
+import { notify, errorAlert } from "./../../../utils/toastAlert";
+import { formatDate, totalHour } from "./../../../utils/timeCalculation";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function ConfirmPage() {
@@ -32,30 +37,110 @@ export default function ConfirmPage() {
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [booking, setBooking] = useState([]);
+  const [expiredBooking, setExpiredBooking] = useState([]);
   const [search, setSearch] = useState("");
+  const [pageTotal, setTotalPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
+  //* Filter Match By today's Date
+  const [filteredBookings, setFilteredBookings] = useState([]);
+  const [selectedFilter, setSelectedFilter] = useState("all");
+
+  const handlePageChange = (event, value) => {
+    setTotalPage(value);
+  };
+
+  //* Fetch all the booking with limited data (pagination)
   const fetchBooking = useCallback(async () => {
     try {
       const getBooking = await axios.get(
-        `${import.meta.env.VITE_API_URL}/books/sport-center`,
+        `${import.meta.env.VITE_API_URL}/books/customer/pagination`,
         {
+          params: {
+            page: pageTotal,
+            limit: 4,
+          },
           headers: {
             Accept: "application/json",
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      const books = getBooking.data.bookings;
+      const { bookings, totalPages } = getBooking.data;
+      setTotalPages(totalPages);
+      setFilteredBookings(bookings); // Initialize with all bookings
 
-      const approvedOrders = books.filter(
+      // Find Only pending status of users
+      const approvedOrders = bookings.filter(
         (booking) => booking.status === "pending"
       );
       setBooking(approvedOrders);
     } catch (err) {
       console.log(err.message);
     }
+  }, [token, pageTotal]);
+
+  //* Incase the booking date is expired automatically rejected
+  useEffect(() => {
+    // Get all bookings from lessor
+    const getAndProcessBookings = async () => {
+      try {
+        // Fetch bookings from the API
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/books/sport-center`,
+          {
+            headers: {
+              Accept: "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const bookings = response.data.bookings;
+
+        const currentDate = new Date(); // Get the Today date
+        currentDate.setHours(0, 0, 0, 0);
+
+        // Process each booking to check if it's expired
+        const promises = bookings.map(async (booking) => {
+          const bookingDate = new Date(booking.date);
+
+          // If the date is expired from today and the status is still pending
+          if (bookingDate < currentDate && booking.status === "pending") {
+            try {
+              await axios.put(
+                `${import.meta.env.VITE_API_URL}/books/${booking._id}/status`,
+                {
+                  status: "rejected",
+                },
+                {
+                  headers: {
+                    Accept: "application/json",
+                    Authorization: `Bearer ${token}`,
+                  },
+                }
+              );
+            } catch (err) {
+              console.log(
+                `Failed to update booking ${booking._id}: ${err.message}`
+              );
+            }
+          }
+        });
+
+        await Promise.all(promises);
+
+        // Update state with the fetched bookings
+        setExpiredBooking(bookings);
+      } catch (err) {
+        console.log(`Failed to fetch bookings: ${err.message}`);
+      }
+    };
+
+    getAndProcessBookings();
   }, [token]);
 
+  //*  Changing status of users
   const handleAccept = useCallback(
     async (status, bookingId) => {
       const changeStatus = {
@@ -86,49 +171,70 @@ export default function ConfirmPage() {
 
   useEffect(() => {
     fetchBooking();
-  }, []);
+  }, [fetchBooking, pageTotal]);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
-
   const handleClose = () => {
     setAnchorEl(null);
   };
-
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
 
-  // Formatting date
-  const formatDate = (date) => {
-    return dayjs(date).format("MMMM DD, YYYY");
+  // Checking For today match  in Radio filtering
+  useEffect(() => {
+    if (selectedFilter === "today") {
+      // If the selection is today
+      const todayMatch = booking.filter(
+        (booking) =>
+          formatDate(booking.date) === dayjs().format("MMMM DD, YYYY")
+      );
+      setFilteredBookings(todayMatch); // If we have a today match get the data
+    } else {
+      setFilteredBookings(booking); // Else fetch all the data
+    }
+  }, [selectedFilter, booking]);
+
+  // Select filter in radio
+  const handleFilterChange = (event) => {
+    setSelectedFilter(event.target.value);
   };
 
-  // Calculate the total hours
-  const totalHour = (start, end) => {
-    return parseInt(end) - parseInt(start);
-  };
-
+  // Listing all bookings
   const listBookings = useMemo(() => {
-    if (!booking) return null;
+    if (!filteredBookings) return null;
+
     const filterSearch = search
-      ? booking.filter(
+      ? filteredBookings.filter(
           (find) =>
-            (find.user &&
+            (find.user && // Search by name for online users booking
               find.user.name.toLowerCase().includes(search.toLowerCase())) ||
             (find.user &&
-              find.user.phone_number
+              find.user.phone_number // Search by phone number for online users booking
+                .toLowerCase()
+                .includes(search.toLowerCase())) ||
+            (find.outside_user && // Search by name for contact users booking
+              find.outside_user.name
+                .toLowerCase()
+                .includes(search.toLowerCase())) ||
+            (find.outside_user && // Search by phone number  for contact users booking
+              find.outside_user.phone_number
                 .toLowerCase()
                 .includes(search.toLowerCase()))
         )
-      : booking;
+      : filteredBookings;
 
     return (
-      filterSearch &&
+      filterSearch && // Filter Search either  filteredBookings( name and phone filtter) or  filteredBookings
       filterSearch.map((data, key) => (
         <TableRow key={key}>
-          <TableCell align="left">{data.user?.name || data.user}</TableCell>
-          {/* <TableCell align="center">{data.user.phone_number}</TableCell> */}
+          <TableCell align="left">
+            {data?.user?.name || data?.outside_user?.name}
+          </TableCell>
+          <TableCell align="center">
+            {data?.user?.phone_number || data?.outside_user?.phone_number}
+          </TableCell>
           <TableCell align="center">{data.facility}</TableCell>
           <TableCell align="center">{data.court}</TableCell>
           <TableCell align="center">{formatDate(data.date)}</TableCell>
@@ -163,14 +269,14 @@ export default function ConfirmPage() {
                 onClick={() => handleAccept("rejected", data._id)}
                 variant="outlined"
                 color="error">
-                Deny
+                Cancel
               </Button>
             </Stack>
           </TableCell>
         </TableRow>
       ))
     );
-  }, [booking, handleAccept, search]);
+  }, [filteredBookings, handleAccept, search]);
 
   return (
     <>
@@ -209,7 +315,7 @@ export default function ConfirmPage() {
             variant="h5"
             component="div"
             sx={{ padding: "14px", fontWeight: "bold" }}>
-            Customer
+            Confirmation Table
           </Typography>
 
           <div
@@ -254,21 +360,19 @@ export default function ConfirmPage() {
                   justifyContent: "center",
                   alignItems: "center",
                 }}>
-                <RadioGroup name="radio-buttons-group">
+                <RadioGroup
+                  value={selectedFilter}
+                  onChange={handleFilterChange}
+                  name="radio-buttons-group">
                   <FormControlLabel
-                    value="other"
+                    value="all"
                     control={<Radio />}
                     label="All"
                   />
                   <FormControlLabel
-                    value="female"
+                    value="today"
                     control={<Radio />}
                     label="Today"
-                  />
-                  <FormControlLabel
-                    value="male"
-                    control={<Radio />}
-                    label="Sport Type"
                   />
                 </RadioGroup>
               </FormControl>
@@ -287,12 +391,12 @@ export default function ConfirmPage() {
                 </TableCell>
                 <TableCell align="center">Facility</TableCell>
                 <TableCell align="center">Court</TableCell>
-                <TableCell align="center">Date </TableCell>
-                <TableCell align="center">Start </TableCell>
+                <TableCell align="center">Date</TableCell>
+                <TableCell align="center">Start</TableCell>
                 <TableCell align="center">End</TableCell>
-                <TableCell align="left">Hour </TableCell>
+                <TableCell align="center">Hour</TableCell>
                 <TableCell align="left">Status</TableCell>
-                <TableCell align="center">Action </TableCell>
+                <TableCell align="center">Action</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -305,6 +409,26 @@ export default function ConfirmPage() {
               )}
             </TableBody>
           </Table>
+          <Stack
+            spacing={2}
+            sx={{
+              display: "flex",
+              justifyContent: "end",
+              alignItems: "end",
+              padding: "1.5rem",
+            }}>
+            <Pagination
+              count={totalPages}
+              page={pageTotal}
+              onChange={handlePageChange}
+              renderItem={(item) => (
+                <PaginationItem
+                  slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }}
+                  {...item}
+                />
+              )}
+            />
+          </Stack>
         </TableContainer>
       </Paper>
     </>

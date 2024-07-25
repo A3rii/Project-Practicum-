@@ -26,9 +26,7 @@ export default function Login() {
     /** Dispatch the action of login */
     dispatch(loginUser(userCredentials)).then((action) => {
       if (action.payload) {
-        const userRole = action.payload;
-
-        console.log(userRole);
+        const userRole = action.payload.role;
         if (userRole === "admin") {
           console.log(`This is ${userRole} `);
           navigate("/admin");

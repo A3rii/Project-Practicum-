@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import CardSwiper from "../../components/CardSwiper";
+import currentUser from "./../../utils/currentUser";
 
 function Banner() {
   return (
@@ -84,18 +84,9 @@ function RentalSection() {
   );
 }
 
-function ServiceSection() {
-  return (
-    <div className="home-service">
-      <h2>
-        Explore The <span className="home-redSpan">Services</span>
-      </h2>
-      <CardSwiper />
-    </div>
-  );
-}
-
 export default function Home() {
+  const user = currentUser();
+  console.log(user);
   return (
     <>
       <div className="home-header">
@@ -108,7 +99,6 @@ export default function Home() {
         <ProcessSection />
       </div>
       <RentalSection />
-      <ServiceSection />
     </>
   );
 }

@@ -14,9 +14,9 @@ import {
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { loginLessor } from "./../../../../app/slice.js";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { loginLessor } from "./../../../../app/slice.js"; // Ensure the correct path
 
 function Copyright(props) {
   return (
@@ -43,6 +43,7 @@ export default function SignIn() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
 
   const handleSignIn = (e) => {
     e.preventDefault();
@@ -52,15 +53,17 @@ export default function SignIn() {
     };
 
     dispatch(loginLessor(lessorCredentials)).then((action) => {
-      if (action.payload) {
+      if (loginLessor.fulfilled.match(action)) {
         const userRole = action.payload.lessor.role;
-        console.log(userRole);
         if (userRole === "admin") {
-          console.log(`This is ${userRole} `);
           navigate("/admin/dashboard");
+        } else {
+          navigate("/lessor/dashboard");
         }
         setEmail("");
         setPassword("");
+      } else if (loginLessor.rejected.match(action)) {
+        setError(action.payload || "Login failed");
       }
     });
   };
@@ -82,6 +85,11 @@ export default function SignIn() {
           <Typography component="h1" variant="h5">
             Sign In As Lessor
           </Typography>
+          {error && (
+            <Typography color="error" variant="body2">
+              {error}
+            </Typography>
+          )}
           <Box component="form" noValidate sx={{ mt: 1 }}>
             <TextField
               margin="normal"
@@ -92,6 +100,7 @@ export default function SignIn() {
               name="email"
               autoComplete="email"
               autoFocus
+              value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
             <TextField
@@ -103,6 +112,7 @@ export default function SignIn() {
               type="password"
               id="password"
               autoComplete="current-password"
+              value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
             <FormControlLabel

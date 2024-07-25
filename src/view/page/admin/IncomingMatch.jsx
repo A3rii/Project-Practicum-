@@ -16,17 +16,26 @@ import {
   RadioGroup,
   FormControlLabel,
   FormControl,
+  Pagination,
+  PaginationItem,
+  Stack,
 } from "@mui/material";
-import dayjs from "dayjs";
+import { formatDate, totalHour } from "./../../../utils/timeCalculation";
+
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
-import axios from "axios";
 import authToken from "./../../../utils/authToken";
+import axios from "axios";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 export default function IncomingMatch() {
   const token = authToken();
+  const [allBookings, setAllBookings] = useState([]);
   const [bookings, setBookings] = useState([]);
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [filteredBookings, setFilteredBookings] = useState([]);
+  const [selectedFilter, setSelectedFilter] = useState("all");
 
+  const [anchorEl, setAnchorEl] = useState(null);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -36,6 +45,7 @@ export default function IncomingMatch() {
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
 
+  // Fetching all the list of the bookings of lessor
   const fetchBooking = useCallback(async () => {
     try {
       const getBooking = await axios.get(
@@ -47,8 +57,12 @@ export default function IncomingMatch() {
           },
         }
       );
+
+      setAllBookings(getBooking.data.bookings);
+      // recieve the data
       const books = getBooking.data.bookings;
 
+      // Filter only approved booking list
       const approvedOrders = books.filter(
         (booking) => booking.status === "approved"
       );
@@ -63,46 +77,43 @@ export default function IncomingMatch() {
     fetchBooking();
   }, [fetchBooking]);
 
-  // Formatting date
-  const formatDate = (date) => {
-    return dayjs(date).format("MMMM DD, YYYY");
+  // Filtering Approved or Rejected bookings
+  useEffect(() => {
+    if (selectedFilter === "rejected") {
+      const rejectedBooking = allBookings.filter(
+        (booking) => booking.status === "rejected"
+      );
+      setFilteredBookings(rejectedBooking);
+    } else {
+      setFilteredBookings(bookings);
+    }
+  }, [allBookings, selectedFilter, bookings]);
+
+  // Select filter in radio
+  const handleFilterChange = (event) => {
+    setSelectedFilter(event.target.value);
   };
 
-  // Calculate the total hours
-  const totalHour = (start, end) => {
-    const startTime = dayjs(start, "HH:mm");
-    const endTime = dayjs(end, "HH:mm");
-    return endTime.diff(startTime, "hour", true); // Calculate difference in hours
-  };
-
+  // List all the approved bookings
   const listBookings = useMemo(() => {
-    if (!Array.isArray(bookings) || bookings.length === 0) return null;
+    if (!Array.isArray(filteredBookings) || filteredBookings.length === 0)
+      return null;
 
-    return bookings.map((data, key) => (
+    return filteredBookings.map((data, key) => (
       <TableRow key={key}>
-        <TableCell align="left" sx={{ fontWeight: "bold" }}>
-          {data.user.name}
+        <TableCell align="left">
+          {data?.user?.name || data?.outside_user?.name}
         </TableCell>
-        <TableCell align="center" sx={{ width: "25%", fontWeight: "bold" }}>
-          {data.user.phone_number}
+        <TableCell align="left">
+          {data?.user?.phone_number || data?.outside_user?.phone_number}
         </TableCell>
-        <TableCell align="center" sx={{ fontWeight: "bold" }}>
-          {data.facility}
-        </TableCell>
-        <TableCell align="center" sx={{ fontWeight: "bold" }}>
-          {data.court}
-        </TableCell>
-        <TableCell align="center" sx={{ fontWeight: "bold" }}>
-          {formatDate(data.date)}
-        </TableCell>
+        <TableCell align="center">{data.facility}</TableCell>
+        <TableCell align="center">{data.court}</TableCell>
+        <TableCell align="center">{formatDate(data.date)}</TableCell>
 
-        <TableCell align="left" sx={{ fontWeight: "bold" }}>
-          {data.startTime}
-        </TableCell>
-        <TableCell align="left" sx={{ fontWeight: "bold" }}>
-          {data.endTime}
-        </TableCell>
-        <TableCell align="left" sx={{ fontWeight: "bold" }}>
+        <TableCell align="left">{data.startTime}</TableCell>
+        <TableCell align="left">{data.endTime}</TableCell>
+        <TableCell align="left">
           {totalHour(data.startTime, data.endTime)}
         </TableCell>
 
@@ -113,7 +124,7 @@ export default function IncomingMatch() {
             padding: "5px 9px",
             fontSize: "12px",
             fontWeight: "bold",
-            backgroundColor: "green",
+            backgroundColor: data.status === "approved" ? "#00FF00" : "#FF0000",
             color: "white",
             borderRadius: "10px",
             textAlign: "center",
@@ -122,7 +133,7 @@ export default function IncomingMatch() {
         </TableCell>
       </TableRow>
     ));
-  }, [bookings]);
+  }, [filteredBookings]);
 
   return (
     <Paper
@@ -147,7 +158,7 @@ export default function IncomingMatch() {
           variant="h5"
           component="div"
           sx={{ padding: "14px", fontWeight: "bold" }}>
-          Incoming Match
+          Match Acception
         </Typography>
 
         <div
@@ -183,6 +194,7 @@ export default function IncomingMatch() {
             {/*Content Filter Here*/}
 
             <FormControl
+              onChange={handleFilterChange}
               sx={{
                 width: "9rem",
                 height: "9rem",
@@ -192,15 +204,11 @@ export default function IncomingMatch() {
               }}>
               <RadioGroup name="radio-buttons-group">
                 <FormControlLabel value="all" control={<Radio />} label="All" />
+
                 <FormControlLabel
-                  value="incoming"
+                  value="rejected"
                   control={<Radio />}
-                  label="Incoming"
-                />
-                <FormControlLabel
-                  value="done"
-                  control={<Radio />}
-                  label="Done"
+                  label="Rejected"
                 />
               </RadioGroup>
             </FormControl>
@@ -215,7 +223,7 @@ export default function IncomingMatch() {
           <TableHead>
             <TableRow>
               <TableCell>User</TableCell>
-              <TableCell align="center">Phone Number</TableCell>
+              <TableCell align="left">Phone Number</TableCell>
               <TableCell align="center">Facility</TableCell>
               <TableCell align="center">Court</TableCell>
               <TableCell align="center">Date </TableCell>
@@ -235,6 +243,24 @@ export default function IncomingMatch() {
             )}
           </TableBody>
         </Table>
+        <Stack
+          spacing={2}
+          sx={{
+            display: "flex",
+            justifyContent: "end",
+            alignItems: "end",
+            padding: "1.5rem",
+          }}>
+          <Pagination
+            count={10}
+            renderItem={(item) => (
+              <PaginationItem
+                slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }}
+                {...item}
+              />
+            )}
+          />
+        </Stack>
       </TableContainer>
     </Paper>
   );
