@@ -799,11 +799,11 @@
 
 .booking-sportFieldCard {
    max-width: 100%;
+   margin-top: 2rem;
    display: flex;
    justify-content: space-between;
-   align-items: center;
+   align-items: start;
    gap: 5rem;
-   margin-top: 2rem;
 }
 
 .booking-centerCard {

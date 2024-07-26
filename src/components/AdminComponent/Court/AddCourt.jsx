@@ -1,4 +1,4 @@
-/* eslint-disable react/prop-types */
+import "react-toastify/dist/ReactToastify.css";
 import {
   Button,
   TextField,

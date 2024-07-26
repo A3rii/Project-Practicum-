@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useMemo } from "react";
 import {
   Paper,
   Typography,
@@ -20,81 +20,68 @@ import {
   PaginationItem,
   Stack,
 } from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
 import { formatDate, totalHour } from "./../../../utils/timeCalculation";
-
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import authToken from "./../../../utils/authToken";
 import axios from "axios";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import Loader from "./../../../components/Loader";
+
+// Api request for list of bookings
+const fetchBookings = async (token) => {
+  const response = await axios.get(
+    `${import.meta.env.VITE_API_URL}/books/sport-center`,
+    {
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return response.data.bookings;
+};
 
 export default function IncomingMatch() {
   const token = authToken();
-  const [allBookings, setAllBookings] = useState([]);
-  const [bookings, setBookings] = useState([]);
-  const [filteredBookings, setFilteredBookings] = useState([]);
   const [selectedFilter, setSelectedFilter] = useState("all");
-
   const [anchorEl, setAnchorEl] = useState(null);
+
+  // Get the bookings data
+  const {
+    data: allBookings = [],
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["bookings"],
+    queryFn: () => fetchBookings(token),
+  });
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
+
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
 
-  // Fetching all the list of the bookings of lessor
-  const fetchBooking = useCallback(async () => {
-    try {
-      const getBooking = await axios.get(
-        `${import.meta.env.VITE_API_URL}/books/sport-center`,
-        {
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      setAllBookings(getBooking.data.bookings);
-      // recieve the data
-      const books = getBooking.data.bookings;
-
-      // Filter only approved booking list
-      const approvedOrders = books.filter(
-        (booking) => booking.status === "approved"
-      );
-
-      setBookings(approvedOrders);
-    } catch (err) {
-      console.log(err.message);
-    }
-  }, [token]);
-
-  useEffect(() => {
-    fetchBooking();
-  }, [fetchBooking]);
-
-  // Filtering Approved or Rejected bookings
-  useEffect(() => {
-    if (selectedFilter === "rejected") {
-      const rejectedBooking = allBookings.filter(
-        (booking) => booking.status === "rejected"
-      );
-      setFilteredBookings(rejectedBooking);
-    } else {
-      setFilteredBookings(bookings);
-    }
-  }, [allBookings, selectedFilter, bookings]);
-
-  // Select filter in radio
   const handleFilterChange = (event) => {
     setSelectedFilter(event.target.value);
   };
 
-  // List all the approved bookings
+  // Filter the rejected bookings or approved bookings
+  const filteredBookings = useMemo(() => {
+    if (selectedFilter === "rejected") {
+      return allBookings.filter((booking) => booking.status === "rejected");
+    }
+    return allBookings.filter((booking) => booking.status === "approved");
+  }, [allBookings, selectedFilter]);
+
+  // List all the bookings in data table
   const listBookings = useMemo(() => {
     if (!Array.isArray(filteredBookings) || filteredBookings.length === 0)
       return null;
@@ -110,13 +97,11 @@ export default function IncomingMatch() {
         <TableCell align="center">{data.facility}</TableCell>
         <TableCell align="center">{data.court}</TableCell>
         <TableCell align="center">{formatDate(data.date)}</TableCell>
-
         <TableCell align="left">{data.startTime}</TableCell>
         <TableCell align="left">{data.endTime}</TableCell>
         <TableCell align="left">
           {totalHour(data.startTime, data.endTime)}
         </TableCell>
-
         <TableCell
           sx={{
             display: "inline-block",
@@ -134,6 +119,12 @@ export default function IncomingMatch() {
       </TableRow>
     ));
   }, [filteredBookings]);
+
+  // If it is still fetching
+  if (isLoading) return <Loader />;
+
+  // If  fetching is error
+  if (error) return <div>Error loading bookings</div>;
 
   return (
     <Paper
@@ -191,8 +182,6 @@ export default function IncomingMatch() {
               vertical: "bottom",
               horizontal: "left",
             }}>
-            {/*Content Filter Here*/}
-
             <FormControl
               onChange={handleFilterChange}
               sx={{
@@ -204,7 +193,6 @@ export default function IncomingMatch() {
               }}>
               <RadioGroup name="radio-buttons-group">
                 <FormControlLabel value="all" control={<Radio />} label="All" />
-
                 <FormControlLabel
                   value="rejected"
                   control={<Radio />}

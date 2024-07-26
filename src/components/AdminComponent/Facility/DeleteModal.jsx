@@ -1,4 +1,4 @@
-/* eslint-disable react/prop-types */
+import "react-toastify/dist/ReactToastify.css";
 import { Button, Modal, Divider, Box, Typography } from "@mui/material";
 import { notify, errorAlert } from "./../../../utils/toastAlert";
 import axios from "axios";
@@ -64,7 +64,6 @@ export default function DeleteModal({ open, closeModal, id, updateModal }) {
           <Typography
             sx={{ width: "100%" }}
             id="outlined-multiline-static"
-            multiline
             rows={4}
             label="Description"
             variant="outlined">

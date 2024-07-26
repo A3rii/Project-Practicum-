@@ -13,7 +13,7 @@ import {
   Tooltip,
   Stack,
 } from "@mui/material";
-import { useEffect, useState, useMemo, useCallback } from "react";
+import { useMemo, useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import AddFacility from "../../../components/AdminComponent/Facility/AddFacility";
 import AddIcon from "@mui/icons-material/Add";
@@ -22,7 +22,10 @@ import DeleteModal from "../../../components/AdminComponent/Facility/DeleteModal
 import DeleteIcon from "@mui/icons-material/Delete";
 import axios from "axios";
 import authToken from "./../../../utils/authToken";
+import { ToastContainer } from "react-toastify";
 import CourtView from "../../../components/AdminComponent/Court/CourtView";
+import { useQuery } from "@tanstack/react-query";
+import Loader from "../../../components/Loader";
 
 export default function Facility() {
   const token = authToken();
@@ -31,9 +34,8 @@ export default function Facility() {
   const [openAdd, setOpenAdd] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
-  const [openCourt, setOpenCorut] = useState(false);
+  const [openCourt, setOpenCourt] = useState(false);
 
-  const [facility, setFacility] = useState([]);
   //* add facility
   const handleOpenAdd = () => setOpenAdd(true);
   const handleCloseAdd = () => setOpenAdd(false);
@@ -46,12 +48,19 @@ export default function Facility() {
   const handleCloseEdit = () => setOpenEdit(false);
 
   //* Court Open
-  const handleOpenCourt = () => setOpenCorut(true);
-  const handleCloseCourt = () => setOpenCorut(false);
+  const handleOpenCourt = () => setOpenCourt(true);
+  const handleCloseCourt = () => setOpenCourt(false);
 
-  const fetchFacilities = useCallback(async () => {
-    try {
-      const getFacility = await axios.get(
+  // Fetch data from server using useQuery
+  const {
+    data: facilities,
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery({
+    queryKey: ["facilities"],
+    queryFn: async () => {
+      const response = await axios.get(
         `${import.meta.env.VITE_API_URL}/lessor/facility`,
         {
           headers: {
@@ -60,21 +69,17 @@ export default function Facility() {
           },
         }
       );
-      setFacility(getFacility.data.facilities);
-    } catch (err) {
-      console.log(err.message);
-    }
-  }, [token]);
-  useEffect(() => {
-    fetchFacilities();
-  }, [fetchFacilities]);
+      return response.data.facilities;
+    },
 
-  console.log(facility);
+    refetchOnWindowFocus: true, // refetch to update the information
+  });
 
+  // List all facilities that lessor has
   const listFacilities = useMemo(() => {
-    if (!facility) return null;
+    if (!facilities) return null;
 
-    return facility.map((data, key) => (
+    return facilities.map((data, key) => (
       <TableRow key={key}>
         <TableCell align="left">{data.name}</TableCell>
         <TableCell align="left" sx={{ width: "25%" }}>
@@ -149,10 +154,25 @@ export default function Facility() {
         </TableCell>
       </TableRow>
     ));
-  }, [facility]);
+  }, [facilities]);
+
+  if (isLoading) return <Loader />;
+  if (isError) return <p>Error fetching data</p>;
 
   return (
     <>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
       <Button
         variant="contained"
         startIcon={<AddIcon />}
@@ -163,14 +183,14 @@ export default function Facility() {
         <AddFacility
           open={openAdd}
           closeModal={handleCloseAdd}
-          updateModal={fetchFacilities}
+          updateModal={refetch}
         />
       )}
       {openDelete && (
         <DeleteModal
           open={openDelete}
           closeModal={handleCloseDelete}
-          updateModal={fetchFacilities}
+          updateModal={refetch}
           id={id}
         />
       )}
@@ -179,12 +199,12 @@ export default function Facility() {
         <EditModal
           open={openEdit}
           closeModal={handleCloseEdit}
-          updateModal={fetchFacilities}
+          updateModal={refetch}
           id={id}
         />
       )}
       {openCourt && <CourtView onClose={handleCloseCourt} facilityId={id} />}
-      {facility && facility.length > 0 ? (
+      {facilities && facilities.length > 0 ? (
         <Paper
           sx={{
             width: "100%",

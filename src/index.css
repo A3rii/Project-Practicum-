@@ -686,8 +686,8 @@ a {
 
    .booking-sportFieldCard {
       display: flex;
-      justify-content: center;
-      align-items: center;
+      justify-content: start;
+      align-items: start;
    }
 
    /*Booking Responsive*/
@@ -886,26 +886,10 @@ a {
 
    /* center responsive*/
 
+}
 
-   /* sport field responsive*
-
-
-   .sportField-Slider,
-   .sportField-carousel {
-      max-width: 100%;
-      margin: 1rem;
-   }
-
-   .sportField-Slider h2 {
-      font-size: 1rem;
-      margin-top: 1rem;
-   }
-
-   .sport-schedule h2 {
-      font-size: 1rem;
-      text-align: center;
-   }
-
-   /* sport field responsive*/
-
+.loader {
+   display: flex;
+   justify-content: center;
+   align-items: center;
 }

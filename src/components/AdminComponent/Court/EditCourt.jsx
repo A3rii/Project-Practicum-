@@ -1,4 +1,5 @@
 /* eslint-disable react/prop-types */
+import "react-toastify/dist/ReactToastify.css";
 import {
   Button,
   TextField,
@@ -44,12 +45,6 @@ export default function AddCourt({
   const [filePreviews, setFilePreviews] = useState([]);
   const [existingImages, setExistingImages] = useState([]);
 
-  useEffect(() => {
-    if (courtId && open) {
-      getCourtById();
-    }
-  }, [courtId, open, getCourtById]);
-
   const metadata = {
     contentType: "image/*",
   };
@@ -75,6 +70,12 @@ export default function AddCourt({
       console.log(err.message);
     }
   }, [courtId, facilityId, token]);
+
+  useEffect(() => {
+    if (courtId && open) {
+      getCourtById();
+    }
+  }, [courtId, open, getCourtById]);
 
   const handlePostingCourt = async (e) => {
     e.preventDefault();

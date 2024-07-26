@@ -1,7 +1,6 @@
-/* eslint-disable react/prop-types */
+import "react-toastify/dist/ReactToastify.css";
 import { Button, Modal, Divider, Box, Typography } from "@mui/material";
 import { notify, errorAlert } from "./../../../utils/toastAlert";
-
 import axios from "axios";
 import authToken from "../../../utils/authToken";
 

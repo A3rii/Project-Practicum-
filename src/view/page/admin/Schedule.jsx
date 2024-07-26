@@ -1,4 +1,5 @@
 import "react-big-calendar/lib/css/react-big-calendar.css";
+import "react-toastify/dist/ReactToastify.css";
 import { Calendar, dateFnsLocalizer, Views } from "react-big-calendar";
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -13,6 +14,8 @@ import startOfWeek from "date-fns/startOfWeek";
 import axios from "axios";
 import authToken from "./../../../utils/authToken";
 import useCurrentLessor from "../../../utils/useCurrentLessor";
+import { ToastContainer } from "react-toastify";
+
 import {
   Button,
   TextField,
@@ -217,6 +220,18 @@ export default function Schedule() {
 
   return (
     <div className="calendar">
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
       <div>
         <Button
           startIcon={<AddIcon />}

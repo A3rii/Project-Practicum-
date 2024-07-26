@@ -20,39 +20,42 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import AccessAlarmsIcon from "@mui/icons-material/AccessAlarms";
 import BookIcon from "@mui/icons-material/Book";
 import dayjs from "dayjs";
+import Loader from "./../../../components/Loader";
+import { useQuery } from "@tanstack/react-query";
 
 function TotalCustomer() {
   const token = authToken();
-  const [totalUsers, setTotalUsers] = useState(0);
 
-  useEffect(() => {
-    const fetchBooking = async () => {
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/books/sport-center`,
-          {
-            headers: {
-              Accept: "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+  const {
+    data: totalUsers,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["totalUsers"],
+    queryFn: async () => {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/books/sport-center`,
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const bookings = response.data.bookings;
+      // Map all the booking either online and contact booking in a set (no duplicates)
+      const uniqueUsers = new Set(
+        bookings.map((booking) => booking?.user?._id || booking?.outside_user)
+      );
 
-        const bookings = response.data.bookings;
+      return uniqueUsers.size;
+    },
 
-        // Map all the booking either online and contact booking in a set (no duplicates)
-        const uniqueUsers = new Set(
-          bookings.map((booking) => booking?.user?._id || booking?.outside_user)
-        );
+    refetchOnWindowFocus: true,
+  });
 
-        setTotalUsers(uniqueUsers.size);
-      } catch (err) {
-        console.log(err.message);
-      }
-    };
-
-    fetchBooking();
-  }, [token]);
+  if (isLoading) return <Loader />;
+  if (isError) return <p>Error fetching data</p>;
 
   return (
     <Paper
@@ -92,32 +95,35 @@ function TotalCustomer() {
 }
 function MatchAcception() {
   const token = authToken();
-  const [totalBooking, setTotalBooking] = useState([]);
 
-  useEffect(() => {
-    const fetchBooking = async () => {
-      try {
-        const booking = await axios.get(
-          `${import.meta.env.VITE_API_URL}/books/sport-center`,
-          {
-            headers: {
-              Accept: "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        const bookings = booking.data.bookings;
+  const {
+    data: totalBooking,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["totalBooking"],
+    queryFn: async () => {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/books/sport-center`,
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const bookings = response.data.bookings;
 
-        const totalUsers = bookings.filter(
-          (booking) => booking.status === "approved"
-        );
-        setTotalBooking(totalUsers.length);
-      } catch (err) {
-        console.log(err.message);
-      }
-    };
-    fetchBooking();
-  }, [token]);
+      const totalUsers = bookings.filter(
+        (booking) => booking.status === "approved"
+      );
+      return totalUsers.length;
+    },
+
+    refetchOnWindowFocus: true,
+  });
+  if (isLoading) return <Loader />;
+  if (isError) return <p>Error fetching data</p>;
 
   return (
     <Paper
@@ -158,29 +164,31 @@ function MatchAcception() {
 
 function TotalBooking() {
   const token = authToken();
-  const [totalBooking, setTotalBooking] = useState([]);
 
-  useEffect(() => {
-    const fetchBooking = async () => {
-      try {
-        const booking = await axios.get(
-          `${import.meta.env.VITE_API_URL}/books/sport-center`,
-          {
-            headers: {
-              Accept: "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        const bookings = booking.data.bookings;
+  const {
+    data: totalBookings,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["totalBookings"],
+    queryFn: async () => {
+      const booking = await axios.get(
+        `${import.meta.env.VITE_API_URL}/books/sport-center`,
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const bookings = booking.data.bookings;
+      return bookings.length;
+    },
 
-        setTotalBooking(bookings.length);
-      } catch (err) {
-        console.log(err.message);
-      }
-    };
-    fetchBooking();
-  }, [token]);
+    refetchOnWindowFocus: true,
+  });
+  if (isLoading) return <Loader />;
+  if (isError) return <p>Error fetching data</p>;
   return (
     <Paper
       sx={{
@@ -211,7 +219,7 @@ function TotalBooking() {
             fontSize: "1.5rem",
             fontWeight: "bold",
           }}>
-          {totalBooking ? totalBooking : 0}
+          {totalBookings ? totalBookings : 0}
         </Typography>
       </div>
     </Paper>
@@ -418,7 +426,7 @@ function UpcomingMatch() {
         </TableCell>
       </TableRow>
     ));
-  }, [match, totalHour]);
+  }, [match]);
 
   return (
     <Paper
