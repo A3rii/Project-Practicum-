@@ -1,5 +1,7 @@
 /* eslint-disable react/prop-types */
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useMemo } from "react";
+import Loader from "../../../components/Loader";
+import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import {
   Box,
@@ -252,73 +254,74 @@ function FilterType() {
 }
 
 function SportFieldCard() {
-  const [sportCenter, setSportCenter] = useState([]);
-
-  const fetchSportCenter = useCallback(async () => {
-    try {
+  const {
+    data: sportCenter = [],
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["sportCenter"],
+    queryFn: async () => {
       const getSportCenter = await axios.get(
         `${import.meta.env.VITE_API_URL}/lessor/auth/users`
       );
-      setSportCenter(getSportCenter.data.lessors);
-    } catch (err) {
-      console.log(err.message);
-    }
-  }, []);
 
-  useEffect(() => {
-    fetchSportCenter();
-  }, [fetchSportCenter]);
+      return getSportCenter.data.lessors;
+    },
+  });
 
-  console.log(sportCenter);
   const listSportCenter = useMemo(() => {
-    if (!sportCenter) return null;
+    if (!sportCenter || sportCenter.length === 0)
+      return <p>No sport centers available.</p>;
 
-    return sportCenter.map((data, key) => (
-      <Card
-        key={key}
-        sx={{ width: 260, height: 380, marginBottom: "2rem" }}
-        elevation={4}>
-        <CardMedia sx={{ height: 180 }} image={data.logo} />
+    return (
+      sportCenter.length > 0 &&
+      sportCenter.map((data, key) => (
+        <Card
+          key={key}
+          sx={{ width: 260, height: 380, marginBottom: "2rem" }}
+          elevation={4}>
+          <CardMedia sx={{ height: 180 }} loading="lazy" image={data?.logo} />
 
-        <CardContent
-          sx={{
-            padding: "1rem",
-            display: "flex",
-            justifyContent: "center",
-            flexDirection: "column",
-          }}>
-          <Typography variant="h6" component="div" sx={{ fontSize: "1rem" }}>
-            {data.sportcenter_name}
-          </Typography>
+          <CardContent
+            sx={{
+              padding: "1rem",
+              display: "flex",
+              justifyContent: "center",
+              flexDirection: "column",
+            }}>
+            <Typography variant="h6" component="div" sx={{ fontSize: "1rem" }}>
+              {data?.sportcenter_name}
+            </Typography>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ marginBottom: "3px", fontSize: "0.7rem" }}>
+              {data?.address?.street} {data?.address?.city}{" "}
+              {data?.address?.state}
+            </Typography>
 
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            sx={{ marginBottom: "3px", fontSize: "0.7rem" }}>
-            {data.address.street} {data.address.city} {data.address.state}
-          </Typography>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ marginBottom: "3px", fontSize: "0.7rem" }}>
+              {data?.operating_hours?.open} - {data?.operating_hours?.close}
+            </Typography>
+            <Box>
+              <Rating name="read-only" value={2} readOnly />
+            </Box>
+          </CardContent>
 
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            sx={{ marginBottom: "3px", fontSize: "0.7rem" }}>
-            {data.operating_hours.open} - {data.operating_hours.close}
-          </Typography>
-
-          <Box>
-            <Rating name="read-only" value={2} readOnly />
-          </Box>
-        </CardContent>
-
-        <CardActions>
-          <Link className="booking-btn" to={`/sportcenter/${data._id}`}>
-            Book Now
-          </Link>
-        </CardActions>
-      </Card>
-    ));
+          <CardActions>
+            <Link className="booking-btn" to={`/sportcenter/${data?._id}`}>
+              Book Now
+            </Link>
+          </CardActions>
+        </Card>
+      ))
+    );
   }, [sportCenter]);
-
+  if (isLoading) return <Loader />;
+  if (error) return <p> {error}</p>;
   return <>{listSportCenter} </>;
 }
 

@@ -192,7 +192,11 @@ export default function IncomingMatch() {
                 alignItems: "center",
               }}>
               <RadioGroup name="radio-buttons-group">
-                <FormControlLabel value="all" control={<Radio />} label="All" />
+                <FormControlLabel
+                  value="all"
+                  control={<Radio />}
+                  label="Accepted"
+                />
                 <FormControlLabel
                   value="rejected"
                   control={<Radio />}

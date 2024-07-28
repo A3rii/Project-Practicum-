@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import ContactInfo from "../../components/ContactInfo";
+import ContactInfo from "../../../components/ContactInfo";
 import {
   Card,
   CardHeader,
@@ -18,8 +18,8 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { Link, useParams } from "react-router-dom";
 import { red } from "@mui/material/colors";
-import { useState, useEffect } from "react";
-
+import { useQuery } from "@tanstack/react-query";
+import Loader from "../../../components/Loader";
 //  Dynamically
 function RatingSkeletons() {
   const value = 2;
@@ -55,7 +55,12 @@ function RatingSkeletons() {
 function CenterCard({ image, type, time, price, facilityId, sportCenterId }) {
   return (
     <Card sx={{ width: 300 }}>
-      <CardMedia sx={{ height: 250 }} image={image} title="Sport Category" />
+      <CardMedia
+        sx={{ height: 250 }}
+        loading="lazy"
+        image={image}
+        title="Sport Category"
+      />
       <CardContent>
         <Typography
           gutterBottom
@@ -87,67 +92,72 @@ function CenterCard({ image, type, time, price, facilityId, sportCenterId }) {
     </Card>
   );
 }
+
 export default function CenterDetail() {
   const { sportCenterId } = useParams();
-  const [sportCenter, setSportCenter] = useState(null);
 
-  useEffect(() => {
-    const fetchSportCenter = async () => {
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/lessor/auth/users/${sportCenterId}`
-        );
-        setSportCenter(response.data.lessor);
-      } catch (err) {
-        console.error("Error fetching sport center:", err.message);
-        setSportCenter(null);
-      }
-    };
+  const {
+    data: sportCenter,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["sportCenter", sportCenterId],
+    queryFn: async () => {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/lessor/auth/users/${sportCenterId}`
+      );
+      return response.data.lessor;
+    },
+  });
 
-    fetchSportCenter();
-  }, [sportCenterId]);
-
-  if (!sportCenter) {
-    return <p>Loading...</p>;
+  if (isLoading) {
+    return <Loader />;
   }
-  console.log(sportCenter);
+
+  if (error) {
+    return <p>Error: {error.message}</p>;
+  }
 
   return (
     <>
       <div className="center-header">
         <div className="center-banner">
-          <h2> Welcome to {sportCenter.sportcenter_name}</h2>
-          <span>{sportCenter.sportcenter_description}</span>
+          <h2>Welcome to {sportCenter?.sportcenter_name}</h2>
+          <span>{sportCenter?.sportcenter_description}</span>
           <div className="center-location">
             <i className="fa-solid fa-location-dot"></i>
             <span className="center-address">
-              <p> {sportCenter.address.street} </p>
-              <p> {sportCenter.address.city} </p>
-              <p> {sportCenter.address.state} </p>
+              <p>{sportCenter?.address?.street}</p>
+              <p>{sportCenter?.address?.city}</p>
+              <p>{sportCenter?.address?.state}</p>
             </span>
           </div>
         </div>
       </div>
       <div className="center-sport">
-        <h2> Our Sport Services </h2>
+        <h2>Our Sport Services</h2>
         <div className="center-card">
-          {sportCenter.facilities.map((data, key) => (
-            <CenterCard
-              key={key}
-              image={data.image}
-              type={data.name}
-              time={`Available: ${sportCenter.operating_hours.open}-${sportCenter.operating_hours.close}`}
-              price={` $ ${data.price} per 90 minutes`}
-              facilityId={data._id}
-              sportCenterId={sportCenter._id}
-            />
-          ))}
+          {sportCenter?.facilities && sportCenter.facilities.length > 0 ? (
+            sportCenter.facilities.map((data) => (
+              <CenterCard
+                key={data._id}
+                image={data.image}
+                type={data.name}
+                time={`Available: ${sportCenter?.operating_hours.open}-${sportCenter?.operating_hours.close}`}
+                price={`$${data.price} per 90 minutes`}
+                facilityId={data._id}
+                sportCenterId={sportCenter?._id}
+              />
+            ))
+          ) : (
+            <p>No facilities available.</p>
+          )}
         </div>
       </div>
 
       <div className="center-map">
         <div className="center-googleMap">
-          <h2> View the location </h2>
+          <h2>View the location</h2>
           <span>You can find the sport center by viewing through this map</span>
           <button type="button" className="center-buttonView">
             View Map
@@ -156,7 +166,7 @@ export default function CenterDetail() {
       </div>
 
       <div className="center-rating">
-        <h3> Client Review</h3>
+        <h3>Client Review</h3>
         <div className="center-comment">
           <RatingSkeletons />
         </div>

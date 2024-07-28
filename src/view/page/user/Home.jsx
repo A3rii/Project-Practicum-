@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import currentUser from "./../../utils/currentUser";
+import currentUser from "../../../utils/currentUser";
 
 function Banner() {
   return (

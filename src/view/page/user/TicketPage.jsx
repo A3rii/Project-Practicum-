@@ -1,4 +1,4 @@
-import Reciept from "../../components/Reciept";
+import Reciept from "../../../components/Reciept";
 export default function TicketPage() {
   return (
     <>

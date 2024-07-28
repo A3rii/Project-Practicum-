@@ -1,11 +1,11 @@
 import "react-toastify/dist/ReactToastify.css";
-import ContactInfo from "../../components/ContactInfo";
-import CardSwiper from "./../../components/CardSwiper";
+import ContactInfo from "../../../components/ContactInfo";
+import CardSwiper from "../../../components/CardSwiper";
 import dayjs from "dayjs";
 import axios from "axios";
-import currentUser from "./../../utils/currentUser";
-import authToken from "./../../utils/authToken";
-import { notify, errorAlert } from "./../../utils/toastAlert";
+import currentUser from "../../../utils/currentUser";
+import authToken from "../../../utils/authToken";
+import { notify, errorAlert } from "../../../utils/toastAlert";
 import { ToastContainer } from "react-toastify";
 import {
   TextField,

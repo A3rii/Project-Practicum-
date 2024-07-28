@@ -4,22 +4,91 @@ import MoveToInboxIcon from "@mui/icons-material/MoveToInbox";
 import HistoryIcon from "@mui/icons-material/History";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
-import { Popover, Box, Typography } from "@mui/material";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import currentUser from "./../../utils/currentUser";
+import authToken from "./../../utils/authToken";
+import axios from "axios";
+import dayjs from "dayjs";
+import Loader from "./../../components/Loader";
+import { formatDate } from "./../../utils/timeCalculation";
+import {
+  Popover,
+  Box,
+  Typography,
+  Button,
+  Avatar,
+  Alert,
+  Tooltip,
+} from "@mui/material";
 import { useDispatch } from "react-redux";
 import { logout } from "./../../app/slice";
-import { NavLink, useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { NavLink, useNavigate, Link } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 
+const fetchUserBookings = async (token) => {
+  try {
+    const response = await axios.get(
+      `${import.meta.env.VITE_API_URL}/user/booking`,
+      {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    const bookings = response.data.booking;
+    const todayMatch = bookings.filter(
+      (booking) =>
+        formatDate(booking.date) === dayjs(new Date()).format("MMMM DD, YYYY")
+    );
+    console.log(todayMatch);
+    return todayMatch;
+  } catch (err) {
+    console.error("Error fetching user bookings:", err);
+    throw err;
+  }
+};
+
 export default function Header() {
+  const user = currentUser();
+  const token = authToken();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  //* Menu popover when screen is small
   const [anchorEl, setAnchorEl] = useState(null);
+  const [open, setOpen] = useState(false);
   const openPop = Boolean(anchorEl);
   const id = openPop ? "simple-popover" : undefined;
-  const [open, setOpen] = useState(false);
+
+  //* Notification popover
+  const [notificationAnchorEl, setNotificationAnchorEl] = useState(null);
+  const openNotificationPop = Boolean(notificationAnchorEl);
+  const notificationId = openNotificationPop
+    ? "notification-popover"
+    : undefined;
+
   let menuRef = useRef();
 
+  //* Open and close menu
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  //* Open and close notification
+  const handleNotificationClick = (event) => {
+    setNotificationAnchorEl(event.currentTarget);
+  };
+  const handleNotificationClose = () => {
+    setNotificationAnchorEl(null);
+  };
+
+  //* Hover Profile
   useEffect(() => {
     let handler = (e) => {
       if (!menuRef.current.contains(e.target) && open) {
@@ -32,20 +101,20 @@ export default function Header() {
     };
   }, [open]);
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
+  //* Log out from the account
   const handleLogOut = () => {
     dispatch(logout());
     localStorage.clear();
     navigate("/");
     console.log("logout");
   };
+
+  const { data: todayMatch = [], isError } = useQuery({
+    queryKey: ["todayMatch", token],
+    queryFn: () => fetchUserBookings(token),
+  });
+
+  if (isError) return <p> Error Fetching Data </p>;
 
   return (
     <header className="header-container">
@@ -62,7 +131,6 @@ export default function Header() {
         />
 
         <Popover
-          pover
           id={id}
           open={openPop}
           anchorEl={anchorEl}
@@ -72,7 +140,6 @@ export default function Header() {
             vertical: "bottom",
             horizontal: "left",
           }}>
-          {/*Content Filter Here*/}
           <CloseIcon
             sx={{ fontSize: "1.5rem", mt: 2, ml: 2, cursor: "pointer" }}
             onClick={handleClose}
@@ -98,7 +165,7 @@ export default function Header() {
                 <li>Renting</li>
               </Typography>
             </NavLink>
-            <NavLink to="/lessor">
+            <NavLink to="/signup-admin">
               <Typography color="textPrimary">
                 <li>Lessor</li>
               </Typography>
@@ -118,9 +185,9 @@ export default function Header() {
             <li>Home</li>
           </NavLink>
           <NavLink to="/booking">
-            <li>Renting </li>
+            <li>Renting</li>
           </NavLink>
-          <NavLink to="/lessor">
+          <NavLink to="/signup-admin">
             <li>Lessor</li>
           </NavLink>
           <NavLink to="/contact">
@@ -130,6 +197,59 @@ export default function Header() {
       </nav>
 
       <div className="header-auth">
+        <Tooltip title="Notification">
+          <NotificationsIcon
+            aria-describedby={notificationId}
+            onClick={handleNotificationClick}
+            style={{ cursor: "pointer" }}
+          />
+        </Tooltip>
+        <Popover
+          id={notificationId}
+          open={openNotificationPop}
+          anchorEl={notificationAnchorEl}
+          onClose={handleNotificationClose}
+          sx={{ mt: 2 }}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "center",
+          }}
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "center",
+          }}>
+          <Box
+            sx={{
+              width: "25rem",
+              height: "30rem",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "start",
+              alignItems: "start",
+              gap: "1rem",
+              p: 3,
+            }}>
+            <Typography sx={{ fontWeight: "bold" }} color="textPrimary">
+              Notifications
+            </Typography>
+
+            {todayMatch.length > 0 ? (
+              todayMatch.map((match, key) => (
+                <Alert key={key} variant="outlined" severity="success">
+                  You have today at {match.startTime} till {match.endTime}
+                </Alert>
+              ))
+            ) : (
+              <Typography
+                sx={{ fontWeight: "lighter", mt: 2, width: "100%" }}
+                color="textPrimary">
+                <Alert variant="outlined" severity="info">
+                  No notification
+                </Alert>
+              </Typography>
+            )}
+          </Box>
+        </Popover>
         <div className="app-menu">
           <div className="app-menu-container" ref={menuRef}>
             <div
@@ -137,7 +257,11 @@ export default function Header() {
               onClick={() => {
                 setOpen(!open);
               }}>
-              <img src="#" alt="User Icon" />
+              <Avatar
+                alt="Remy Sharp"
+                src="https://media.sproutsocial.com/uploads/2022/06/profile-picture.jpeg"
+              />
+              <span>{user.name}</span>
             </div>
 
             <div
@@ -148,21 +272,21 @@ export default function Header() {
                 <div className="dealer-category">
                   <li className="app-dropdownItem">
                     <AccountBoxIcon />
-                    <a href="!#">Profile </a>
+                    <a href="!#">Profile</a>
                   </li>
-                  <li className="app-dropdownItem">
+                  <Link className="app-dropdownItem" to="/match-history">
                     <MoveToInboxIcon />
-                    <a href="!#">Incomoing </a>
-                  </li>
+                    Incoming
+                  </Link>
                   <li className="app-dropdownItem">
                     <HistoryIcon />
-                    <a href="!#">History </a>
+                    <a href="!#">History</a>
                   </li>
                 </div>
               </ul>
-              <button onClick={handleLogOut} className="btn btn-danger">
+              <Button onClick={handleLogOut} variant="contained" color="error">
                 Sign Out
-              </button>
+              </Button>
             </div>
           </div>
         </div>

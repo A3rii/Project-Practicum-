@@ -12,7 +12,7 @@ import {
   Box,
   TextField,
 } from "@mui/material";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { formatDate, totalHour } from "./../../../utils/timeCalculation";
 import axios from "axios";
 import authToken from "../../../utils/authToken";
@@ -226,66 +226,73 @@ function TotalBooking() {
   );
 }
 
+// Fucntion for getting data of user who had booked the court and amount of their time
+const fetchBookings = async (token) => {
+  try {
+    const response = await axios.get(
+      `${import.meta.env.VITE_API_URL}/books/sport-center`,
+      {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    console.log("API Response:", response.data);
+
+    const { bookings } = response.data;
+    const userBookingCounts = {};
+    bookings.forEach((booking) => {
+      const userId = booking.user
+        ? booking.user._id
+        : booking.outside_user.name;
+      const userInfo = booking.user ? booking.user : booking.outside_user;
+
+      if (!userBookingCounts[userId]) {
+        userBookingCounts[userId] = {
+          count: 1,
+          user: userInfo,
+        };
+      } else {
+        userBookingCounts[userId].count++;
+      }
+    });
+
+    const uniqueUsersArray = Object.values(userBookingCounts).map(
+      ({ user, count }) => ({
+        ...user,
+        count,
+      })
+    );
+    console.log("Processed Data:", uniqueUsersArray);
+    return uniqueUsersArray;
+  } catch (error) {
+    console.error("Error fetching bookings:", error);
+    throw error;
+  }
+};
 function CustomerTable() {
   const token = authToken();
   const [userName, setUserName] = useState("");
-  const [totalUsers, setTotalUsers] = useState([]);
 
-  useEffect(() => {
-    const fetchBooking = async () => {
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/books/sport-center`,
-          {
-            headers: {
-              Accept: "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+  const {
+    data: customersPaticipant,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["totalUsers", token],
+    queryFn: () => fetchBookings(token),
+  });
 
-        const { bookings } = response.data;
-
-        // Create a map to count bookings for each user (including outside_user)
-        const userBookingCounts = {};
-        bookings.forEach((booking) => {
-          const userId = booking.user
-            ? booking.user._id
-            : booking.outside_user.name;
-          const userInfo = booking.user ? booking.user : booking.outside_user;
-
-          if (!userBookingCounts[userId]) {
-            userBookingCounts[userId] = {
-              count: 1,
-              user: userInfo,
-            };
-          } else {
-            userBookingCounts[userId].count++;
-          }
-        });
-
-        const uniqueUsersArray = Object.values(userBookingCounts).map(
-          ({ user, count }) => ({
-            ...user,
-            count,
-          })
-        );
-
-        setTotalUsers(uniqueUsersArray);
-      } catch (err) {
-        console.log(err.message);
-      }
-    };
-
-    fetchBooking();
-  }, [token]);
-
-  //* Search by Name
+  // Search by Name
   const filteredUsers = userName
-    ? totalUsers.filter((user) =>
+    ? customersPaticipant?.filter((user) =>
         user.name.toLowerCase().includes(userName.toLowerCase())
       )
-    : totalUsers;
+    : customersPaticipant;
+
+  if (isLoading) return <Loader />;
+  if (error) return <p> Error Fetching Data </p>;
 
   return (
     <Paper
@@ -359,7 +366,7 @@ function CustomerTable() {
                 alignItems="center"
                 variant="h6"
                 sx={{ padding: "14px" }}>
-                No match for today
+                No User
               </Typography>
             )}
           </TableBody>
@@ -371,40 +378,36 @@ function CustomerTable() {
 // Display match for today
 function UpcomingMatch() {
   const token = authToken();
-  const [match, setMatch] = useState([]);
 
-  // Checking if the user is playing today
-  useEffect(() => {
-    const fetchBooking = async () => {
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/books/sport-center`,
-          {
-            headers: {
-              Accept: "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        const bookings = response.data.bookings;
-        const todayMatch = bookings.filter(
-          (booking) =>
-            formatDate(booking.date) ===
-            dayjs(new Date()).format("MMMM DD, YYYY")
-        );
+  const {
+    data: todayMatch = [],
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["todayMatch"],
+    queryFn: async () => {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/books/sport-center`,
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const bookings = response.data.bookings;
+      const todayMatch = bookings.filter(
+        (booking) =>
+          formatDate(booking.date) === dayjs(new Date()).format("MMMM DD, YYYY")
+      );
 
-        setMatch(todayMatch);
-      } catch (err) {
-        console.log(err.message);
-      }
-    };
-
-    fetchBooking();
-  }, [token]);
+      return todayMatch;
+    },
+  });
 
   const showTodayMatch = useMemo(() => {
-    if (!match) return null;
-    return match.map((data, key) => (
+    if (!todayMatch) return null;
+    return todayMatch.map((data, key) => (
       <TableRow key={key}>
         <TableCell align="left" style={{ minWidth: "100px" }}>
           {data?.user?.name || data?.outside_user?.name}
@@ -426,8 +429,10 @@ function UpcomingMatch() {
         </TableCell>
       </TableRow>
     ));
-  }, [match]);
+  }, [todayMatch]);
 
+  if (isLoading) return <Loader />;
+  if (error) return <p> Error Fetching Data </p>;
   return (
     <Paper
       sx={{

@@ -1,4 +1,4 @@
-import ABA from "./../../assets/BookingImags/pic18.jpg";
+import ABA from "./../../../assets/BookingImags/pic18.jpg";
 export default function Payment() {
   const handle_booking = () => {
     alert("You Booked Successfully");
