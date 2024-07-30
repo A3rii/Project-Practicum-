@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Outlet, Link } from "react-router-dom";
 
 export default function MatchHistory() {
-  const [value, setValue] = useState("one");
+  const [value, setValue] = useState("1");
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -14,14 +14,21 @@ export default function MatchHistory() {
         sx={{
           display: "flex",
           justifyContent: "center",
-          alignItems: "start",
+          alignItems: "center",
           flexDirection: "column",
           padding: "2rem",
+          color: "var(--dark)",
         }}>
         <Typography sx={{ p: 2, fontWeight: "bold", fontSize: "1.5rem" }}>
           Match History
         </Typography>
         <Tabs
+          sx={{
+            color: "var(--dark)",
+            "& .MuiTab-root": {
+              color: "var(--dark)",
+            },
+          }}
           value={value}
           onChange={handleChange}
           textColor="secondary"
@@ -29,8 +36,9 @@ export default function MatchHistory() {
           centered>
           <Tab
             component={Link}
-            to="/match-history/incoming-user-match"
-            label="Incoming"
+            to="/match-history/all-match"
+            value={"1"}
+            label="All"
           />
           <Tab
             component={Link}

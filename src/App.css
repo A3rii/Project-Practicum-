@@ -1464,8 +1464,6 @@
    background-color: #338705;
 }
 
-
-
 .setTime-title {
    display: flex;
    justify-content: space-between;
@@ -1560,3 +1558,56 @@
 /*Schedule*/
 
 /** Admins Page */
+
+
+
+
+/** Incoming Match */
+.card__container {
+   display: flex;
+   flex-direction: column;
+   gap: .8rem;
+   padding: 1.5rem;
+   width: 100%;
+   border-radius: 1rem;
+   color: var(--white)
+}
+
+.card__container .card__header {
+   font-size: 1.3rem;
+   font-family: bold;
+}
+
+.incoming-detail {
+   display: flex;
+   justify-content: start;
+   align-items: start;
+   flex-direction: column;
+}
+
+.incoming-detail span {
+   font-family: 'Roboto', sans-serif;
+   font-size: .9rem;
+   font-weight: bold;
+}
+
+.card-incoming-match::before {
+   position: absolute;
+   content: 'Incoming Match';
+   top: 5px;
+   right: -14px;
+   padding: 0.5rem;
+   width: 10rem;
+   background: #20B2AA;
+   color: white;
+   text-align: center;
+   font-family: 'Roboto', sans-serif;
+   box-shadow: 4px 4px 15px rgba(26, 35, 126, 0.2);
+}
+
+.incoming-title {
+   font-size: 1.5rem;
+   color: var(--dark);
+}
+
+/** Incoming Match */

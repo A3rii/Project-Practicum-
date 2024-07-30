@@ -34,6 +34,7 @@ import { formatDate, totalHour } from "./../../../utils/timeCalculation";
 import Loader from "../../../components/Loader";
 import "react-toastify/dist/ReactToastify.css";
 
+//* Fetching all the bookings with limit data but only pending bookings
 const fetchBookings = async (page) => {
   const token = authToken();
   const response = await axios.get(
@@ -48,12 +49,14 @@ const fetchBookings = async (page) => {
   );
   const bookings = response.data.bookings;
 
+  // Search for pending bookings
   const getPendingBookings = bookings.filter(
     (bookings) => bookings.status === "pending"
   );
   return getPendingBookings;
 };
 
+//* Checking for the expire bookings if expire reject all of those (incase situation)
 const fetchAndProcessExpiredBookings = async () => {
   const token = authToken();
   const response = await axios.get(
@@ -67,11 +70,13 @@ const fetchAndProcessExpiredBookings = async () => {
   );
 
   const bookings = response.data.bookings;
-  const currentDate = new Date();
-  currentDate.setHours(0, 0, 0, 0);
+
+  const currentDate = new Date(); //Get current date
+  currentDate.setHours(0, 0, 0, 0); // set all the time to all 0
 
   const promises = bookings.map(async (booking) => {
     const bookingDate = new Date(booking.date);
+    // Checking if the date is expire and the status is pending put them to rejected
     if (bookingDate < currentDate && booking.status === "pending") {
       await axios.put(
         `${import.meta.env.VITE_API_URL}/books/${booking._id}/status`,
@@ -90,6 +95,7 @@ const fetchAndProcessExpiredBookings = async () => {
   return bookings;
 };
 
+//* Updating Status Approved or rejected
 const updateBookingStatus = async ({ status, bookingId }) => {
   const token = authToken();
   const response = await axios.put(
@@ -137,6 +143,7 @@ export default function ConfirmPage() {
     keepPreviousData: true,
   });
 
+  // Query for expired date
   const expiredBookingsQuery = useQuery({
     queryKey: ["expiredBookings"],
     queryFn: fetchAndProcessExpiredBookings,
@@ -148,6 +155,7 @@ export default function ConfirmPage() {
     }
   }, [expiredBookingsQuery]);
 
+  // Update the status of user and update constantly
   const mutation = useMutation({
     mutationFn: updateBookingStatus,
     onSuccess: () => {

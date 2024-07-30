@@ -9,7 +9,7 @@ import currentUser from "./../../utils/currentUser";
 import authToken from "./../../utils/authToken";
 import axios from "axios";
 import dayjs from "dayjs";
-import Loader from "./../../components/Loader";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import { formatDate } from "./../../utils/timeCalculation";
 import {
   Popover,
@@ -17,6 +17,7 @@ import {
   Typography,
   Button,
   Avatar,
+  Badge,
   Alert,
   Tooltip,
 } from "@mui/material";
@@ -116,6 +117,7 @@ export default function Header() {
 
   if (isError) return <p> Error Fetching Data </p>;
 
+  console.log(todayMatch.length);
   return (
     <header className="header-container">
       <span className="header-title">Sport Rental</span>
@@ -198,11 +200,19 @@ export default function Header() {
 
       <div className="header-auth">
         <Tooltip title="Notification">
-          <NotificationsIcon
-            aria-describedby={notificationId}
-            onClick={handleNotificationClick}
-            style={{ cursor: "pointer" }}
-          />
+          <Badge
+            anchorOrigin={{
+              vertical: "top",
+              horizontal: "left",
+            }}
+            badgeContent={todayMatch.length > 0 ? todayMatch.length : null}
+            color="error">
+            <NotificationsIcon
+              aria-describedby={notificationId}
+              onClick={handleNotificationClick}
+              style={{ cursor: "pointer" }}
+            />
+          </Badge>
         </Tooltip>
         <Popover
           id={notificationId}
@@ -225,6 +235,7 @@ export default function Header() {
               display: "flex",
               flexDirection: "column",
               justifyContent: "start",
+              borderRadius: "0 15px 15px 15px",
               alignItems: "start",
               gap: "1rem",
               p: 3,
@@ -235,8 +246,13 @@ export default function Header() {
 
             {todayMatch.length > 0 ? (
               todayMatch.map((match, key) => (
-                <Alert key={key} variant="outlined" severity="success">
-                  You have today at {match.startTime} till {match.endTime}
+                <Alert
+                  icon={<CalendarTodayIcon fontSize="inherit" />}
+                  key={key}
+                  variant="outlined"
+                  sx={{ width: "100%" }}
+                  severity="success">
+                  Match today at {match.startTime} - {match.endTime}
                 </Alert>
               ))
             ) : (
@@ -270,18 +286,18 @@ export default function Header() {
               }`}>
               <ul className="dealer-option">
                 <div className="dealer-category">
-                  <li className="app-dropdownItem">
+                  <Link className="app-dropdownItem" to="/">
                     <AccountBoxIcon />
-                    <a href="!#">Profile</a>
-                  </li>
-                  <Link className="app-dropdownItem" to="/match-history">
-                    <MoveToInboxIcon />
-                    Incoming
+                    <li> Profile</li>
                   </Link>
-                  <li className="app-dropdownItem">
+                  <Link className="app-dropdownItem" to="/incoming-match">
+                    <MoveToInboxIcon />
+                    <li> Incoming </li>
+                  </Link>
+                  <Link className="app-dropdownItem" to="/match-history">
                     <HistoryIcon />
-                    <a href="!#">History</a>
-                  </li>
+                    <li>History </li>
+                  </Link>
                 </div>
               </ul>
               <Button onClick={handleLogOut} variant="contained" color="error">

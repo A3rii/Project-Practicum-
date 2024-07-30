@@ -8,7 +8,7 @@ export default function Applayout() {
   const getCurrentUser = currentUser();
   return (
     <>
-      <div className="flex flex-col h-screen">
+      <div className="app-layout">
         {getCurrentUser ? <HeaderLogin /> : <Header />}
         <Outlet />
         <Footer />
