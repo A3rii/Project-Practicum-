@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useState, useMemo } from "react";
 import Loader from "../../../components/Loader";
+
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import {
@@ -28,7 +29,7 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 
 function TimePickerField({ time }) {
   return (
@@ -262,7 +263,7 @@ function SportFieldCard() {
     queryKey: ["sportCenter"],
     queryFn: async () => {
       const getSportCenter = await axios.get(
-        `${import.meta.env.VITE_API_URL}/lessor/auth/users`
+        `${import.meta.env.VITE_API_URL}/lessor/auth/informations`
       );
 
       return getSportCenter.data.lessors;
@@ -321,7 +322,7 @@ function SportFieldCard() {
     );
   }, [sportCenter]);
   if (isLoading) return <Loader />;
-  if (error) return <p> {error}</p>;
+  if (error) return <Navigate to="/error" />;
   return <>{listSportCenter} </>;
 }
 

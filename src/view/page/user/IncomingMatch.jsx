@@ -3,7 +3,7 @@ import authToken from "./../../../utils/authToken";
 import football from "./../../../assets/footballbanner.jpg";
 import basketball from "./../../../assets/basketballBanner.jpg";
 import defaultImage from "./../../../assets/defaultImg.jpg";
-
+import { Navigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { formatDate } from "./../../../utils/timeCalculation";
 import Loader from "../../../components/Loader";
@@ -43,7 +43,7 @@ export default function IncomingMatch() {
     queryFn: () => fetchBookings(token),
   });
   if (isLoading) return <Loader />;
-  if (error) return <p> fetching error </p>;
+  if (error) return <Navigate to="/error" />;
 
   //* Changing theme according to sport type
   const switchBannerImage = (type) => {

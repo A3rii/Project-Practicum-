@@ -53,7 +53,9 @@ function ReservationDate({ court }) {
   const fetchFacility = useCallback(async () => {
     try {
       const getFacility = await axios.get(
-        `${import.meta.env.VITE_API_URL}/lessor/auth/users/${sportCenterId}`
+        `${
+          import.meta.env.VITE_API_URL
+        }/lessor/auth/informations/${sportCenterId}`
       );
       const sportCenter = getFacility.data.lessor;
 
@@ -188,7 +190,9 @@ export default function SportField() {
     const fetchSportCenter = async () => {
       try {
         const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/lessor/auth/users/${sportCenterId}`
+          `${
+            import.meta.env.VITE_API_URL
+          }/lessor/auth/informations/${sportCenterId}`
         );
         const lessor = response.data.lessor;
         setFacility(lessor.facilities);

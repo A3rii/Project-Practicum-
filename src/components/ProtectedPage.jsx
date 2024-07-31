@@ -1,18 +1,19 @@
 import { Box, Typography, Button } from "@mui/material";
 import { Link } from "react-router-dom";
-import NotFound from "./../assets/notFound.jpg";
-export default function PageNotFound() {
+import ProtectImage from "./../assets/protected.jpg";
+
+export default function ProtectedPage() {
   return (
     <>
       <Box
         sx={{
           width: "100%",
-          height: "100vh",
+          height: "90vh",
           display: "flex",
           justifyContent: "center",
           flexDirection: "column",
           alignItems: "center",
-          backgroundImage: `url(${NotFound})`,
+          backgroundImage: `url(${ProtectImage})`,
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover",
           gap: ".6rem",
@@ -23,14 +24,14 @@ export default function PageNotFound() {
             fontSize: "6rem",
             fontWeight: "bold",
           }}>
-          404
+          403
         </Typography>
         <Typography
           sx={{
             color: "var(--white)",
             fontSize: "1rem",
           }}>
-          Sorry, we couldn't find this page.
+          You are not allowed to accepted this page
         </Typography>
         <Typography
           sx={{
@@ -38,7 +39,7 @@ export default function PageNotFound() {
             fontSize: "2rem",
             fontWeight: "bold",
           }}>
-          Page Not Found
+          This route has been proteced.
         </Typography>
         <Button
           component={Link}

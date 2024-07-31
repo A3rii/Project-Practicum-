@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import ContactInfo from "../../../components/ContactInfo";
 import {
   Card,
@@ -16,7 +15,7 @@ import "swiper/css";
 import "swiper/css/scrollbar";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, Navigate } from "react-router-dom";
 import { red } from "@mui/material/colors";
 import { useQuery } from "@tanstack/react-query";
 import Loader from "../../../components/Loader";
@@ -104,7 +103,9 @@ export default function CenterDetail() {
     queryKey: ["sportCenter", sportCenterId],
     queryFn: async () => {
       const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/lessor/auth/users/${sportCenterId}`
+        `${
+          import.meta.env.VITE_API_URL
+        }/lessor/auth/informations/${sportCenterId}`
       );
       return response.data.lessor;
     },
@@ -114,9 +115,7 @@ export default function CenterDetail() {
     return <Loader />;
   }
 
-  if (error) {
-    return <p>Error: {error.message}</p>;
-  }
+  if (error) return <Navigate to="/error" />;
 
   return (
     <>

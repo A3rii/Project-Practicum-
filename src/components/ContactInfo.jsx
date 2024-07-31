@@ -1,27 +1,36 @@
 import { useParams } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import Loader from "./../components/Loader";
 import axios from "axios";
+
+const fetchSportCenter = async (sportCenterId) => {
+  try {
+    const response = await axios.get(
+      `${
+        import.meta.env.VITE_API_URL
+      }/lessor/auth/informations/${sportCenterId}`
+    );
+    const lessor = response.data.lessor;
+    return lessor;
+  } catch (err) {
+    console.error("Error fetching sport center:", err.message);
+  }
+};
+
 export default function ContactInfo() {
   const { sportCenterId } = useParams();
-  const [sportInformation, setSportInformation] = useState([]);
 
-  // Get Lessor information
-  useEffect(() => {
-    const fetchSportCenter = async () => {
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/lessor/auth/users/${sportCenterId}`
-        );
-        const lessor = response.data.lessor;
-        setSportInformation(lessor);
-      } catch (err) {
-        console.error("Error fetching sport center:", err.message);
-        setSportInformation([]);
-      }
-    };
+  const {
+    data: contactLessor = [],
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["contactLessor", sportCenterId],
+    queryFn: () => fetchSportCenter(sportCenterId),
+  });
 
-    fetchSportCenter();
-  }, [sportCenterId]);
+  if (isLoading) return <Loader />;
+  if (error) return <p>Error Fetching</p>;
 
   return (
     <>
@@ -31,8 +40,8 @@ export default function ContactInfo() {
           Contact Now
         </button>
         <div className="center-contactDetails">
-          <span> {sportInformation.phone_number} </span>
-          <span> Email: {sportInformation.email} </span>
+          <span> {contactLessor.phone_number} </span>
+          <span> Email: {contactLessor.email} </span>
         </div>
       </div>
       <div className="center-socialMedia">

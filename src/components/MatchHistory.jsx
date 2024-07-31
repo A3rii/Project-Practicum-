@@ -1,5 +1,6 @@
 import axios from "axios";
 import Loader from "./../components/Loader";
+import { Navigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { formatDate } from "./../utils/timeCalculation";
 import { Paper, Box, Typography, Tooltip } from "@mui/material";
@@ -63,7 +64,8 @@ const MatchHistory = ({ token, filter }) => {
   };
 
   if (isLoading) return <Loader />;
-  if (error) return <p>Error Fetching</p>;
+
+  if (error) return <Navigate to="/error" />;
 
   return (
     <Box
