@@ -87,7 +87,7 @@ export default function SignIn() {
           </Typography>
           {error && (
             <Typography color="error" variant="body2">
-              {error}
+              {error.message}
             </Typography>
           )}
           <Box component="form" noValidate sx={{ mt: 1 }}>

@@ -105,7 +105,6 @@ export default function Header() {
   //* Log out from the account
   const handleLogOut = () => {
     dispatch(logout());
-    localStorage.clear();
     navigate("/");
     console.log("logout");
   };

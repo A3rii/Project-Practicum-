@@ -1,4 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import authToken from "./../utils/authToken";
+import Cookies from "js-cookie";
 import axios from "axios";
 
 const initialState = {
@@ -9,10 +11,6 @@ const initialState = {
 };
 
 // Helper function to get token from localStorage and remove quotes
-const getToken = () => {
-  let token = localStorage.getItem("token");
-  return token ? token.replace(/"/g, "") : "";
-};
 
 // Async thunk to register a new user
 export const registerUser = createAsyncThunk(
@@ -24,8 +22,8 @@ export const registerUser = createAsyncThunk(
         userData
       );
       const { user, accessToken } = response.data;
-      localStorage.setItem("user", JSON.stringify(user));
-      localStorage.setItem("token", JSON.stringify(accessToken));
+      Cookies.set("token", accessToken, { expires: 7, secure: true });
+
       return { user, accessToken };
     } catch (err) {
       return thunkAPI.rejectWithValue(
@@ -44,8 +42,10 @@ export const registerLessor = createAsyncThunk(
         userData
       );
       const { lessor, accessToken } = response.data;
-      localStorage.setItem("lessor", JSON.stringify(lessor));
-      localStorage.setItem("token", JSON.stringify(accessToken));
+
+      // Storing token in  cookie
+      Cookies.set("token", accessToken, { expires: 7, secure: true });
+
       return { lessor, accessToken };
     } catch (err) {
       return thunkAPI.rejectWithValue(
@@ -65,8 +65,9 @@ export const loginUser = createAsyncThunk(
         userCredential
       );
       const { user, accessToken } = response.data;
-      localStorage.setItem("user", JSON.stringify(user));
-      localStorage.setItem("token", JSON.stringify(accessToken));
+
+      Cookies.set("token", accessToken, { expires: 7, secure: true });
+
       return { user, accessToken };
     } catch (err) {
       return thunkAPI.rejectWithValue(
@@ -85,8 +86,9 @@ export const loginLessor = createAsyncThunk(
         userCredential
       );
       const { lessor, accessToken } = response.data;
-      localStorage.setItem("lessor", JSON.stringify(lessor));
-      localStorage.setItem("token", JSON.stringify(accessToken));
+
+      Cookies.set("token", accessToken, { expires: 7, secure: true });
+
       return { lessor, accessToken };
     } catch (err) {
       return thunkAPI.rejectWithValue(
@@ -101,7 +103,7 @@ export const getCurrentUser = createAsyncThunk(
   "auth/getCurrentUser",
   async (_, thunkAPI) => {
     try {
-      const token = getToken();
+      const token = authToken();
       const response = await axios.get(
         `${import.meta.env.VITE_API_URL}/auth/profile`,
         {
@@ -125,7 +127,7 @@ export const getCurrentLessor = createAsyncThunk(
   "auth/getCurrentLessor",
   async (_, thunkAPI) => {
     try {
-      const token = getToken();
+      const token = authToken();
       const response = await axios.get(
         `${import.meta.env.VITE_API_URL}/lessor/auth/profile`,
         {
@@ -153,9 +155,7 @@ export const userSlice = createSlice({
       state.isLoading = false;
       state.currentUser = null;
       state.currentLessor = null;
-      localStorage.removeItem("user");
-      localStorage.removeItem("lessor");
-      localStorage.removeItem("token");
+      Cookies.remove("token");
     },
   },
   extraReducers: (builder) => {

@@ -53,7 +53,7 @@ function RatingSkeletons() {
 
 function CenterCard({ image, type, time, price, facilityId, sportCenterId }) {
   return (
-    <Card sx={{ width: 300 }}>
+    <Card sx={{ width: 250 }}>
       <CardMedia
         sx={{ height: 250 }}
         loading="lazy"
@@ -134,7 +134,9 @@ export default function CenterDetail() {
         </div>
       </div>
       <div className="center-sport">
-        <h2>Our Sport Services</h2>
+        <Typography sx={{ fontWeight: "bold", fontSize: "1.5rem" }}>
+          Our Sport Services
+        </Typography>
         <div className="center-card">
           {sportCenter?.facilities && sportCenter.facilities.length > 0 ? (
             sportCenter.facilities.map((data) => (

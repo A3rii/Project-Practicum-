@@ -1,7 +1,7 @@
 //* Get token
-export default function authToken() {
-  let token = localStorage.getItem("token") ?? "";
-  token = token.replace(/"/g, "");
+import Cookies from "js-cookie";
 
+export default function authToken() {
+  const token = Cookies.get("token") ?? "";
   return token;
 }

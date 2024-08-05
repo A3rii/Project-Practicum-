@@ -11,6 +11,8 @@ import Loader from "../../../components/Loader";
 import { Avatar, Box, Paper } from "@mui/material";
 const fetchBookings = async (token) => {
   try {
+    // Configure Axios to include credentials in cross-site requests
+    axios.defaults.withCredentials = true;
     const bookings = await axios.get(
       `${import.meta.env.VITE_API_URL}/user/booking`,
       {

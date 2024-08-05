@@ -16,6 +16,7 @@ import SignInSportAdmin from "./view/page/Auth/Login/SignInSportAdmin";
 import PageNotFound from "./components/PageNotFound";
 import ProtectedPage from "./components/ProtectedPage";
 import Error from "./components/Error";
+import SuperAdmin from "./view/page/superadmin/sidebar";
 
 // Lazy load components
 const BookingHistory = lazy(() => import("./view/page/user/BookingHistory"));
@@ -45,6 +46,7 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUpCustomer />} />
           <Route path="/signin-admin" element={<SignInSportAdmin />} />
+          <Route path="/super-admin" element={<SuperAdmin />} />
 
           {/* Applayout */}
           <Route element={<Applayout />}>

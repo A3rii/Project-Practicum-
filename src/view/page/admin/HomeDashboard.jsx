@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import { useState, useMemo } from "react";
 import { formatDate, totalHour } from "./../../../utils/timeCalculation";
+import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import authToken from "../../../utils/authToken";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
@@ -21,7 +22,7 @@ import AccessAlarmsIcon from "@mui/icons-material/AccessAlarms";
 import BookIcon from "@mui/icons-material/Book";
 import dayjs from "dayjs";
 import Loader from "./../../../components/Loader";
-import { useQuery } from "@tanstack/react-query";
+import BookingChart from "../../../components/AdminComponent/Chart/BookingChart";
 
 function TotalCustomer() {
   const token = authToken();
@@ -514,6 +515,9 @@ export default function HomeDash() {
             <TotalBooking />
           </Grid>
 
+          <Grid item xl={12} lg={4} sm={4} xs={12}>
+            <BookingChart />
+          </Grid>
           {/*Customer Recent books*/}
           <Grid item xl={6} lg={12} sm={12}>
             <CustomerTable />
