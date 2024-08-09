@@ -11,12 +11,16 @@ import {
   Box,
   Typography,
   Container,
+  IconButton,
+  InputAdornment,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { loginLessor } from "./../../../../app/slice.js"; // Ensure the correct path
+import { loginSuperAdmin } from "./../../../../app/slice.js"; // Ensure the correct path
 
 function Copyright(props) {
   return (
@@ -30,7 +34,6 @@ function Copyright(props) {
         Your Website
       </Link>{" "}
       {new Date().getFullYear()}
-      {"."}
     </Typography>
   );
 }
@@ -43,29 +46,34 @@ export default function SignIn() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(null);
 
   const handleSignIn = (e) => {
     e.preventDefault();
-    const lessorCredentials = {
+    const superAdminCredentials = {
       emailOrPhone: email,
       password: password,
     };
 
-    dispatch(loginLessor(lessorCredentials)).then((action) => {
-      if (loginLessor.fulfilled.match(action)) {
-        const userRole = action.payload.lessor.role;
-        if (userRole === "admin") {
-          navigate("/admin/dashboard");
+    dispatch(loginSuperAdmin(superAdminCredentials)).then((action) => {
+      if (loginSuperAdmin.fulfilled.match(action)) {
+        const userRole = action.payload.moderator.role;
+        if (userRole === "moderator") {
+          navigate("/super-admin/dashboard");
         } else {
           navigate("/");
         }
         setEmail("");
         setPassword("");
-      } else if (loginLessor.rejected.match(action)) {
+      } else if (loginSuperAdmin.rejected.match(action)) {
         setError(action.payload || "Login failed");
       }
     });
+  };
+
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
   };
 
   return (
@@ -79,11 +87,11 @@ export default function SignIn() {
             flexDirection: "column",
             alignItems: "center",
           }}>
-          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+          <Avatar sx={{ m: 1, bgcolor: "#ff2c2c" }}>
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign In As Lessor
+            Sign In As Moderator
           </Typography>
           {error && (
             <Typography color="error" variant="body2">
@@ -109,11 +117,24 @@ export default function SignIn() {
               fullWidth
               name="password"
               label="Password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               id="password"
               autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={handleClickShowPassword} edge="end">
+                      {showPassword ? (
+                        <VisibilityIcon />
+                      ) : (
+                        <VisibilityOffIcon />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
@@ -124,6 +145,7 @@ export default function SignIn() {
               fullWidth
               onClick={handleSignIn}
               variant="contained"
+              color="error"
               sx={{ mt: 3, mb: 2 }}>
               Sign In
             </Button>

@@ -28,28 +28,25 @@ export default function SignUp() {
         confirmPassword: confirmPassword,
       };
 
-      dispatch(registerUser(response))
-        .then((action) => {
-          if (action.payload) {
-            const userRole = action.payload.role;
-            if (userRole === "admin") {
-              navigate("/admin");
-            } else if (userRole === "user") {
-              navigate("/");
-            }
-
-            setEmail("");
-            setPhoneNumber("");
-            setPassword("");
-            setConfirmPassword("");
+      try {
+        const action = await dispatch(registerUser(response));
+        if (registerUser.fulfilled.match(action)) {
+          const userRole = action.payload.role;
+          if (userRole === "user") {
             navigate("/");
           }
-        })
-        .catch((e) => {
-          console.error("Error registering user:", e.messages);
-        });
 
-      console.log("User data:", response.data);
+          setEmail("");
+          setPhoneNumber("");
+          setPassword("");
+          setConfirmPassword("");
+          navigate("/");
+        }
+      } catch (e) {
+        console.error("Error registering user:", e.messages);
+      }
+
+      console.log("User data:", response);
 
       setName("");
       setEmail("");
@@ -58,7 +55,7 @@ export default function SignUp() {
       setConfirmPassword("");
     } else {
       setIsFormValid(false);
-      console.log("Please Fill in the requirement");
+      console.log("Please fill in the requirement");
     }
   };
   return (

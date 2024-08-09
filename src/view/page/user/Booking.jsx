@@ -1,7 +1,5 @@
-/* eslint-disable react/prop-types */
 import { useState, useMemo } from "react";
 import Loader from "../../../components/Loader";
-
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import {
@@ -279,9 +277,13 @@ function SportFieldCard() {
       sportCenter.map((data, key) => (
         <Card
           key={key}
-          sx={{ width: 260, height: 380, marginBottom: "2rem" }}
+          sx={{
+            width: { lg: 240, md: 210, xs: 200 },
+            height: 380,
+            marginBottom: "2rem",
+          }}
           elevation={4}>
-          <CardMedia sx={{ height: 180 }} loading="lazy" image={data?.logo} />
+          <CardMedia sx={{ height: 190 }} loading="lazy" image={data?.logo} />
 
           <CardContent
             sx={{

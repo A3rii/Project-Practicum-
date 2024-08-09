@@ -43,8 +43,10 @@ export default function UserProtectedRoute() {
   }
 
   if (lessorRole === "admin") {
+    console.log("You are admin");
     return <Outlet />;
   } else {
+    console.log("You are not admin");
     return <Navigate to="/protected" replace />;
   }
 }

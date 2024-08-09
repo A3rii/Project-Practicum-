@@ -49,18 +49,31 @@ export default function CardSwiper({ court }) {
               className="mySwiper">
               {images.map((image, index) => (
                 <SwiperSlide key={index}>
-                  <img src={image} alt={`Slide ${index + 1}`} />
+                  <img src={image} loading="lazy" alt={`Slide ${index + 1}`} />
                 </SwiperSlide>
               ))}
             </Swiper>
-            <Typography
+            <Box
               sx={{
-                textAlign: "center",
-                fontSize: "1.2rem",
-                fontWeight: "bold",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
               }}>
-              {courtItem.name}
-            </Typography>
+              <Typography
+                sx={{
+                  width: "25%",
+                  display: "inline-block",
+                  padding: "5px",
+                  fontSize: { lg: ".8rem", xs: ".6rem" },
+                  fontWeight: "bold",
+                  backgroundColor: "orange",
+                  color: "white",
+                  borderRadius: "10px",
+                  textAlign: "center",
+                }}>
+                {courtItem.name}
+              </Typography>
+            </Box>
           </Box>
         );
       })}

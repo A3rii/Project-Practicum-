@@ -1,4 +1,4 @@
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import React from "react";
 import SportsBaseballIcon from "@mui/icons-material/SportsBaseball";
 import {
@@ -11,10 +11,11 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import HomeIcon from "@mui/icons-material/Home";
+import { useDispatch } from "react-redux";
+import { logout } from "../../../app/slice";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
+import LogoutIcon from "@mui/icons-material/Logout";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
@@ -24,8 +25,13 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import MailIcon from "@mui/icons-material/Mail";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
+import CommentIcon from "@mui/icons-material/Comment";
+import BarChartIcon from "@mui/icons-material/BarChart";
 
 export default function SuperAdmin() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
@@ -53,6 +59,11 @@ export default function SuperAdmin() {
   };
 
   const menuId = "primary-search-account-menu";
+
+  const handleLogOut = () => {
+    dispatch(logout());
+    navigate("/signin-moderator");
+  };
 
   const renderMenu = (
     <Menu
@@ -207,8 +218,11 @@ export default function SuperAdmin() {
             gap: ".5rem",
             marginTop: "1rem",
           }}>
-          <MenuItem component={Link} to="/admin/dashboard" sx={menuItemStyles}>
-            <HomeIcon
+          <MenuItem
+            component={Link}
+            to="/super-admin/dashboard"
+            sx={menuItemStyles}>
+            <BarChartIcon
               sx={{ color: "#fff", marginRight: isSmallScreen ? 0 : "10px" }}
             />
             {!isSmallScreen && (
@@ -220,22 +234,24 @@ export default function SuperAdmin() {
           </MenuItem>
           <MenuItem
             component={Link}
-            to="/admin/confirm_match"
+            to="/super-admin/comment"
             sx={menuItemStyles}>
-            <PersonAddAlt1Icon
+            <CommentIcon
               sx={{ color: "#fff", marginRight: isSmallScreen ? 0 : "10px" }}
             />
             {!isSmallScreen && (
               <Typography
                 sx={{ color: "#fff", fontWeight: "bold", fontSize: ".9rem" }}>
-                Confirm Booking
+                Comments
               </Typography>
             )}
           </MenuItem>
+
           <MenuItem component={Link} to="/admin/schedule" sx={menuItemStyles}>
             <CalendarMonthIcon
               sx={{ color: "#fff", marginRight: isSmallScreen ? 0 : "10px" }}
             />
+
             {!isSmallScreen && (
               <Typography
                 sx={{ color: "#fff", fontWeight: "bold", fontSize: ".9rem" }}>
@@ -265,6 +281,18 @@ export default function SuperAdmin() {
               <Typography
                 sx={{ color: "#fff", fontWeight: "bold", fontSize: ".9rem" }}>
                 Profile
+              </Typography>
+            )}
+          </MenuItem>
+
+          <MenuItem onClick={handleLogOut} sx={menuItemStyles}>
+            <LogoutIcon
+              sx={{ color: "#fff", marginRight: isSmallScreen ? 0 : "10px" }}
+            />
+            {!isSmallScreen && (
+              <Typography
+                sx={{ color: "#fff", fontWeight: "bold", fontSize: ".9rem" }}>
+                Log out
               </Typography>
             )}
           </MenuItem>
@@ -336,7 +364,9 @@ export default function SuperAdmin() {
           {renderMobileMenu}
           {renderMenu}
         </Box>
-        <Outlet />
+        <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+          <Outlet />
+        </Box>
       </Box>
     </Box>
   );

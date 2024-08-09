@@ -51,6 +51,28 @@ const fetchUserBookings = async (token) => {
   }
 };
 
+const fetchIncomingBookings = async (token) => {
+  try {
+    const response = await axios.get(
+      `${import.meta.env.VITE_API_URL}/user/booking`,
+      {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    const bookings = response.data.booking;
+    const pendingMatch = bookings.filter(
+      (booking) => booking.status === "pending"
+    );
+    return pendingMatch.length;
+  } catch (err) {
+    console.error("Error fetching user bookings:", err);
+    throw err;
+  }
+};
+
 export default function Header() {
   const user = currentUser();
   const token = authToken();
@@ -113,10 +135,14 @@ export default function Header() {
     queryKey: ["todayMatch", token],
     queryFn: () => fetchUserBookings(token),
   });
+  const { data: pendingMatch = [] } = useQuery({
+    queryKey: ["pendingMatch ", token],
+    queryFn: () => fetchIncomingBookings(token),
+  });
 
+  console.log(pendingMatch);
   if (isError) return <p> Error Fetching Data </p>;
 
-  console.log(todayMatch.length);
   return (
     <header className="header-container">
       <span className="header-title">Sport Rental</span>
@@ -290,7 +316,15 @@ export default function Header() {
                     <li> Profile</li>
                   </Link>
                   <Link className="app-dropdownItem" to="/incoming-match">
-                    <MoveToInboxIcon />
+                    <Badge
+                      anchorOrigin={{
+                        vertical: "top",
+                        horizontal: "left",
+                      }}
+                      badgeContent={pendingMatch ? pendingMatch : null}
+                      color="error">
+                      <MoveToInboxIcon />
+                    </Badge>
                     <li> Incoming </li>
                   </Link>
                   <Link className="app-dropdownItem" to="/match-history">

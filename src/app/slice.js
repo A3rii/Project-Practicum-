@@ -6,6 +6,7 @@ import axios from "axios";
 const initialState = {
   currentUser: null,
   currentLessor: null,
+  currentModerator: null,
   isLoading: false,
   error: null,
 };
@@ -98,6 +99,28 @@ export const loginLessor = createAsyncThunk(
   }
 );
 
+// Login User and get the token from backend to store on client
+export const loginSuperAdmin = createAsyncThunk(
+  "auth/loginAdmin",
+  async (userCredential, thunkAPI) => {
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/auth/moderator/login`,
+        userCredential
+      );
+      const { moderator, accessToken } = response.data;
+
+      Cookies.set("token", accessToken, { expires: 7, secure: true });
+
+      return { moderator, accessToken };
+    } catch (err) {
+      return thunkAPI.rejectWithValue(
+        err.response?.data?.errors || err.message
+      );
+    }
+  }
+);
+
 // Get user by authorizing JWT token that has been generated from backend
 export const getCurrentUser = createAsyncThunk(
   "auth/getCurrentUser",
@@ -114,6 +137,29 @@ export const getCurrentUser = createAsyncThunk(
         }
       );
       return response.data.user;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(
+        err.response?.data?.errors || err.message
+      );
+    }
+  }
+);
+
+export const getCurrentModerator = createAsyncThunk(
+  "auth/getCurrentModerator",
+  async (_, thunkAPI) => {
+    try {
+      const token = authToken();
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/auth/moderator/profile`,
+        {
+          headers: {
+            Accept: `application/json`,
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return response.data.moderator;
     } catch (err) {
       return thunkAPI.rejectWithValue(
         err.response?.data?.errors || err.message
@@ -155,6 +201,7 @@ export const userSlice = createSlice({
       state.isLoading = false;
       state.currentUser = null;
       state.currentLessor = null;
+      state.currentModerator = null;
       Cookies.remove("token");
     },
   },
@@ -241,6 +288,20 @@ export const userSlice = createSlice({
         state.currentLessor = action.payload;
       })
       .addCase(getCurrentLessor.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      });
+
+    builder
+      .addCase(getCurrentModerator.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(getCurrentModerator.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.currentLessor = action.payload;
+      })
+      .addCase(getCurrentModerator.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
       });

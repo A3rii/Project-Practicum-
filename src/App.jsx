@@ -1,5 +1,11 @@
-import { Suspense, lazy } from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { Suspense, lazy, useEffect } from "react";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 import "./App.css";
 import Loader from "./components/Loader";
 import Applayout from "./view/applayout/Applayout";
@@ -16,7 +22,11 @@ import SignInSportAdmin from "./view/page/Auth/Login/SignInSportAdmin";
 import PageNotFound from "./components/PageNotFound";
 import ProtectedPage from "./components/ProtectedPage";
 import Error from "./components/Error";
-import SuperAdmin from "./view/page/superadmin/sidebar";
+
+import LoginSuperAdmin from "./view/page/superadmin/auth/Login";
+import SuperAdmin from "./view/page/superadmin/Sidebar";
+import Comment from "./view/page/superadmin/Comment";
+import DashBoard from "./view/page/superadmin/DashBoard";
 
 // Lazy load components
 const BookingHistory = lazy(() => import("./view/page/user/BookingHistory"));
@@ -37,16 +47,38 @@ const AllMatch = lazy(() => import("./view/page/user/AllMatch"));
 const RejectedMatch = lazy(() => import("./view/page/user/RejectedMatch"));
 const AcceptedMatch = lazy(() => import("./view/page/user/AcceptedMatch"));
 
+function RedirectHandler() {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (location.pathname === "/super-admin") {
+      navigate("/signin-moderator");
+    }
+  }, [location, navigate]);
+
+  return null;
+}
+
 export default function App() {
   return (
     <Router>
+      <RedirectHandler />
       <Suspense fallback={<Loader />}>
         <Routes>
           {/* Public Routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUpCustomer />} />
           <Route path="/signin-admin" element={<SignInSportAdmin />} />
-          <Route path="/super-admin" element={<SuperAdmin />} />
+
+          {/* Super Admin Routes */}
+
+          <Route path="/signin-moderator" element={<LoginSuperAdmin />} />
+
+          <Route path="/super-admin" element={<SuperAdmin />}>
+            <Route path="dashboard" index element={<DashBoard />} />
+            <Route path="comment" element={<Comment />} />
+          </Route>
 
           {/* Applayout */}
           <Route element={<Applayout />}>

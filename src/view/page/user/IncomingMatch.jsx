@@ -7,8 +7,9 @@ import { Navigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { formatDate } from "./../../../utils/timeCalculation";
 import Loader from "../../../components/Loader";
+import EventBusyIcon from "@mui/icons-material/EventBusy";
 
-import { Avatar, Box, Paper } from "@mui/material";
+import { Avatar, Box, Paper, Typography } from "@mui/material";
 const fetchBookings = async (token) => {
   try {
     // Configure Axios to include credentials in cross-site requests
@@ -69,18 +70,25 @@ export default function IncomingMatch() {
         alignItems: "center",
         flexDirection: "column",
         gap: "3rem",
-        flexWrapper: "wrap",
+        flexWrap: "wrap",
         my: 4,
       }}>
-      <span className="incoming-title">IncomingMatch</span>
+      <Typography
+        sx={{
+          fontWeight: "bold",
+          fontSize: "1.5rem",
+        }}>
+        Incoming Match
+      </Typography>
       <Box
         sx={{
+          width: "100%",
           display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
+          justifyContent: "start",
+          alignItems: "start",
           gap: "3rem",
         }}>
-        {pendingMatch.length > 0 &&
+        {pendingMatch.length > 0 ? (
           pendingMatch.map((match, key) => (
             <Paper
               key={key}
@@ -124,7 +132,33 @@ export default function IncomingMatch() {
                 </Box>
               </div>
             </Paper>
-          ))}
+          ))
+        ) : (
+          <Box
+            sx={{
+              width: "100%",
+              mx: "10rem",
+              border: "1px solid #000",
+              borderRadius: "5px",
+              padding: "1rem",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: "1rem",
+              boxShadow:
+                "0 4px 8px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.1)", // Cool box shadow
+              transition: "box-shadow 0.3s ease-in-out", // Smooth transition for shadow
+              "&:hover": {
+                boxShadow:
+                  "0 8px 16px rgba(0, 0, 0, 0.2), 0 12px 40px rgba(0, 0, 0, 0.2)", // Enhanced shadow on hover
+              },
+            }}>
+            <EventBusyIcon />
+            <Typography sx={{ fontSize: "1rem" }}>
+              There is no incoming match for you
+            </Typography>
+          </Box>
+        )}
       </Box>
     </Box>
   );

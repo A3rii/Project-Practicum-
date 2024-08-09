@@ -6,7 +6,7 @@ import axios from "axios";
 import currentUser from "../../../utils/currentUser";
 import authToken from "../../../utils/authToken";
 import Loader from "./../../../components/Loader";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { Typography } from "@mui/material";
 import { notify, errorAlert } from "../../../utils/toastAlert";
 import { useQuery } from "@tanstack/react-query";
@@ -36,6 +36,49 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
+// Fetching sport center informations
+const fetchSportCenter = async (sportCenterId) => {
+  try {
+    const response = await axios.get(
+      `${
+        import.meta.env.VITE_API_URL
+      }/lessor/auth/informations/${sportCenterId}`
+    );
+    const lessor = response.data.lessor;
+    return lessor.facilities;
+  } catch (err) {
+    console.error("Error fetching sport center:", err.message);
+  }
+};
+
+// Fetching all facility from lessor
+const fetchFacility = async (sportCenterId, facilityId) => {
+  try {
+    const response = await axios.get(
+      `${
+        import.meta.env.VITE_API_URL
+      }/lessor/auth/informations/${sportCenterId}`
+    );
+    const sportCenter = response.data.lessor;
+
+    // If the Id match get that facility
+    const facilityInformation = sportCenter.facilities.find(
+      (facility) => facility._id === facilityId
+    );
+
+    if (facilityInformation) {
+      return facilityInformation.name;
+    } else {
+      console.log("Facility not found");
+      throw new Error("Facility not found");
+    }
+  } catch (err) {
+    console.log(err.message);
+    throw err;
+  }
+};
+
+// Fetching time availablility
 const fetchTime = async (sportCenterId, date, facility, court) => {
   try {
     const response = await axios.get(
@@ -54,11 +97,13 @@ const fetchTime = async (sportCenterId, date, facility, court) => {
   }
 };
 
+//* Time available section */
 const TimeAvailability = ({ sportCenterId, facility, court }) => {
   const [selectedDate, setSelectedDate] = useState(
     dayjs().format("YYYY-MM-DD")
   );
   const [selectedCourt, setSelectedCourt] = useState("");
+
   const handleOnSelectCourt = (e) => {
     setSelectedCourt(e.target.value);
   };
@@ -167,6 +212,10 @@ const TimeAvailability = ({ sportCenterId, facility, court }) => {
               width: "100%",
               boxShadow: "none",
               marginBottom: "2rem",
+              maxHeight: "20rem",
+              overflow: "hidden",
+              overflowY: "scroll",
+              height: "15rem",
             }}>
             <Table sx={{ minWidth: 600 }}>
               <TableHead>
@@ -245,53 +294,29 @@ const TimeAvailability = ({ sportCenterId, facility, court }) => {
   );
 };
 
-const fetchFacility = async (sportCenterId, facilityId) => {
-  try {
-    const response = await axios.get(
-      `${
-        import.meta.env.VITE_API_URL
-      }/lessor/auth/informations/${sportCenterId}`
-    );
-    const sportCenter = response.data.lessor;
-
-    const facilityInformation = sportCenter.facilities.find(
-      (facility) => facility._id === facilityId
-    );
-
-    if (facilityInformation) {
-      return facilityInformation.name;
-    } else {
-      console.log("Facility not found");
-      throw new Error("Facility not found");
-    }
-  } catch (err) {
-    console.log(err.message);
-    throw err;
-  }
-};
+//* Reservation section
 
 function ReservationDate({ court }) {
   const user = currentUser();
+  const navigate = useNavigate();
   const token = authToken();
   const { facilityId, sportCenterId } = useParams();
 
-  // Booking requirement
   const [date, setDate] = useState(dayjs());
   const [selectedCourt, setSelectedCourt] = useState("");
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
+  const [startTime, setStartTime] = useState(null);
+  const [endTime, setEndTime] = useState(null);
 
-  // Court Selection
+  const formattedDate = dayjs(date).format("YYYY-MM-DD");
+
   const handleOnSelectCourt = (e) => {
     setSelectedCourt(e.target.value);
   };
 
-  // Date Selection
   const handleDateChange = (newDate) => {
     setDate(newDate);
   };
 
-  // Court mapping
   const courts = court.map((c) => c.name);
 
   const {
@@ -304,8 +329,56 @@ function ReservationDate({ court }) {
     retry: false,
   });
 
-  // Reservation for user
+  const { data: timeSlots } = useQuery({
+    queryKey: [
+      "timeSlots",
+      sportCenterId,
+      formattedDate,
+      facility,
+      selectedCourt,
+    ],
+    queryFn: () =>
+      fetchTime(sportCenterId, formattedDate, facility, selectedCourt),
+    refetchOnWindowFocus: true,
+  });
+
   const handleBooking = async () => {
+    // If not login route login page
+    if (user === null) {
+      navigate("/login");
+      return;
+    }
+    // Check if booking date is today onward
+    if (dayjs(date).isBefore(dayjs(), "day")) {
+      errorAlert("Booking is only allowed for today onward.");
+      setSelectedCourt("");
+      setStartTime(null);
+      setEndTime(null);
+      return;
+    }
+
+    // Check if the selected time slot is already booked
+    if (timeSlots) {
+      const start = dayjs(startTime).format("HH:mm");
+      const end = dayjs(endTime).format("HH:mm");
+
+      const isTimeSlotBooked = timeSlots.some(
+        (slot) =>
+          slot.court === selectedCourt && // Check if the court is the same
+          ((start >= slot.start && start < slot.end) || // Start time overlaps
+            (end > slot.start && end <= slot.end) || // End time overlaps
+            (start <= slot.start && end >= slot.end)) // Encompasses an existing slot
+      );
+
+      if (isTimeSlotBooked) {
+        errorAlert("The selected time slot is already booked.");
+        setSelectedCourt("");
+        setStartTime(null);
+        setEndTime(null);
+        return;
+      }
+    }
+
     const bookingRequirement = {
       user: user._id,
       lessor: sportCenterId,
@@ -329,8 +402,8 @@ function ReservationDate({ court }) {
       );
       notify("You have successfully booked");
       setSelectedCourt("");
-      setStartTime("");
-      setEndTime("");
+      setStartTime(null);
+      setEndTime(null);
       console.log(booking.data.message);
     } catch (err) {
       errorAlert("There is a problem with the system.");
@@ -400,29 +473,12 @@ function ReservationDate({ court }) {
         </FormControl>
       </div>
 
-      <button
-        onClick={handleBooking}
-        type="button"
-        className="sportField-reserver">
+      <button onClick={handleBooking} className="sportField-reserver">
         Reserve
       </button>
     </div>
   );
 }
-
-const fetchSportCenter = async (sportCenterId) => {
-  try {
-    const response = await axios.get(
-      `${
-        import.meta.env.VITE_API_URL
-      }/lessor/auth/informations/${sportCenterId}`
-    );
-    const lessor = response.data.lessor;
-    return lessor.facilities;
-  } catch (err) {
-    console.error("Error fetching sport center:", err.message);
-  }
-};
 
 export default function SportField() {
   const { facilityId, sportCenterId } = useParams();
@@ -493,10 +549,25 @@ export default function SportField() {
       <div className="sportField-Slider">
         <Typography
           variant="h2"
-          sx={{ fontSize: "1.5rem", fontWeight: "bold" }}>
-          Our Football View
+          sx={{
+            fontSize: {
+              lg: "1.5rem",
+              md: "1.4rem",
+              sm: "1.3rem",
+              xs: "1.2rem",
+            },
+            fontWeight: "bold",
+          }}>
+          Our {facilityInformation.name} View
         </Typography>
-        <Box sx={{ display: "flex" }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: "1rem",
+          }}>
           <CardSwiper court={facilityInformation.court} />
         </Box>
       </div>

@@ -113,7 +113,6 @@ export default function AdminCenter() {
 
   const handleLogOut = () => {
     dispatch(logout());
-    localStorage.clear();
     navigate("/");
     console.log("logout");
   };

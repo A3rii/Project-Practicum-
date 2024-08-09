@@ -19,9 +19,7 @@ export default function MatchHistory() {
           padding: "2rem",
           color: "var(--dark)",
         }}>
-        <Typography sx={{ p: 2, fontWeight: "bold", fontSize: "1.5rem" }}>
-          Match History
-        </Typography>
+        <Typography sx={{ p: 2, fontSize: "1.5rem" }}>Recent Match</Typography>
         <Tabs
           sx={{
             color: "var(--dark)",

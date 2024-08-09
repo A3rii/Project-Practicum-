@@ -3,7 +3,17 @@ import Loader from "./../components/Loader";
 import { Navigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { formatDate } from "./../utils/timeCalculation";
-import { Paper, Box, Typography, Tooltip } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Card,
+  CardContent,
+  CardActions,
+  Button,
+  CardMedia,
+} from "@mui/material";
+import EventBusyIcon from "@mui/icons-material/EventBusy";
+
 const fetchBookings = async (token, filter) => {
   try {
     const bookings = await axios.get(
@@ -53,11 +63,11 @@ const MatchHistory = ({ token, filter }) => {
   const getStatusColor = (status) => {
     switch (status) {
       case "approved":
-        return "#00FF00";
+        return "success";
       case "pending":
         return "#ffa500";
       case "rejected":
-        return "#FF0000";
+        return "error";
       default:
         return "grey";
     }
@@ -71,81 +81,78 @@ const MatchHistory = ({ token, filter }) => {
     <Box
       sx={{
         display: "flex",
-        flexDirection: "column",
-        gap: 1,
+        justifyContent: { lg: "start", xs: "center" },
+        alignItems: "center",
+        flexWrap: "wrap",
+        gap: "2rem",
       }}>
-      {incomingMatch.map((match, key) => (
-        <Paper
-          key={key}
-          sx={{
-            borderRadius: "10px",
-            display: "flex",
-            border: "1px solid #dedede",
-            justifyContent: "space-between",
-            alignItems: "center",
-            p: 3,
-            mb: 2, // Add margin between cards
-          }}
-          elevation={2}>
-          <Box
+      {incomingMatch.length > 0 ? (
+        incomingMatch.map((match, key) => (
+          <Card
+            key={key}
             sx={{
-              borderRadius: "5px",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              gap: "1rem",
+              maxWidth: 500,
+              width: { lg: 250, md: 210, xs: 200 },
+              height: { xs: 370 },
             }}>
-            <Tooltip title={match?.lessor?.sportcenter_name}>
-              <img
-                style={{
-                  borderRadius: "8px",
-                }}
-                src={match?.lessor?.logo}
-                alt={match?.lessor?.sportcenter_name}
-                width={120}
-                height={120}
-              />
-            </Tooltip>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "start",
-                alignItems: "start",
-                flexDirection: "column",
-              }}>
-              <Typography sx={{ fontWeight: "bold", fontSize: "1.2rem" }}>
+            <CardMedia
+              sx={{ height: 180 }}
+              image={match?.lessor?.logo}
+              title={match?.lessor?.sportcenter_name}
+            />
+            <CardContent>
+              <Typography
+                sx={{ fontWeight: "bold" }}
+                gutterBottom
+                component="div">
                 {match?.lessor?.sportcenter_name}
               </Typography>
-              <Typography sx={{ fontSize: ".9rem" }}>
+              <Typography sx={{ fontSize: ".8rem" }} color="text.secondary">
                 Date: {formatDate(match?.date)}
               </Typography>
-              <Typography sx={{ fontSize: ".9rem" }}>
+              <Typography sx={{ fontSize: ".8rem" }} color="text.secondary">
                 Sport: {match?.facility}
               </Typography>
-              <Typography sx={{ fontSize: ".9rem" }}>
+              <Typography sx={{ fontSize: ".8rem" }} color="text.secondary">
                 Court: {match?.court}
               </Typography>
-              <Typography sx={{ fontSize: ".9rem" }}>
-                Time: {match?.startTime} - {match?.endTime}
-              </Typography>
-            </Box>
-          </Box>
-          <Typography
-            sx={{
-              display: "inline-block",
-              marginTop: "1.2rem",
-              padding: "5px 10px",
-              fontSize: ".8rem",
-              fontWeight: "bold",
-              backgroundColor: getStatusColor(match?.status),
-              color: "white",
-              borderRadius: "10px",
-              textAlign: "center",
-            }}>
-            {match?.status}
+            </CardContent>
+            <CardActions>
+              <Button
+                size="small"
+                variant="contained"
+                color={getStatusColor(match?.status)}>
+                {match?.status}
+              </Button>
+            </CardActions>
+          </Card>
+        ))
+      ) : (
+        <Box
+          sx={{
+            width: "100%",
+            mx: "10rem",
+            border: "1px solid #000",
+            borderRadius: "5px",
+            padding: "1rem",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: "1rem",
+            boxShadow:
+              "0 4px 8px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.1)", // Cool box shadow
+            transition: "box-shadow 0.3s ease-in-out", // Smooth transition for shadow
+            "&:hover": {
+              boxShadow:
+                "0 8px 16px rgba(0, 0, 0, 0.2), 0 12px 40px rgba(0, 0, 0, 0.2)", // Enhanced shadow on hover
+            },
+          }}>
+          <EventBusyIcon />
+          <Typography sx={{ fontSize: "1rem" }}>
+            There is no incoming match for you
           </Typography>
-        </Paper>
-      ))}
+        </Box>
+      )}
     </Box>
   );
 };
