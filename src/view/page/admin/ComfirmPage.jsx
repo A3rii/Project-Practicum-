@@ -56,7 +56,7 @@ const fetchBookings = async (page) => {
   return getPendingBookings;
 };
 
-//* Checking for the expire bookings if expire reject all of those (incase situation)
+//* Checking for the expire bookings if expire reject all of those (in case situation)
 const fetchAndProcessExpiredBookings = async () => {
   const token = authToken();
   const response = await axios.get(
@@ -76,6 +76,7 @@ const fetchAndProcessExpiredBookings = async () => {
 
   const promises = bookings.map(async (booking) => {
     const bookingDate = new Date(booking.date);
+
     // Checking if the date is expire and the status is pending put them to rejected
     if (bookingDate < currentDate && booking.status === "pending") {
       await axios.put(
@@ -133,6 +134,7 @@ export default function ConfirmPage() {
     setPageTotal(value);
   };
 
+  // Get Pending Booking from API
   const {
     data: pendingBookings,
     isLoading,
@@ -149,6 +151,8 @@ export default function ConfirmPage() {
     queryFn: fetchAndProcessExpiredBookings,
     refetchOnWindowFocus: false,
   });
+
+  // If the date of booking is expired refetch the api and the status of booking is rejected
   useEffect(() => {
     if (expiredBookingsQuery.data) {
       expiredBookingsQuery.refetch();
@@ -168,6 +172,7 @@ export default function ConfirmPage() {
     },
   });
 
+  //
   const handleAccept = (status, bookingId) => {
     mutation.mutate({ status, bookingId });
   };

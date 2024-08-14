@@ -16,17 +16,12 @@ import {
   RadioGroup,
   FormControlLabel,
   FormControl,
-  Pagination,
-  PaginationItem,
-  Stack,
 } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { formatDate, totalHour } from "./../../../utils/timeCalculation";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import authToken from "./../../../utils/authToken";
 import axios from "axios";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import Loader from "./../../../components/Loader";
 
 // Api request for list of bookings
@@ -243,24 +238,6 @@ export default function IncomingMatch() {
             )}
           </TableBody>
         </Table>
-        <Stack
-          spacing={2}
-          sx={{
-            display: "flex",
-            justifyContent: "end",
-            alignItems: "end",
-            padding: "1.5rem",
-          }}>
-          <Pagination
-            count={10}
-            renderItem={(item) => (
-              <PaginationItem
-                slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }}
-                {...item}
-              />
-            )}
-          />
-        </Stack>
       </TableContainer>
     </Paper>
   );

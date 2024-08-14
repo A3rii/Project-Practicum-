@@ -24,35 +24,45 @@ import dayjs from "dayjs";
 import Loader from "./../../../components/Loader";
 import BookingChart from "../../../components/AdminComponent/Chart/BookingChart";
 
-function TotalCustomer() {
-  const token = authToken();
+const token = authToken();
+const headers = {
+  Accept: "application/json",
+  Authorization: `Bearer ${token}`,
+};
 
+// Shared function to fetch bookings
+const fetchBookings = async () => {
+  try {
+    const response = await axios.get(
+      `${import.meta.env.VITE_API_URL}/books/sport-center`,
+      { headers }
+    );
+    return response.data.bookings || [];
+  } catch (error) {
+    console.error("Error fetching bookings:", error);
+    throw new Error("Failed to fetch bookings");
+  }
+};
+
+function TotalCustomer() {
   const {
-    data: totalUsers = 0, // Default to 0 if no data is returned
+    data: totalUsers = 0,
     isLoading,
     isError,
   } = useQuery({
     queryKey: ["totalUsers"],
     queryFn: async () => {
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/books/sport-center`,
-          {
-            headers: {
-              Accept: "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        const bookings = response.data.bookings;
-        const uniqueUsers = new Set(
-          bookings.map((booking) => booking?.user?._id || booking?.outside_user)
-        );
-        return uniqueUsers.size;
-      } catch (error) {
-        console.error("Error fetching total users:", error);
-        return 0; // Default to 0 in case of error
-      }
+      // Get the data from API
+      const bookings = await fetchBookings();
+
+      // The user could book multiple time and it will increase the users count
+      // So we need to check the duplicate user either online or contact users
+      const uniqueUsers = new Set(
+        bookings.map((booking) => booking?.user?._id || booking?.outside_user)
+      );
+
+      // return the amount of total customer that booked in the sport center
+      return uniqueUsers.size;
     },
     refetchOnWindowFocus: true,
   });
@@ -98,34 +108,20 @@ function TotalCustomer() {
 }
 
 function MatchAcception() {
-  const token = authToken();
-
   const {
-    data: totalBooking = 0, // Default to 0 if no data is returned
+    data: totalBooking = 0,
     isLoading,
     isError,
   } = useQuery({
     queryKey: ["totalBooking"],
     queryFn: async () => {
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/books/sport-center`,
-          {
-            headers: {
-              Accept: "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        const bookings = response.data.bookings;
-        const totalApprovedBookings = bookings.filter(
-          (booking) => booking.status === "approved"
-        );
-        return totalApprovedBookings.length;
-      } catch (error) {
-        console.error("Error fetching total bookings:", error);
-        return 0; // Default to 0 in case of error
-      }
+      const bookings = await fetchBookings();
+
+      // Filter only the approved bookings
+      const totalApprovedBookings = bookings.filter(
+        (booking) => booking.status === "approved"
+      );
+      return totalApprovedBookings.length;
     },
     refetchOnWindowFocus: true,
   });
@@ -170,32 +166,17 @@ function MatchAcception() {
   );
 }
 
+//* List all the bookings in sport center
 function TotalBooking() {
-  const token = authToken();
-
   const {
-    data: totalBookings = 0, // Default to 0 if no data is returned
+    data: totalBookings = 0,
     isLoading,
     isError,
   } = useQuery({
     queryKey: ["totalBookings"],
     queryFn: async () => {
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/books/sport-center`,
-          {
-            headers: {
-              Accept: "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        const bookings = response.data.bookings;
-        return bookings.length;
-      } catch (error) {
-        console.error("Error fetching total bookings:", error);
-        return 0;
-      }
+      const bookings = await fetchBookings();
+      return bookings.length;
     },
     refetchOnWindowFocus: true,
   });
@@ -240,27 +221,56 @@ function TotalBooking() {
   );
 }
 
+// List all the information of users that have already booked
 function CustomerTable() {
   const token = authToken();
   const [userName, setUserName] = useState("");
 
   const {
-    data: customersPaticipant = [], // Default to empty array if no data is returned
+    data: customersPaticipant = [],
     isLoading,
     error,
   } = useQuery({
     queryKey: ["totalUsers", token],
-    queryFn: () => fetchBookings(token),
+    queryFn: async () => {
+      const bookings = await fetchBookings(token);
+      const userMap = new Map();
+
+      const customersPaticipant = bookings.reduce((acc, booking) => {
+        // Loop to get either online or contact users
+        const user = booking.user || booking.outside_user;
+        if (!user) return acc;
+
+        // Both online or contact has their own id and if the userMap have already had the user , only increase their amount of booking
+        // else include the user and increase their booking
+        const userId = user._id || booking.outside_user;
+        if (userMap.has(userId)) {
+          userMap.get(userId).count += 1;
+        } else {
+          userMap.set(userId, { ...user, count: 1 });
+          acc.push({ ...user, count: 1 });
+        }
+
+        return acc;
+      }, []);
+
+      return customersPaticipant;
+    },
   });
 
-  const filteredUsers = userName
-    ? customersPaticipant.filter((user) =>
-        user.name.toLowerCase().includes(userName.toLowerCase())
-      )
-    : customersPaticipant;
+  // search by name and memorize the output (cached the information)
+  const filteredUsers = useMemo(
+    () =>
+      userName
+        ? customersPaticipant.filter((user) =>
+            user.name.toLowerCase().includes(userName.toLowerCase())
+          )
+        : customersPaticipant,
+    [userName, customersPaticipant]
+  );
 
   if (isLoading) return <Loader />;
-  if (error) return <p> Error Fetching Data </p>;
+  if (error) return <p>Error fetching data</p>;
 
   return (
     <Paper
@@ -308,32 +318,28 @@ function CustomerTable() {
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
-              <TableCell align="left"> Name</TableCell>
-              <TableCell align="left"> Email </TableCell>
-              <TableCell align="left"> Phone number</TableCell>
-              <TableCell align="left"> Amount Booking</TableCell>
+              <TableCell align="left">Name</TableCell>
+              <TableCell align="left">Email</TableCell>
+              <TableCell align="left">Phone number</TableCell>
+              <TableCell align="left">Amount Booking</TableCell>
             </TableRow>
           </TableHead>
-
           <TableBody>
-            {filteredUsers.length > 0 ? (
-              filteredUsers.map((user, index) => (
-                <TableRow key={index}>
-                  <TableCell align="left" style={{ minWidth: "100px" }}>
-                    {user?.name || "N/A"}
-                  </TableCell>
-                  <TableCell>{user?.email || "Called Customer"}</TableCell>
-                  <TableCell>{user?.phone_number || "N/A"}</TableCell>
-                  <TableCell align="left">{user.count || 0}</TableCell>
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell align="center" colSpan={4}>
-                  No Customers Found
+            {filteredUsers.map((row, i) => (
+              <TableRow
+                key={i}
+                sx={{
+                  "&:last-child td, &:last-child th": { border: 0 },
+                  height: "2rem",
+                }}>
+                <TableCell align="left">
+                  {row?.name || row?.outside_user}
                 </TableCell>
+                <TableCell align="left">{row?.email || "N/A"}</TableCell>
+                <TableCell align="left">{row?.phone_number || "N/A"}</TableCell>
+                <TableCell align="left">{row?.count || "N/A"}</TableCell>
               </TableRow>
-            )}
+            ))}
           </TableBody>
         </Table>
       </TableContainer>
@@ -341,78 +347,29 @@ function CustomerTable() {
   );
 }
 
-async function fetchBookings(token) {
-  try {
-    const response = await axios.get(
-      `${import.meta.env.VITE_API_URL}/books/sport-center`,
-      {
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    const bookings = response.data.bookings || [];
-
-    const customersPaticipant = [];
-    const userMap = new Map();
-
-    bookings.forEach((booking) => {
-      const user = booking.user || booking.outside_user;
-      if (!user) return;
-
-      const userId = user._id || booking.outside_user;
-      const existingUser = userMap.get(userId);
-
-      if (existingUser) {
-        existingUser.count += 1;
-      } else {
-        userMap.set(userId, { ...user, count: 1 });
-        customersPaticipant.push({ ...user, count: 1 });
-      }
-    });
-
-    return customersPaticipant;
-  } catch (error) {
-    console.error("Error fetching bookings:", error);
-    return [];
-  }
-}
-
-// Display match for today
 function UpcomingMatch() {
-  const token = authToken();
-
   const {
-    data: todayMatch = [],
+    data: upcomingMatch = [],
     isLoading,
-    error,
+    isError,
   } = useQuery({
-    queryKey: ["todayMatch"],
+    queryKey: ["upcomingMatch"],
     queryFn: async () => {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/books/sport-center`,
-        {
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      const bookings = response.data.bookings || [];
+      const bookings = await fetchBookings();
+
+      // Filter the today match if the booking date is equal to today date, it is the today match
       const todayMatch = bookings.filter(
         (booking) =>
           formatDate(booking.date) === dayjs(new Date()).format("MMMM DD, YYYY")
       );
-
       return todayMatch;
     },
+    refetchOnWindowFocus: true,
   });
 
   const showTodayMatch = useMemo(() => {
-    if (!todayMatch) return null;
-    return todayMatch.map((data, key) => (
+    if (!upcomingMatch) return null;
+    return upcomingMatch.map((data, key) => (
       <TableRow key={key}>
         <TableCell align="left" style={{ minWidth: "100px" }}>
           {data?.user?.name || data?.outside_user?.name}
@@ -434,10 +391,11 @@ function UpcomingMatch() {
         </TableCell>
       </TableRow>
     ));
-  }, [todayMatch]);
+  }, [upcomingMatch]);
 
   if (isLoading) return <Loader />;
-  if (error) return <p> Error Fetching Data </p>;
+  if (isError) return <p>Error fetching data</p>;
+
   return (
     <Paper
       sx={{
@@ -461,15 +419,18 @@ function UpcomingMatch() {
           component="div"
           variant="h6"
           sx={{ padding: "14px", fontWeight: "bold" }}>
-          Today Match
+          Upcoming Match
         </Typography>
-        <Box sx={{ maxWidth: "100%" }}>
-          <TextField size="small" sx={{ width: "20rem" }} label="Search" />
-        </Box>
       </div>
       <Divider />
 
-      <TableContainer style={{ maxHeight: "20rem" }}>
+      <TableContainer
+        sx={{
+          maxHeight: "20rem",
+          overflow: "hidden",
+          overflowY: "scroll",
+          height: "15rem",
+        }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
@@ -481,7 +442,6 @@ function UpcomingMatch() {
               <TableCell align="left"> Date</TableCell>
             </TableRow>
           </TableHead>
-
           <TableBody>
             {showTodayMatch.length > 0 ? (
               showTodayMatch
@@ -499,35 +459,27 @@ function UpcomingMatch() {
   );
 }
 
-export default function HomeDash() {
+export default function AdminDashboard() {
   return (
-    <>
-      <Box sx={{ flexGrow: 1, marginTop: "2rem" }}>
-        <Grid container spacing={2}>
-          <Grid item xs={12} xl={4} lg={4} sm={4}>
-            <TotalCustomer />
-          </Grid>
-
-          <Grid item xs={12} xl={4} lg={4} sm={4}>
-            <MatchAcception />
-          </Grid>
-
-          <Grid item xl={4} lg={4} sm={4} xs={12}>
-            <TotalBooking />
-          </Grid>
-
-          <Grid item xl={12} lg={4} sm={4} xs={12}>
-            <BookingChart />
-          </Grid>
-          {/*Customer Recent books*/}
-          <Grid item xl={6} lg={12} sm={12}>
-            <CustomerTable />
-          </Grid>
-          <Grid item xl={6} lg={12} sm={12}>
-            <UpcomingMatch />
-          </Grid>
-        </Grid>
-      </Box>
-    </>
+    <Grid container spacing={2}>
+      <Grid item xs={12} sm={6} md={4} lg={4}>
+        <TotalBooking />
+      </Grid>
+      <Grid item xs={12} sm={6} md={4} lg={4}>
+        <TotalCustomer />
+      </Grid>
+      <Grid item xs={12} sm={6} md={4} lg={4}>
+        <MatchAcception />
+      </Grid>
+      <Grid item xs={12} sm={12} md={12} lg={8}>
+        <BookingChart />
+      </Grid>
+      <Grid item xs={12} sm={12} md={12} lg={4}>
+        <CustomerTable />
+      </Grid>
+      <Grid item xs={12} sm={12} md={12} lg={8}>
+        <UpcomingMatch />
+      </Grid>
+    </Grid>
   );
 }

@@ -25,39 +25,57 @@ import {
   FormControl,
   Input,
 } from "@mui/material";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Link, useParams, Navigate } from "react-router-dom";
 import { red } from "@mui/material/colors";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  useInfiniteQuery,
+} from "@tanstack/react-query";
 import authToken from "./../../../utils/authToken";
 
 // Get all comments of a specific sport center
-const fetchComments = async (sportCenterId) => {
+const fetchComments = async ({ pageParam = 1, sportCenterId }) => {
   try {
     const response = await axios.get(
       `${import.meta.env.VITE_API_URL}/user/posts/public/comments`,
       {
         params: {
           sportCenterId: sportCenterId,
+          page: pageParam,
+          limit: 1,
         },
       }
     );
-    const comments = response.data.comments || [];
-    const approvedComments = comments.filter(
-      (comment) => comment.status === "approved"
-    );
 
-    // if there no comments return an empty array
-    return approvedComments || [];
+    const { comments, currentPage, hasNextPage } = response.data;
+
+    // Filter only approved comments only
+    const approvedComments =
+      comments.length > 0
+        ? comments.filter((comment) => comment.status === "approved")
+        : [];
+
+    return {
+      comments: approvedComments,
+
+      // To load more comments check the api does it provides the next page.
+      // If it has , it means we can load more comments.
+      nextCursor: hasNextPage ? currentPage + 1 : null,
+    };
   } catch (err) {
     console.error("Error fetching comments:", err);
     throw new Error("Failed to fetch comments. Please try again later.");
   }
 };
 
-// Post comment by user
+// Handle Posting comment by user
 const postComment = async (userId, sportCenterId, comment) => {
   const token = authToken();
+
+  // Data that we need to post to api
   const information = {
     postBy: userId,
     postTo: sportCenterId,
@@ -82,61 +100,94 @@ const postComment = async (userId, sportCenterId, comment) => {
 
 //* Comment Section
 function CommentsSection() {
-  const value = 2;
   const { sportCenterId } = useParams();
 
+  // Infinite scrolling
   const {
-    data: userComments = [],
-    isLoading,
+    data: commentPages = { page: [] },
     error,
-  } = useQuery({
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    status,
+  } = useInfiniteQuery({
     queryKey: ["userComments", sportCenterId],
-    queryFn: () => fetchComments(sportCenterId),
+    queryFn: ({ pageParam }) => fetchComments({ pageParam, sportCenterId }),
+    getNextPageParam: (lastPage) => lastPage.nextCursor || undefined,
   });
 
-  if (isLoading) return <Loader />;
+  // Checking if the center does not have comments.
+  // In react query it return an array of comment object which if have to check only first array.
+  // If it empty , all the array are empty
+  const emptyComments = useMemo(() => {
+    // Check if `commentPages.pages` is defined and is an array
+    if (!commentPages.pages || !Array.isArray(commentPages.pages)) {
+      return null;
+    }
+
+    // Check if every page's comments array is empty
+    const allCommentsEmpty = commentPages.pages.every(
+      (page) => !page.comments || page.comments.length === 0
+    );
+
+    return allCommentsEmpty ? <p>No Comment</p> : null;
+  }, [commentPages.pages]);
+
+  if (status === "pending") return <Loader />;
   if (error) return <p>Error loading comments</p>;
 
   return (
     <>
-      {userComments.length > 0 ? (
-        userComments.map((data, key) => (
-          <Card
-            key={key}
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              width: "100%",
-            }}
-            square={false}
-            elevation={4}
-            variant="outlined">
-            <CardHeader
-              sx={{ width: "75%" }}
-              avatar={
-                <Avatar sx={{ bgcolor: red[500] }}>
-                  {data?.postBy?.name[0]}
-                </Avatar>
-              }
-              title={data?.postBy?.name}
-              subheader={dayjs(data.commentedAt).format("MMMM, DD YYYY")}
-            />
-            <CardContent
+      {emptyComments}
+      {commentPages.pages.map((page, pageIndex) => (
+        <Box sx={{ width: "100%" }} key={pageIndex}>
+          {page.comments.map((data, key) => (
+            <Card
+              key={key}
               sx={{
                 display: "flex",
-                justifyContent: "end",
-                alignItems: "end",
-                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "space-between",
                 width: "100%",
-              }}>
-              <Typography color="text.secondary">{data?.comment}</Typography>
-              <Rating name="read-only" value={value} readOnly />
-            </CardContent>
-          </Card>
-        ))
-      ) : (
-        <Typography color="text.secondary">No comments</Typography>
+              }}
+              square={false}
+              elevation={4}
+              variant="outlined">
+              <CardHeader
+                sx={{ width: "75%" }}
+                avatar={
+                  <Avatar sx={{ bgcolor: red[500] }}>
+                    {data?.postBy?.name[0]}
+                  </Avatar>
+                }
+                title={data?.postBy?.name}
+                subheader={dayjs(data.commentedAt).format("MMMM, DD YYYY")}
+              />
+              <CardContent
+                sx={{
+                  display: "flex",
+                  justifyContent: "end",
+                  alignItems: "end",
+                  flexDirection: "column",
+                  width: "100%",
+                }}>
+                <Typography color="text.secondary">{data?.comment}</Typography>
+                <Rating name="read-only" value={data?.rating || 2} readOnly />
+              </CardContent>
+            </Card>
+          ))}
+        </Box>
+      ))}
+
+      {/* Load More Button */}
+      {hasNextPage && (
+        <Button
+          onClick={() => fetchNextPage()}
+          disabled={isFetchingNextPage}
+          sx={{ background: "#dedede", color: "#000" }}
+          fullWidth>
+          {isFetchingNextPage ? "Loading more..." : "Load More"}
+        </Button>
       )}
     </>
   );
@@ -286,7 +337,7 @@ export default function CenterDetail() {
                 image={data.image}
                 type={data.name}
                 time={`Available: ${sportCenter?.operating_hours.open}-${sportCenter?.operating_hours.close}`}
-                price={`$${data.price} per 60 minutes`}
+                price={`$${data.price} per 90 minutes`}
                 facilityId={data._id}
                 sportCenterId={sportCenter?._id}
               />
@@ -388,9 +439,6 @@ export default function CenterDetail() {
             }}
             tabIndex={0}>
             <CommentsSection />
-            <Button sx={{ background: "#dedede", color: "#000" }} fullWidth>
-              Load More
-            </Button>
           </Box>
         </Paper>
       </Box>
