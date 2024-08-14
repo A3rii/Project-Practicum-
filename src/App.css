@@ -1466,3 +1466,11 @@
 
 
 /** Incoming Match */
+
+
+
+/* Root selector of mui in super admin comment */
+.css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.MuiSelect-select {
+   display: flex;
+   gap: .5rem
+}

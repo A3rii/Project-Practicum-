@@ -42,8 +42,6 @@ export default function AddCourt({
   const [lessorImages, setLessorImages] = useState([]);
   const [filePreviews, setFilePreviews] = useState([]);
 
-  console.log(facilityId);
-
   const metadata = {
     contentType: "image/*",
   };

@@ -263,8 +263,16 @@ function SportFieldCard() {
       const getSportCenter = await axios.get(
         `${import.meta.env.VITE_API_URL}/lessor/auth/informations`
       );
+      const centers = getSportCenter.data.lessors;
 
-      return getSportCenter.data.lessors;
+      // Checking if the sport center is approved and they already have facility to booked
+      const approvedCenter = centers.filter(
+        (center) =>
+          center.status === "approved" &&
+          center.facilities &&
+          center.facilities.length > 0
+      );
+      return approvedCenter;
     },
   });
 

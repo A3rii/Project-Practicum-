@@ -46,7 +46,6 @@ export const registerLessor = createAsyncThunk(
 
       // Storing token in  cookie
       Cookies.set("token", accessToken, { expires: 7, secure: true });
-
       return { lessor, accessToken };
     } catch (err) {
       return thunkAPI.rejectWithValue(
@@ -292,6 +291,7 @@ export const userSlice = createSlice({
         state.error = action.payload;
       });
 
+    //  handling moderator profile
     builder
       .addCase(getCurrentModerator.pending, (state) => {
         state.isLoading = true;
@@ -299,7 +299,7 @@ export const userSlice = createSlice({
       })
       .addCase(getCurrentModerator.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.currentLessor = action.payload;
+        state.currentModerator = action.payload;
       })
       .addCase(getCurrentModerator.rejected, (state, action) => {
         state.isLoading = false;

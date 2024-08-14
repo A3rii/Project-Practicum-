@@ -31,16 +31,21 @@ import Loader from "./../../../components/Loader";
 
 // Api request for list of bookings
 const fetchBookings = async (token) => {
-  const response = await axios.get(
-    `${import.meta.env.VITE_API_URL}/books/sport-center`,
-    {
-      headers: {
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-  return response.data.bookings;
+  try {
+    const response = await axios.get(
+      `${import.meta.env.VITE_API_URL}/books/sport-center`,
+      {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.bookings || [];
+  } catch (error) {
+    console.error("Error fetching bookings:", error);
+    return []; // Return an empty array if there's an error
+  }
 };
 
 export default function IncomingMatch() {
@@ -50,11 +55,11 @@ export default function IncomingMatch() {
 
   // Get the bookings data
   const {
-    data: allBookings = [],
+    data: allBookings = [], // Default to empty array if no data
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["bookings"],
+    queryKey: ["allBookings"],
     queryFn: () => fetchBookings(token),
   });
 
@@ -83,24 +88,25 @@ export default function IncomingMatch() {
 
   // List all the bookings in data table
   const listBookings = useMemo(() => {
-    if (!Array.isArray(filteredBookings) || filteredBookings.length === 0)
-      return null;
+    if (filteredBookings.length === 0) return null;
 
     return filteredBookings.map((data, key) => (
       <TableRow key={key}>
         <TableCell align="left">
-          {data?.user?.name || data?.outside_user?.name}
+          {data?.user?.name || data?.outside_user?.name || "N/A"}
         </TableCell>
         <TableCell align="left">
-          {data?.user?.phone_number || data?.outside_user?.phone_number}
+          {data?.user?.phone_number ||
+            data?.outside_user?.phone_number ||
+            "N/A"}
         </TableCell>
-        <TableCell align="center">{data.facility}</TableCell>
-        <TableCell align="center">{data.court}</TableCell>
-        <TableCell align="center">{formatDate(data.date)}</TableCell>
-        <TableCell align="left">{data.startTime}</TableCell>
-        <TableCell align="left">{data.endTime}</TableCell>
+        <TableCell align="center">{data.facility || "N/A"}</TableCell>
+        <TableCell align="center">{data.court || "N/A"}</TableCell>
+        <TableCell align="center">{formatDate(data.date) || "N/A"}</TableCell>
+        <TableCell align="left">{data.startTime || "N/A"}</TableCell>
+        <TableCell align="left">{data.endTime || "N/A"}</TableCell>
         <TableCell align="left">
-          {totalHour(data.startTime, data.endTime)}
+          {totalHour(data.startTime, data.endTime) || "N/A"}
         </TableCell>
         <TableCell
           sx={{
@@ -114,7 +120,7 @@ export default function IncomingMatch() {
             borderRadius: "10px",
             textAlign: "center",
           }}>
-          {data.status}
+          {data.status || "N/A"}
         </TableCell>
       </TableRow>
     ));
@@ -230,7 +236,9 @@ export default function IncomingMatch() {
               listBookings
             ) : (
               <TableRow>
-                <TableCell colSpan={8}>No Incoming match</TableCell>
+                <TableCell align="center" colSpan={9}>
+                  No Incoming match
+                </TableCell>
               </TableRow>
             )}
           </TableBody>

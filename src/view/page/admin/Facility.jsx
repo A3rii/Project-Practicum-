@@ -244,7 +244,7 @@ export default function Facility() {
             colSpan="7"
             className="p-4 border-b border-blue-gray-50 text-center">
             <p className="block antialiased font-sans text-sm leading-normal text-blue-gray-900 font-bold">
-              There is no product on the list
+              There is no facility on the list
             </p>
           </td>
         </tr>

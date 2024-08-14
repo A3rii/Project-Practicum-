@@ -32,7 +32,7 @@ const fetchMonthBookings = async () => {
 export default function BookingChart() {
   const [chartData, setChartData] = useState(null);
   const [year, setYear] = useState(null);
-
+  const currentYear = new Date();
   const { data, isLoading, error } = useQuery({
     queryKey: ["monthBookings"],
     queryFn: fetchMonthBookings,
@@ -75,7 +75,7 @@ export default function BookingChart() {
           },
         ],
       });
-      setYear(bookingYear);
+      setYear(bookingYear || currentYear.getFullYear());
     }
   }, [data]);
 

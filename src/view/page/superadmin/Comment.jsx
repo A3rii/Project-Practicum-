@@ -22,14 +22,18 @@ import {
   FormControl,
   Select,
   ListItemText,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  Popover,
 } from "@mui/material";
-
+import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import authToken from "../../../utils/authToken";
 import InsertCommentIcon from "@mui/icons-material/InsertComment";
 import Loader from "../../../components/Loader";
 
 //* Fetching all comments from sport centers
-const fetchComments = async (sportCenterId) => {
+const fetchComments = async (sportCenterId, status) => {
   const token = authToken();
   try {
     const response = await axios.get(
@@ -40,17 +44,13 @@ const fetchComments = async (sportCenterId) => {
           Authorization: `Bearer ${token}`,
         },
         params: {
-          sportCenterId, // Pass sportCenterId directly
+          sportCenterId,
+          status,
         },
       }
     );
 
-    const comments = response.data.comments;
-    const pendingComments = comments.filter(
-      (comment) => comment.status === "pending"
-    );
-
-    return pendingComments;
+    return response.data.comments;
   } catch (err) {
     console.error("Error fetching comments:", err);
     throw new Error("Failed to fetch comments. Please try again later.");
@@ -81,6 +81,25 @@ const updateCommentStatus = async ({ status, commentId }) => {
 export default function Comment() {
   const queryClient = useQueryClient();
   const [sportCenterId, setSportCenterId] = useState("");
+  const [status, setStatus] = useState("pending");
+
+  console.log(status);
+
+  // Handle Popover event open and close
+  const [anchorEl, setAnchorEl] = useState(null);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  const open = Boolean(anchorEl);
+  const id = open ? "simple-popover" : undefined;
+
+  const handleFilterChange = (event) => {
+    setStatus(event.target.value);
+    handleClose(); // Close the popover after selection
+  };
 
   // List all the lessors to filter the confirmation
   const { data: allLessors } = useQuery({
@@ -99,8 +118,9 @@ export default function Comment() {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["comments", sportCenterId],
-    queryFn: () => fetchComments(sportCenterId),
+    queryKey: ["comments", sportCenterId, status],
+    queryFn: () => fetchComments(sportCenterId, status),
+    enabled: !!sportCenterId, // Only run query if sportCenterId is selected
     refetchOnWindowFocus: true,
   });
 
@@ -118,6 +138,19 @@ export default function Comment() {
   // Handle accept or reject comments
   const handleAccept = (status, commentId) => {
     mutation.mutate({ status, commentId });
+  };
+
+  const statusColor = (status) => {
+    switch (status) {
+      case "approved":
+        return "#00FF00";
+      case "rejected":
+        return "#EB1C1C";
+      case "pending":
+        return "orange";
+      default:
+        return "gray";
+    }
   };
 
   if (isLoading) return <Loader />;
@@ -146,18 +179,23 @@ export default function Comment() {
           sx={{ padding: "2rem", fontWeight: "bold" }}>
           Pending Comments
         </Typography>
-        <Box sx={{ minWidth: 120, width: "25%", padding: "2rem" }}>
-          <FormControl
-            sx={{
-              display: "flex",
-            }}
-            fullWidth>
+
+        <Box
+          sx={{
+            minWidth: 120,
+            width: "30%",
+            padding: "2rem",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: ".5rem",
+          }}>
+          <FormControl fullWidth>
             <InputLabel id="select-sport-center-label">Sport Center</InputLabel>
             <Select
               labelId="select-sport-center-label"
               value={sportCenterId}
-              onChange={(e) => setSportCenterId(e.target.value)} // Set selected value here
-            >
+              onChange={(e) => setSportCenterId(e.target.value)}>
               {allLessors &&
                 allLessors.map((lessor) => (
                   <MenuItem
@@ -167,13 +205,14 @@ export default function Comment() {
                       display: "flex",
                       justifyContent: "center",
                       alignItems: "center",
-                      gap: ".5rem",
+                      gap: ".4rem",
                     }}>
                     <Avatar
                       sx={{
                         width: 30,
                         height: 30,
                       }}
+                      loading="lazy"
                       src={lessor.logo}
                       alt="Lessor Logo"
                     />
@@ -182,6 +221,52 @@ export default function Comment() {
                 ))}
             </Select>
           </FormControl>
+
+          <FilterAltIcon
+            aria-describedby={id}
+            onClick={handleClick}
+            style={{
+              fontSize: "1.5rem",
+              marginRight: "20px",
+              cursor: "pointer",
+            }}
+          />
+          <Popover
+            id={id}
+            open={open}
+            anchorEl={anchorEl}
+            onClose={handleClose}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "left",
+            }}>
+            <FormControl
+              sx={{
+                width: "10rem",
+                padding: "1rem",
+              }}>
+              <RadioGroup
+                value={status}
+                onChange={handleFilterChange}
+                name="radio-buttons-group">
+                <FormControlLabel
+                  value="pending"
+                  control={<Radio />}
+                  label="Pending"
+                />
+                <FormControlLabel
+                  value="approved"
+                  control={<Radio />}
+                  label="Approved"
+                />
+                <FormControlLabel
+                  value="rejected"
+                  control={<Radio />}
+                  label="Rejected"
+                />
+              </RadioGroup>
+            </FormControl>
+          </Popover>
         </Box>
       </Box>
 
@@ -245,7 +330,7 @@ export default function Comment() {
                         padding: "5px 10px",
                         fontSize: "12px",
                         fontWeight: "bold",
-                        backgroundColor: "orange",
+                        backgroundColor: statusColor(data.status),
                         color: "white",
                         borderRadius: "10px",
                         textAlign: "center",

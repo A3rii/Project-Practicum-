@@ -4,13 +4,12 @@ import axios from "axios";
 import authToken from "./authToken";
 import Loader from "./../components/Loader";
 
-export default function UserProtectedRoute() {
-  const [lessorRole, setLessorRole] = useState(null);
-  const [lessorStatus, setLessorStatus] = useState(null);
+export default function ProtectedRouteModerator() {
+  const [role, setRole] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchUserProfile = async () => {
+    const fetchModeratorProfile = async () => {
       const token = authToken();
       if (!token) {
         setLoading(false);
@@ -19,7 +18,7 @@ export default function UserProtectedRoute() {
 
       try {
         const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/lessor/auth/profile`,
+          `${import.meta.env.VITE_API_URL}/auth/moderator/profile`,
           {
             headers: {
               Accept: "application/json",
@@ -27,9 +26,8 @@ export default function UserProtectedRoute() {
             },
           }
         );
-        const userProfile = response.data.lessor;
-        setLessorRole(userProfile.role);
-        setLessorStatus(userProfile.status);
+        const moderatorProfile = response.data.moderator;
+        setRole(moderatorProfile.role);
       } catch (err) {
         console.error(err.message);
       } finally {
@@ -37,19 +35,17 @@ export default function UserProtectedRoute() {
       }
     };
 
-    fetchUserProfile();
+    fetchModeratorProfile();
   }, []);
-
   if (loading) {
     return <Loader />;
   }
 
-  // The route can only access by admin, and they've been approved by moderator
-  if (lessorRole === "admin" && lessorStatus === "approved") {
-    console.log("You are admin");
+  if (role === "moderator") {
+    console.log("You are moderator");
     return <Outlet />;
   } else {
-    console.log("You are not admin");
+    console.log("You are not moderator");
     return <Navigate to="/protected" replace />;
   }
 }

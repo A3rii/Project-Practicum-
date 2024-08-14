@@ -42,11 +42,13 @@ const fetchComments = async (sportCenterId) => {
         },
       }
     );
-    const comments = response.data.comments;
+    const comments = response.data.comments || [];
     const approvedComments = comments.filter(
       (comment) => comment.status === "approved"
     );
-    return approvedComments;
+
+    // if there no comments return an empty array
+    return approvedComments || [];
   } catch (err) {
     console.error("Error fetching comments:", err);
     throw new Error("Failed to fetch comments. Please try again later.");
@@ -84,7 +86,7 @@ function CommentsSection() {
   const { sportCenterId } = useParams();
 
   const {
-    data: userComments,
+    data: userComments = [],
     isLoading,
     error,
   } = useQuery({
@@ -284,7 +286,7 @@ export default function CenterDetail() {
                 image={data.image}
                 type={data.name}
                 time={`Available: ${sportCenter?.operating_hours.open}-${sportCenter?.operating_hours.close}`}
-                price={`$${data.price} per 90 minutes`}
+                price={`$${data.price} per 60 minutes`}
                 facilityId={data._id}
                 sportCenterId={sportCenter?._id}
               />

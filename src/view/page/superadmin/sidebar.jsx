@@ -1,6 +1,5 @@
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import React from "react";
-import SportsBaseballIcon from "@mui/icons-material/SportsBaseball";
 import {
   Box,
   List,
@@ -14,7 +13,6 @@ import {
 import { useDispatch } from "react-redux";
 import { logout } from "../../../app/slice";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LogoutIcon from "@mui/icons-material/Logout";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
@@ -27,11 +25,12 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import CommentIcon from "@mui/icons-material/Comment";
 import BarChartIcon from "@mui/icons-material/BarChart";
+import useModeratorProfile from "../../../utils/useModeratorProfile";
 
 export default function SuperAdmin() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  const moderator = useModeratorProfile();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
@@ -181,7 +180,7 @@ export default function SuperAdmin() {
           }}>
           <Avatar
             alt="NK"
-            src="https://images2.alphacoders.com/122/1221814.jpg"
+            src={moderator.avatar}
             sx={{
               width: isSmallScreen ? 40 : 56,
               height: isSmallScreen ? 40 : 56,
@@ -198,15 +197,16 @@ export default function SuperAdmin() {
             <Typography
               sx={{
                 color: "#fff",
+                fontWeight: "bold",
               }}>
-              Messi
+              {moderator?.name}
             </Typography>
             <Typography
               sx={{
                 color: "#fff",
                 fontSize: ".8rem",
               }}>
-              Super Admin
+              {moderator?.role}
             </Typography>
           </Box>
         </Box>
@@ -247,7 +247,10 @@ export default function SuperAdmin() {
             )}
           </MenuItem>
 
-          <MenuItem component={Link} to="/admin/schedule" sx={menuItemStyles}>
+          <MenuItem
+            component={Link}
+            to="/super-admin/lessor"
+            sx={menuItemStyles}>
             <CalendarMonthIcon
               sx={{ color: "#fff", marginRight: isSmallScreen ? 0 : "10px" }}
             />
@@ -255,32 +258,7 @@ export default function SuperAdmin() {
             {!isSmallScreen && (
               <Typography
                 sx={{ color: "#fff", fontWeight: "bold", fontSize: ".9rem" }}>
-                Set Schedule
-              </Typography>
-            )}
-          </MenuItem>
-          <MenuItem component={Link} to="/admin/facility" sx={menuItemStyles}>
-            <SportsBaseballIcon
-              sx={{ color: "#fff", marginRight: isSmallScreen ? 0 : "10px" }}
-            />
-            {!isSmallScreen && (
-              <Typography
-                sx={{ color: "#fff", fontWeight: "bold", fontSize: ".9rem" }}>
-                Facility
-              </Typography>
-            )}
-          </MenuItem>
-          <MenuItem
-            component={Link}
-            to="/admin/lessor-profile"
-            sx={menuItemStyles}>
-            <AccountCircleIcon
-              sx={{ color: "#fff", marginRight: isSmallScreen ? 0 : "10px" }}
-            />
-            {!isSmallScreen && (
-              <Typography
-                sx={{ color: "#fff", fontWeight: "bold", fontSize: ".9rem" }}>
-                Profile
+                Confirm Lessor
               </Typography>
             )}
           </MenuItem>

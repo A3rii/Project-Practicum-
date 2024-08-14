@@ -371,7 +371,9 @@ export default function ConfirmPage() {
                 listBookings
               ) : (
                 <TableRow>
-                  <TableCell colSpan={10}>No Booking</TableCell>
+                  <TableCell align="center" colSpan={10}>
+                    No Booking
+                  </TableCell>
                 </TableRow>
               )}
             </TableBody>

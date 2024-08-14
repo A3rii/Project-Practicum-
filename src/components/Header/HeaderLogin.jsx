@@ -128,7 +128,6 @@ export default function Header() {
   const handleLogOut = () => {
     dispatch(logout());
     navigate("/");
-    console.log("logout");
   };
 
   const { data: todayMatch = [], isError } = useQuery({

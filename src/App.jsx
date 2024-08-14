@@ -11,6 +11,7 @@ import Loader from "./components/Loader";
 import Applayout from "./view/applayout/Applayout";
 import AdminProtectedRoute from "./utils/ProtectedRouteAdmin";
 import UserProtectedRoute from "./utils/ProtectedRouteUser";
+import ProtectedRouteModerator from "./utils/ProtectedRouteModerator";
 import Home from "./view/page/user/Home";
 import Contact from "./view/page/user/Contact";
 import AdminCenter from "./view/page/admin/AdminCenter";
@@ -27,6 +28,7 @@ import LoginSuperAdmin from "./view/page/superadmin/auth/Login";
 import SuperAdmin from "./view/page/superadmin/Sidebar";
 import Comment from "./view/page/superadmin/Comment";
 import DashBoard from "./view/page/superadmin/DashBoard";
+import ConfirmLessor from "./view/page/superadmin/ConfirmLessor";
 
 // Lazy load components
 const BookingHistory = lazy(() => import("./view/page/user/BookingHistory"));
@@ -70,14 +72,15 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUpCustomer />} />
           <Route path="/signin-admin" element={<SignInSportAdmin />} />
-
-          {/* Super Admin Routes */}
-
           <Route path="/signin-moderator" element={<LoginSuperAdmin />} />
 
-          <Route path="/super-admin" element={<SuperAdmin />}>
-            <Route path="dashboard" index element={<DashBoard />} />
-            <Route path="comment" element={<Comment />} />
+          {/* Super Admin Routes */}
+          <Route element={<ProtectedRouteModerator />}>
+            <Route path="/super-admin" element={<SuperAdmin />}>
+              <Route path="dashboard" index element={<DashBoard />} />
+              <Route path="comment" element={<Comment />} />
+              <Route path="lessor" element={<ConfirmLessor />} />
+            </Route>
           </Route>
 
           {/* Applayout */}
