@@ -23,7 +23,7 @@ import BookIcon from "@mui/icons-material/Book";
 import dayjs from "dayjs";
 import Loader from "./../../../components/Loader";
 import BookingChart from "../../../components/AdminComponent/Chart/BookingChart";
-
+import RatingChart from "./../../../components/AdminComponent/Chart/RatingChart";
 const token = authToken();
 const headers = {
   Accept: "application/json",
@@ -462,22 +462,25 @@ function UpcomingMatch() {
 export default function AdminDashboard() {
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} sm={6} md={4} lg={4}>
+      <Grid item xs={12} sm={12} md={4} lg={4}>
         <TotalBooking />
       </Grid>
-      <Grid item xs={12} sm={6} md={4} lg={4}>
+      <Grid item xs={12} sm={12} md={4} lg={4}>
         <TotalCustomer />
       </Grid>
-      <Grid item xs={12} sm={6} md={4} lg={4}>
+      <Grid item xs={12} sm={12} md={4} lg={4}>
         <MatchAcception />
       </Grid>
-      <Grid item xs={12} sm={12} md={12} lg={8}>
+      <Grid item xs={12} sm={12} md={12} lg={6}>
         <BookingChart />
       </Grid>
-      <Grid item xs={12} sm={12} md={12} lg={4}>
+      <Grid item xs={12} sm={12} md={12} lg={6}>
+        <RatingChart />
+      </Grid>
+      <Grid item xs={12} sm={12} md={12} lg={6}>
         <CustomerTable />
       </Grid>
-      <Grid item xs={12} sm={12} md={12} lg={8}>
+      <Grid item xs={12} sm={12} md={12} lg={6}>
         <UpcomingMatch />
       </Grid>
     </Grid>

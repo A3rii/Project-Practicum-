@@ -9,10 +9,15 @@ import {
   Link,
   Grid,
   Box,
+  InputAdornment,
+  IconButton,
   Typography,
   Container,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -43,6 +48,8 @@ export default function SignIn() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
   const [error, setError] = useState(null);
 
   const handleSignIn = (e) => {
@@ -66,6 +73,10 @@ export default function SignIn() {
         setError(action.payload || "Login failed");
       }
     });
+  };
+
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
   };
 
   return (
@@ -108,8 +119,21 @@ export default function SignIn() {
               required
               fullWidth
               name="password"
+              type={showPassword ? "text" : "password"}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={handleClickShowPassword} edge="end">
+                      {showPassword ? (
+                        <VisibilityIcon />
+                      ) : (
+                        <VisibilityOffIcon />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
               label="Password"
-              type="password"
               id="password"
               autoComplete="current-password"
               value={password}

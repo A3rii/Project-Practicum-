@@ -1,6 +1,8 @@
+import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { ToastContainer } from "react-toastify";
 import dayjs from "dayjs";
 import { notify, errorAlert } from "../../../utils/toastAlert";
 import {
@@ -157,215 +159,233 @@ export default function Comment() {
   if (error) return <p>Error loading comments.</p>;
 
   return (
-    <Paper
-      sx={{
-        width: "100%",
-        overflow: "hidden",
-        height: "max-content",
-      }}>
-      <Box
+    <>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
+      <Paper
         sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "1rem",
+          width: "100%",
+          overflow: "hidden",
+          height: "max-content",
         }}>
-        <Typography
-          display="flex"
-          alignItems="center"
-          gutterBottom
-          variant="h6"
-          component="div"
-          sx={{ padding: "2rem", fontWeight: "bold" }}>
-          Pending Comments
-        </Typography>
-
         <Box
           sx={{
-            minWidth: 120,
-            width: "30%",
-            padding: "2rem",
             display: "flex",
-            justifyContent: "center",
+            justifyContent: "space-between",
             alignItems: "center",
-            gap: ".5rem",
+            marginBottom: "1rem",
           }}>
-          <FormControl fullWidth>
-            <InputLabel id="select-sport-center-label">Sport Center</InputLabel>
-            <Select
-              labelId="select-sport-center-label"
-              value={sportCenterId}
-              onChange={(e) => setSportCenterId(e.target.value)}>
-              {allLessors &&
-                allLessors.map((lessor) => (
-                  <MenuItem
-                    value={lessor._id}
-                    key={lessor._id}
-                    sx={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      gap: ".4rem",
-                    }}>
-                    <Avatar
-                      sx={{
-                        width: 30,
-                        height: 30,
-                      }}
-                      loading="lazy"
-                      src={lessor.logo}
-                      alt="Lessor Logo"
-                    />
-                    <ListItemText primary={lessor.sportcenter_name} />
-                  </MenuItem>
-                ))}
-            </Select>
-          </FormControl>
+          <Typography
+            display="flex"
+            alignItems="center"
+            gutterBottom
+            variant="h6"
+            component="div"
+            sx={{ padding: "2rem", fontWeight: "bold" }}>
+            Pending Comments
+          </Typography>
 
-          <FilterAltIcon
-            aria-describedby={id}
-            onClick={handleClick}
-            style={{
-              fontSize: "1.5rem",
-              marginRight: "20px",
-              cursor: "pointer",
-            }}
-          />
-          <Popover
-            id={id}
-            open={open}
-            anchorEl={anchorEl}
-            onClose={handleClose}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "left",
+          <Box
+            sx={{
+              minWidth: 120,
+              width: "30%",
+              padding: "2rem",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: ".5rem",
             }}>
-            <FormControl
-              sx={{
-                width: "10rem",
-                padding: "1rem",
-              }}>
-              <RadioGroup
-                value={status}
-                onChange={handleFilterChange}
-                name="radio-buttons-group">
-                <FormControlLabel
-                  value="pending"
-                  control={<Radio />}
-                  label="Pending"
-                />
-                <FormControlLabel
-                  value="approved"
-                  control={<Radio />}
-                  label="Approved"
-                />
-                <FormControlLabel
-                  value="rejected"
-                  control={<Radio />}
-                  label="Rejected"
-                />
-              </RadioGroup>
-            </FormControl>
-          </Popover>
-        </Box>
-      </Box>
-
-      <Divider />
-      <TableContainer sx={{ maxHeight: 440 }}>
-        <Table stickyHeader aria-label="sticky table">
-          <TableHead>
-            <TableRow sx={{ background: "#858585" }}>
-              <TableCell align="center">ID</TableCell>
-              <TableCell align="center">Comments</TableCell>
-              <TableCell align="center">Post By</TableCell>
-              <TableCell align="center">Sport Center</TableCell>
-              <TableCell align="center">Comment At</TableCell>
-              <TableCell align="center">Status</TableCell>
-              <TableCell align="center">Action</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {comments && comments.length > 0 ? (
-              comments.map((data, index) => (
-                <TableRow key={data._id}>
-                  <TableCell align="center">{index + 1}</TableCell>
-                  <TableCell
-                    align="center"
-                    sx={{ width: "25%", textAlign: "justify" }}>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        justifyContent: "start",
-                        alignItems: "start",
-                        gap: ".6rem",
-                      }}>
-                      <InsertCommentIcon sx={{ fontSize: "1rem" }} />
-                      {data.comment}
-                    </Box>
-                  </TableCell>
-                  <TableCell align="center">{data.postBy.name}</TableCell>
-                  <TableCell align="center">
-                    <Box
+            <FormControl fullWidth>
+              <InputLabel id="select-sport-center-label">
+                Sport Center
+              </InputLabel>
+              <Select
+                labelId="select-sport-center-label"
+                value={sportCenterId}
+                onChange={(e) => setSportCenterId(e.target.value)}>
+                {allLessors &&
+                  allLessors.map((lessor) => (
+                    <MenuItem
+                      value={lessor._id}
+                      key={lessor._id}
                       sx={{
                         display: "flex",
                         justifyContent: "center",
                         alignItems: "center",
-                        gap: ".6rem",
+                        gap: ".4rem",
                       }}>
                       <Avatar
-                        sx={{ width: 36, height: 36 }}
-                        src={data.postTo.logo}
+                        sx={{
+                          width: 30,
+                          height: 30,
+                        }}
+                        loading="lazy"
+                        src={lessor.logo}
+                        alt="Lessor Logo"
                       />
-                      {data.postTo.sportcenter_name}
-                    </Box>
-                  </TableCell>
-                  <TableCell align="center">
-                    {dayjs(data.commentedAt).format("MMMM DD, YYYY")} at{" "}
-                    {dayjs(data.commentedAt).format("hh:mm a")}
-                  </TableCell>
-                  <TableCell align="center">
-                    <Box
-                      sx={{
-                        display: "inline-block",
-                        padding: "5px 10px",
-                        fontSize: "12px",
-                        fontWeight: "bold",
-                        backgroundColor: statusColor(data.status),
-                        color: "white",
-                        borderRadius: "10px",
-                        textAlign: "center",
-                      }}>
-                      {data.status}
-                    </Box>
-                  </TableCell>
-                  <TableCell align="center">
-                    <Stack direction="row" spacing={1}>
-                      <Button
-                        onClick={() => handleAccept("approved", data._id)}
-                        variant="outlined"
-                        color="success">
-                        Accept
-                      </Button>
-                      <Button
-                        onClick={() => handleAccept("rejected", data._id)}
-                        variant="outlined"
-                        color="error">
-                        Cancel
-                      </Button>
-                    </Stack>
+                      <ListItemText primary={lessor.sportcenter_name} />
+                    </MenuItem>
+                  ))}
+              </Select>
+            </FormControl>
+
+            <FilterAltIcon
+              aria-describedby={id}
+              onClick={handleClick}
+              style={{
+                fontSize: "1.5rem",
+                marginRight: "20px",
+                cursor: "pointer",
+              }}
+            />
+            <Popover
+              id={id}
+              open={open}
+              anchorEl={anchorEl}
+              onClose={handleClose}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "left",
+              }}>
+              <FormControl
+                sx={{
+                  width: "10rem",
+                  padding: "1rem",
+                }}>
+                <RadioGroup
+                  value={status}
+                  onChange={handleFilterChange}
+                  name="radio-buttons-group">
+                  <FormControlLabel
+                    value="pending"
+                    control={<Radio />}
+                    label="Pending"
+                  />
+                  <FormControlLabel
+                    value="approved"
+                    control={<Radio />}
+                    label="Approved"
+                  />
+                  <FormControlLabel
+                    value="rejected"
+                    control={<Radio />}
+                    label="Rejected"
+                  />
+                </RadioGroup>
+              </FormControl>
+            </Popover>
+          </Box>
+        </Box>
+
+        <Divider />
+        <TableContainer sx={{ maxHeight: 440 }}>
+          <Table stickyHeader aria-label="sticky table">
+            <TableHead>
+              <TableRow sx={{ background: "#858585" }}>
+                <TableCell align="center">ID</TableCell>
+                <TableCell align="center">Comments</TableCell>
+                <TableCell align="center">Post By</TableCell>
+                <TableCell align="center">Sport Center</TableCell>
+                <TableCell align="center">Comment At</TableCell>
+                <TableCell align="center">Rating</TableCell>
+                <TableCell align="center">Status</TableCell>
+                <TableCell align="center">Action</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {comments && comments.length > 0 ? (
+                comments.map((data, index) => (
+                  <TableRow key={data._id}>
+                    <TableCell align="center">{index + 1}</TableCell>
+                    <TableCell
+                      align="center"
+                      sx={{ width: "20%", textAlign: "center" }}>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "start",
+                          alignItems: "start",
+                          gap: ".6rem",
+                        }}>
+                        <InsertCommentIcon sx={{ fontSize: ".7rem" }} />
+                        {data.comment}
+                      </Box>
+                    </TableCell>
+                    <TableCell align="center">{data.postBy.name}</TableCell>
+                    <TableCell align="center">
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          gap: ".6rem",
+                        }}>
+                        <Avatar
+                          sx={{ width: 36, height: 36 }}
+                          src={data.postTo.logo}
+                        />
+                        {data.postTo.sportcenter_name}
+                      </Box>
+                    </TableCell>
+                    <TableCell align="center">
+                      {dayjs(data.commentedAt).format("MMMM DD, YYYY")} at{" "}
+                      {dayjs(data.commentedAt).format("hh:mm a")}
+                    </TableCell>
+                    <TableCell align="center">{data.ratingValue}</TableCell>
+                    <TableCell align="center">
+                      <Box
+                        sx={{
+                          display: "inline-block",
+                          padding: "5px 10px",
+                          fontSize: "12px",
+                          fontWeight: "bold",
+                          backgroundColor: statusColor(data.status),
+                          color: "white",
+                          borderRadius: "10px",
+                          textAlign: "center",
+                        }}>
+                        {data.status}
+                      </Box>
+                    </TableCell>
+                    <TableCell align="center">
+                      <Stack direction="row" spacing={1}>
+                        <Button
+                          onClick={() => handleAccept("approved", data._id)}
+                          variant="outlined"
+                          color="success">
+                          Accept
+                        </Button>
+                        <Button
+                          onClick={() => handleAccept("rejected", data._id)}
+                          variant="outlined"
+                          color="error">
+                          Cancel
+                        </Button>
+                      </Stack>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={7} align="center">
+                    No comments available.
                   </TableCell>
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={7} align="center">
-                  No comments available.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </Paper>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Paper>
+    </>
   );
 }

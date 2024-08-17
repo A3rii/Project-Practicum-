@@ -23,12 +23,16 @@ import SignInSportAdmin from "./view/page/Auth/Login/SignInSportAdmin";
 import PageNotFound from "./components/PageNotFound";
 import ProtectedPage from "./components/ProtectedPage";
 import Error from "./components/Error";
-
 import LoginSuperAdmin from "./view/page/superadmin/auth/Login";
 import SuperAdmin from "./view/page/superadmin/Sidebar";
-import Comment from "./view/page/superadmin/Comment";
-import DashBoard from "./view/page/superadmin/DashBoard";
-import ConfirmLessor from "./view/page/superadmin/ConfirmLessor";
+
+
+// Moderator 
+const Comment = lazy(() => import("./view/page/superadmin/Comment"));
+const DashBoard = lazy(() => import("./view/page/superadmin/DashBoard"));
+const ConfirmLessor = lazy(() =>
+  import("./view/page/superadmin/ConfirmLessor")
+);
 
 // Lazy load components
 const BookingHistory = lazy(() => import("./view/page/user/BookingHistory"));

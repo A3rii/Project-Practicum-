@@ -180,7 +180,7 @@ export default function SuperAdmin() {
           }}>
           <Avatar
             alt="NK"
-            src={moderator.avatar}
+            src={moderator?.avatar}
             sx={{
               width: isSmallScreen ? 40 : 56,
               height: isSmallScreen ? 40 : 56,

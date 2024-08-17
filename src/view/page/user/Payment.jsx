@@ -38,7 +38,7 @@ export default function Payment() {
               <h2> Payment Method </h2>
               <img src={ABA} alt="#" />
               <button className="payment-confirm" onClick={handle_booking}>
-                Confirm Booking{" "}
+                Confirm Booking
               </button>
             </div>
           </div>

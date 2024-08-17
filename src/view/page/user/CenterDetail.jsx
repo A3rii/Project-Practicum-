@@ -8,6 +8,7 @@ import ContactInfo from "../../../components/ContactInfo";
 import Loader from "../../../components/Loader";
 import dayjs from "dayjs";
 import currentUser from "./../../../utils/currentUser";
+import BarRating from "./../../../components/BarRating";
 import { ToastContainer } from "react-toastify";
 import { notify, errorAlert } from "./../../../utils/toastAlert";
 import {
@@ -25,6 +26,7 @@ import {
   FormControl,
   Input,
 } from "@mui/material";
+
 import { useState, useMemo } from "react";
 import { Link, useParams, Navigate } from "react-router-dom";
 import { red } from "@mui/material/colors";
@@ -35,6 +37,7 @@ import {
   useInfiniteQuery,
 } from "@tanstack/react-query";
 import authToken from "./../../../utils/authToken";
+import BarRatings from "./../../../components/BarRating";
 
 // Get all comments of a specific sport center
 const fetchComments = async ({ pageParam = 1, sportCenterId }) => {
@@ -72,7 +75,7 @@ const fetchComments = async ({ pageParam = 1, sportCenterId }) => {
 };
 
 // Handle Posting comment by user
-const postComment = async (userId, sportCenterId, comment) => {
+const postComment = async (userId, sportCenterId, comment, ratingValue) => {
   const token = authToken();
 
   // Data that we need to post to api
@@ -80,6 +83,7 @@ const postComment = async (userId, sportCenterId, comment) => {
     postBy: userId,
     postTo: sportCenterId,
     comment: comment,
+    ratingValue: ratingValue,
   };
   try {
     await axios.post(
@@ -95,6 +99,30 @@ const postComment = async (userId, sportCenterId, comment) => {
   } catch (err) {
     console.error("Error posting comment:", err);
     throw new Error("Failed to post comment. Please try again later.");
+  }
+};
+
+// Request to get average rating
+const averageRating = async (sportCenterId) => {
+  try {
+    const rating = await axios.get(
+      `${import.meta.env.VITE_API_URL}/rating/average/reviews/${sportCenterId}`
+    );
+    return rating.data || [];
+  } catch (err) {
+    throw new Error(err);
+  }
+};
+
+// Rating Overview
+const ratingOverview = async (sportCenterId) => {
+  try {
+    const rating = await axios.get(
+      `${import.meta.env.VITE_API_URL}/rating/overviews/${sportCenterId}`
+    );
+    return rating.data.count;
+  } catch (err) {
+    throw new Error(err);
   }
 };
 
@@ -130,7 +158,18 @@ function CommentsSection() {
       (page) => !page.comments || page.comments.length === 0
     );
 
-    return allCommentsEmpty ? <p>No Comment</p> : null;
+    return allCommentsEmpty ? (
+      <Box
+        sx={{
+          width: "100%",
+          padding: "1rem",
+          outline: "1px solid #000",
+          borderRadius: "5px",
+        }}
+        elevation={3}>
+        No Comment
+      </Box>
+    ) : null;
   }, [commentPages.pages]);
 
   if (status === "pending") return <Loader />;
@@ -172,7 +211,28 @@ function CommentsSection() {
                   width: "100%",
                 }}>
                 <Typography color="text.secondary">{data?.comment}</Typography>
-                <Rating name="read-only" value={data?.rating || 2} readOnly />
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    gap: ".5rem",
+                  }}>
+                  <Rating
+                    name="read-only"
+                    precision={0.5}
+                    value={data?.ratingValue || 0}
+                    readOnly
+                  />
+                  <Typography
+                    sx={{
+                      fontWeight: "light",
+                      fontSize: ".8rem",
+                      color: "#595959",
+                    }}>
+                    ({data.ratingValue})
+                  </Typography>
+                </Box>
               </CardContent>
             </Card>
           ))}
@@ -239,12 +299,12 @@ function CenterCard({ image, type, time, price, facilityId, sportCenterId }) {
   );
 }
 
-// Top banner
 export default function CenterDetail() {
   const user = currentUser();
+  const queryClient = useQueryClient();
   const { sportCenterId } = useParams();
   const [comment, setComment] = useState("");
-  const queryClient = useQueryClient();
+  const [ratingValue, setRatingValue] = useState(0);
 
   const {
     data: sportCenter,
@@ -262,8 +322,10 @@ export default function CenterDetail() {
     },
   });
 
+  // Handling the comment post of user and update the data immediately after
   const mutation = useMutation({
-    mutationFn: () => postComment(user?._id, sportCenterId, comment),
+    mutationFn: () =>
+      postComment(user?._id, sportCenterId, comment, ratingValue),
     onSuccess: () => {
       queryClient.invalidateQueries(["userComments", sportCenterId]);
       notify("Comment posted successfully");
@@ -274,14 +336,35 @@ export default function CenterDetail() {
     },
   });
 
+  // Average Rating
+  const { data: rating } = useQuery({
+    queryKey: ["rating", sportCenterId],
+    queryFn: () => averageRating(sportCenterId),
+    enable: !!sportCenterId,
+  });
+
+  // Rating Overview
+
+  const { data: overviewRating } = useQuery({
+    queryKey: ["overviewRating", sportCenterId],
+    queryFn: () => ratingOverview(sportCenterId),
+    enable: !!sportCenterId,
+  });
+
+  console.log(overviewRating);
   // Handle comment submission
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Guest mode
+    // Guest mode if not logged in, can't comment
     if (!user) {
       setComment("");
       return errorAlert("You need to login to comment.");
+    }
+
+    if (!comment || !ratingValue) {
+      errorAlert("You are missing the fields.");
+      return;
     }
 
     mutation.mutate();
@@ -366,63 +449,137 @@ export default function CenterDetail() {
           flexDirection: "column",
           alignItems: "center",
           marginTop: "3rem",
+          padding: "1rem",
         }}>
-        <Paper sx={{ display: "flex", flexDirection: "column", width: "50%" }}>
+        <Paper
+          sx={{ display: "flex", flexDirection: "column", width: "75%" }}
+          elevation={5}>
           <Typography
-            sx={{ padding: "1.5rem", fontWeight: "bold" }}
-            variant="h5">
-            Comments
-          </Typography>
-          <Box
             sx={{
-              width: "95%",
-              padding: "1rem",
-              margin: "1rem",
-              display: "flex",
-              justifyContent: "start",
-              alignItems: "start",
-              flexDirection: "column",
-              gap: ".8rem",
-              transition: "outline 0.1s ease-in-out",
-              "&:focus": {
+              padding: "2rem",
+              fontWeight: "bold",
+              fontSize: "1.5rem",
+              textAlign: "center",
+            }}>
+            Reviews and ratings
+          </Typography>
+
+          <Box sx={{ display: "flex", justifyContent: "space-around" }}>
+            <Box
+              sx={{
+                width: "95%",
+                padding: "2rem",
+                margin: "2rem",
+                display: "flex",
+                justifyContent: "start",
+                alignItems: "start",
+                flexDirection: "column",
+                gap: ".8rem",
                 outline: "2px solid #3b9ebf",
                 borderRadius: ".9rem",
-              },
-            }}
-            tabIndex={0}>
+              }}
+              tabIndex={0}>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "start",
+                  alignItems: "center",
+                  gap: "1rem",
+                }}>
+                <Avatar
+                  alt={user?.name}
+                  src={
+                    user?.avatarUrl ||
+                    "https://img.freepik.com/premium-vector/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-vector-illustration_561158-3407.jpg?w=360"
+                  }
+                />
+                <Typography sx={{ fontWeight: "bold" }}>
+                  {user?.name || "Guest User"}
+                </Typography>
+              </Box>
+
+              <FormControl fullWidth sx={{ m: 1 }} variant="standard">
+                <Input
+                  placeholder="Write your thought here!"
+                  value={comment}
+                  sx={{
+                    width: "100%", // Ensure proper width
+                    padding: "0.5rem", // Adequate padding for the placeholder to be visible
+                  }}
+                  onChange={(e) => setComment(e.target.value)}
+                />
+              </FormControl>
+              <Rating
+                name="simple-controlled"
+                value={ratingValue}
+                onChange={(newValue) => {
+                  setRatingValue(newValue);
+                }}
+              />
+              <Button
+                variant="contained"
+                onClick={handleSubmit}
+                disabled={mutation.isLoading}>
+                {mutation.isLoading ? "Submitting..." : "Submit"}
+              </Button>
+            </Box>
+
+            {/* Star Rating */}
             <Box
               sx={{
                 display: "flex",
-                justifyContent: "start",
+                justifyContent: "space-around",
                 alignItems: "center",
-                gap: "1rem",
+                flexDirection: "column",
+                padding: "1rem",
               }}>
-              <Avatar
-                alt={user?.name}
-                src={
-                  user?.avatarUrl ||
-                  "https://img.freepik.com/premium-vector/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-vector-illustration_561158-3407.jpg?w=360"
-                }
-              />
-              <Typography sx={{ fontWeight: "bold" }}>
-                {user?.name || "Guest User"}
-              </Typography>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  flexDirection: "column",
+                }}>
+                <Typography
+                  sx={{
+                    fontSize: "1.5rem",
+                    fontWeight: "bold",
+                  }}>
+                  {rating?.averageStars} / 5
+                </Typography>
+                <Rating
+                  name="read-only"
+                  precision={0.5}
+                  sx={{ fontSize: "2rem" }}
+                  value={rating?.averageStars || 0}
+                  readOnly
+                />
+                <Typography
+                  sx={{
+                    padding: ".4rem",
+                    fontWeight: "light",
+                    fontSize: ".8rem",
+                    color: "#7b7b7b",
+                  }}>
+                  Based on {rating?.userRates} ratings
+                </Typography>
+              </Box>
+
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  flexDirection: "column",
+                  zIndex: 2,
+                }}>
+                <BarRatings star={5} userRate={overviewRating?.countRating_5} />
+                <BarRatings star={4} userRate={overviewRating?.countRating_4} />
+                <BarRatings star={3} userRate={overviewRating?.countRating_3} />
+                <BarRatings star={2} userRate={overviewRating?.countRating_2} />
+                <BarRatings star={1} userRate={overviewRating?.countRating_1} />
+              </Box>
             </Box>
-
-            <FormControl fullWidth sx={{ m: 1 }} variant="standard">
-              <Input
-                placeholder="Write your thought here!"
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-              />
-            </FormControl>
-
-            <Button
-              variant="contained"
-              onClick={handleSubmit}
-              disabled={mutation.isLoading}>
-              {mutation.isLoading ? "Submitting..." : "Submit"}
-            </Button>
           </Box>
 
           {/* Comment Box */}
@@ -435,7 +592,7 @@ export default function CenterDetail() {
               justifyContent: "start",
               alignItems: "start",
               flexDirection: "column",
-              gap: ".8rem",
+              gap: "1rem",
             }}
             tabIndex={0}>
             <CommentsSection />

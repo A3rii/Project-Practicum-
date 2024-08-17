@@ -20,24 +20,11 @@ import {
   FormGroup,
   FormControlLabel,
   Checkbox,
+  Tooltip,
 } from "@mui/material";
 import TuneIcon from "@mui/icons-material/Tune";
 import CloseIcon from "@mui/icons-material/Close";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { Link, Navigate } from "react-router-dom";
-
-function TimePickerField({ time }) {
-  return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <DemoContainer components={["TimePicker"]}>
-        <TimePicker sx={{ maxWidth: "100%" }} label={time} />
-      </DemoContainer>
-    </LocalizationProvider>
-  );
-}
 
 function SelectionOption({ type, option1, option2, option3 }) {
   const [option, setOption] = useState("");
@@ -252,6 +239,50 @@ function FilterType() {
   );
 }
 
+// Average Rating of sport center
+const RatingStars = ({ sportCenterId }) => {
+  const {
+    data: ratings,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["ratings", sportCenterId],
+    queryFn: async () => {
+      try {
+        const rating = await axios.get(
+          `${
+            import.meta.env.VITE_API_URL
+          }/rating/average/reviews/${sportCenterId}`
+        );
+        return rating.data;
+      } catch (err) {
+        throw new Error(err);
+      }
+    },
+    enabled: !!sportCenterId,
+  });
+  const averageStars = ratings?.averageStars;
+  if (isLoading) return <Loader />;
+  if (error) return <p>Error Fetching</p>;
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "start",
+        alignItems: "center",
+        gap: ".6rem",
+      }}>
+      <Rating name="read-only" value={averageStars} precision={0.5} readOnly />
+      <Tooltip title={`User Rating ${ratings?.userRate}`}>
+        <Typography
+          sx={{ fontWeight: "light", fontSize: ".8rem", color: "#595959" }}>
+          ({ratings?.userRates})
+        </Typography>
+      </Tooltip>
+    </Box>
+  );
+};
+
 function SportFieldCard() {
   const {
     data: sportCenter = [],
@@ -318,7 +349,7 @@ function SportFieldCard() {
               {data?.operating_hours?.open} - {data?.operating_hours?.close}
             </Typography>
             <Box>
-              <Rating name="read-only" value={2} readOnly />
+              <RatingStars sportCenterId={data?._id} />
             </Box>
           </CardContent>
 
@@ -402,7 +433,6 @@ export default function Booking() {
                 option2="Nearest"
                 option3="Closed"
               />
-              <TimePickerField time="Open Till" />
               <button className="btn-filter-schedule">FIND</button>
             </FormControl>
           </Popover>

@@ -6,7 +6,6 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import authToken from "./../../../utils/authToken";
 import Loader from "../../Loader";
-import { Navigate } from "react-router-dom";
 
 Chart.register(...registerables);
 
@@ -33,6 +32,7 @@ export default function BookingChart() {
   const [chartData, setChartData] = useState(null);
   const [year, setYear] = useState(null);
   const currentYear = new Date();
+
   const { data, isLoading, error } = useQuery({
     queryKey: ["monthBookings"],
     queryFn: fetchMonthBookings,
@@ -83,7 +83,7 @@ export default function BookingChart() {
     return <Loader />;
   }
 
-  if (error) return <Navigate to="/error" />;
+  if (error) return <p> Error</p>;
 
   return (
     <Paper
@@ -92,15 +92,16 @@ export default function BookingChart() {
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
-        width: "40%",
-        height: "350px",
+        width: "100%",
+        height: { xs: "300px", md: "350px", lg: "450px" }, // Responsive height for medium size
         border: "1px solid #000",
-        padding: "1rem",
+        padding: "2rem",
         gap: "1rem",
       }}>
       <Typography sx={{ fontSize: "1.2rem", fontWeight: "bold" }}>
         Total Bookings in ({year})
       </Typography>
+
       {chartData && <Bar data={chartData} />}
     </Paper>
   );

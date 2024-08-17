@@ -8,8 +8,8 @@ import { useQuery } from "@tanstack/react-query";
 import { formatDate } from "./../../../utils/timeCalculation";
 import Loader from "../../../components/Loader";
 import EventBusyIcon from "@mui/icons-material/EventBusy";
-
 import { Avatar, Box, Paper, Typography } from "@mui/material";
+
 const fetchBookings = async (token) => {
   try {
     // Configure Axios to include credentials in cross-site requests
@@ -52,7 +52,6 @@ export default function IncomingMatch() {
   const switchBannerImage = (type) => {
     const sportType = type?.toLowerCase();
 
-    console.log(sportType);
     if (sportType === "football") {
       return `url(${football})`;
     } else if (sportType === "basketball") {
