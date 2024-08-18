@@ -31,7 +31,6 @@ import {
 } from "@mui/material";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import authToken from "../../../utils/authToken";
-import InsertCommentIcon from "@mui/icons-material/InsertComment";
 import Loader from "../../../components/Loader";
 
 //* Fetching all comments from sport centers
@@ -317,7 +316,6 @@ export default function Comment() {
                           alignItems: "start",
                           gap: ".6rem",
                         }}>
-                        <InsertCommentIcon sx={{ fontSize: ".7rem" }} />
                         {data.comment}
                       </Box>
                     </TableCell>

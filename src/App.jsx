@@ -26,14 +26,13 @@ import Error from "./components/Error";
 import LoginSuperAdmin from "./view/page/superadmin/auth/Login";
 import SuperAdmin from "./view/page/superadmin/Sidebar";
 
-
-// Moderator 
+// Moderator
 const Comment = lazy(() => import("./view/page/superadmin/Comment"));
 const DashBoard = lazy(() => import("./view/page/superadmin/DashBoard"));
 const ConfirmLessor = lazy(() =>
   import("./view/page/superadmin/ConfirmLessor")
 );
-
+const Lessor = lazy(() => import("./view/page/superadmin/Lessor"));
 // Lazy load components
 const BookingHistory = lazy(() => import("./view/page/user/BookingHistory"));
 const CenterDetail = lazy(() => import("./view/page/user/CenterDetail"));
@@ -84,6 +83,7 @@ export default function App() {
               <Route path="dashboard" index element={<DashBoard />} />
               <Route path="comment" element={<Comment />} />
               <Route path="lessor" element={<ConfirmLessor />} />
+              <Route path="lessor/informations" element={<Lessor />} />
             </Route>
           </Route>
 

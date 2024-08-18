@@ -24,14 +24,14 @@ import dayjs from "dayjs";
 import Loader from "./../../../components/Loader";
 import BookingChart from "../../../components/AdminComponent/Chart/BookingChart";
 import RatingChart from "./../../../components/AdminComponent/Chart/RatingChart";
-const token = authToken();
-const headers = {
-  Accept: "application/json",
-  Authorization: `Bearer ${token}`,
-};
 
 // Shared function to fetch bookings
 const fetchBookings = async () => {
+  const token = authToken();
+  const headers = {
+    Accept: "application/json",
+    Authorization: `Bearer ${token}`,
+  };
   try {
     const response = await axios.get(
       `${import.meta.env.VITE_API_URL}/books/sport-center`,
@@ -79,6 +79,7 @@ function TotalCustomer() {
         padding: "15px",
         backgroundColor: "#2E8BC0",
         color: "#fff",
+        borderRadius: "1rem",
       }}
       elevation={5}>
       <Typography
@@ -138,6 +139,7 @@ function MatchAcception() {
         padding: "15px",
         backgroundColor: "#50C878",
         color: "#fff",
+        borderRadius: "1rem",
       }}
       elevation={5}>
       <Typography
@@ -193,6 +195,7 @@ function TotalBooking() {
         padding: "15px",
         backgroundColor: "#A98EC0",
         color: "#fff",
+        borderRadius: "1rem",
       }}
       elevation={5}>
       <Typography
@@ -280,6 +283,7 @@ function CustomerTable() {
         overflow: "hidden",
         padding: "15px",
         marginTop: "1rem",
+        borderRadius: "1rem",
       }}>
       <div
         style={{
@@ -404,6 +408,7 @@ function UpcomingMatch() {
         overflow: "hidden",
         padding: "15px",
         marginTop: "1rem",
+        borderRadius: "1rem",
       }}>
       <div
         style={{
@@ -471,10 +476,10 @@ export default function AdminDashboard() {
       <Grid item xs={12} sm={12} md={4} lg={4}>
         <MatchAcception />
       </Grid>
-      <Grid item xs={12} sm={12} md={12} lg={6}>
+      <Grid item xs={12} sm={12} md={12} lg={8}>
         <BookingChart />
       </Grid>
-      <Grid item xs={12} sm={12} md={12} lg={6}>
+      <Grid item xs={12} sm={12} md={12} lg={4}>
         <RatingChart />
       </Grid>
       <Grid item xs={12} sm={12} md={12} lg={6}>

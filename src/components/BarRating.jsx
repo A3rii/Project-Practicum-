@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Tooltip } from "@mui/material";
 import LinearProgress from "@mui/material/LinearProgress";
 
 export default function BarRatings({ star, userRate }) {
@@ -18,7 +18,9 @@ export default function BarRatings({ star, userRate }) {
           ml: 1,
         }}
       />
-      <Typography sx={{ ml: 2, fontSize: ".8rem" }}>{userRate}</Typography>
+      <Tooltip title="User rate">
+        <Typography sx={{ ml: 2, fontSize: ".8rem" }}>({userRate})</Typography>
+      </Tooltip>
     </Box>
   );
 }

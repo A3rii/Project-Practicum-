@@ -273,7 +273,7 @@ const RatingStars = ({ sportCenterId }) => {
         gap: ".6rem",
       }}>
       <Rating name="read-only" value={averageStars} precision={0.5} readOnly />
-      <Tooltip title={`User Rating ${ratings?.userRate}`}>
+      <Tooltip title={`User Rating ${ratings?.userRates}`}>
         <Typography
           sx={{ fontWeight: "light", fontSize: ".8rem", color: "#595959" }}>
           ({ratings?.userRates})

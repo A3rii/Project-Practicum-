@@ -26,6 +26,7 @@ import { ToastContainer } from "react-toastify";
 import CourtView from "../../../components/AdminComponent/Court/CourtView";
 import { useQuery } from "@tanstack/react-query";
 import Loader from "../../../components/Loader";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Facility() {
   const token = authToken();

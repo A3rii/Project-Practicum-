@@ -94,7 +94,7 @@ export default function BookingChart() {
         alignItems: "center",
         width: "100%",
         height: { xs: "300px", md: "350px", lg: "450px" }, // Responsive height for medium size
-        border: "1px solid #000",
+        borderRadius: "1rem",
         padding: "2rem",
         gap: "1rem",
       }}>

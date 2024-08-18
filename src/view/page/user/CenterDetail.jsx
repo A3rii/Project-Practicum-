@@ -330,6 +330,7 @@ export default function CenterDetail() {
       queryClient.invalidateQueries(["userComments", sportCenterId]);
       notify("Comment posted successfully");
       setComment("");
+      setRatingValue(0);
     },
     onError: () => {
       errorAlert("Error posting comment");
@@ -512,7 +513,7 @@ export default function CenterDetail() {
               <Rating
                 name="simple-controlled"
                 value={ratingValue}
-                onChange={(newValue) => {
+                onChange={(event, newValue) => {
                   setRatingValue(newValue);
                 }}
               />

@@ -9,16 +9,15 @@ import {
   Divider,
   useMediaQuery,
   useTheme,
+  AppBar,
+  Toolbar,
+  IconButton,
+  Badge,
+  Menu,
 } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { logout } from "../../../app/slice";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import LogoutIcon from "@mui/icons-material/Logout";
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import Badge from "@mui/material/Badge";
-import Menu from "@mui/material/Menu";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import MailIcon from "@mui/icons-material/Mail";
 import NotificationsIcon from "@mui/icons-material/Notifications";
@@ -26,6 +25,8 @@ import MoreIcon from "@mui/icons-material/MoreVert";
 import CommentIcon from "@mui/icons-material/Comment";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import useModeratorProfile from "../../../utils/useModeratorProfile";
+import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 export default function SuperAdmin() {
   const dispatch = useDispatch();
@@ -150,7 +151,7 @@ export default function SuperAdmin() {
     <Box
       sx={{
         display: "flex",
-        height: "100vh",
+        height: "max-height",
         backgroundColor: (theme) =>
           theme.palette.mode === "light"
             ? theme.palette.grey[100]
@@ -232,6 +233,22 @@ export default function SuperAdmin() {
               </Typography>
             )}
           </MenuItem>
+
+          <MenuItem
+            component={Link}
+            to="/super-admin/lessor/informations"
+            sx={menuItemStyles}>
+            <PersonOutlineIcon
+              sx={{ color: "#fff", marginRight: isSmallScreen ? 0 : "10px" }}
+            />
+            {!isSmallScreen && (
+              <Typography
+                sx={{ color: "#fff", fontWeight: "bold", fontSize: ".9rem" }}>
+                Official Lessor
+              </Typography>
+            )}
+          </MenuItem>
+
           <MenuItem
             component={Link}
             to="/super-admin/comment"
@@ -342,7 +359,7 @@ export default function SuperAdmin() {
           {renderMobileMenu}
           {renderMenu}
         </Box>
-        <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+        <Box component="main" sx={{ flexGrow: 1, p: 3, height: "auto" }}>
           <Outlet />
         </Box>
       </Box>

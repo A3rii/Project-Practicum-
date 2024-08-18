@@ -263,12 +263,14 @@ export default function ConfirmLessor() {
                   <TableCell align="center">
                     <Stack direction="row" spacing={1}>
                       <Button
+                        size="small"
                         onClick={() => handleAcceptLessor("approved", data._id)}
                         variant="outlined"
                         color="success">
                         Accept
                       </Button>
                       <Button
+                        size="small"
                         onClick={() => handleAcceptLessor("rejected", data._id)}
                         variant="outlined"
                         color="error">

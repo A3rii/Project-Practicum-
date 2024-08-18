@@ -58,11 +58,11 @@ export default function RatingChart() {
       {
         label: "Ratings Distribution",
         data: [
-          rating?.countRating_1,
-          rating?.countRating_2,
-          rating?.countRating_3,
-          rating?.countRating_4,
-          rating?.countRating_5,
+          rating?.countRating_1 || 0,
+          rating?.countRating_2 || 0,
+          rating?.countRating_3 || 0,
+          rating?.countRating_4 || 0,
+          rating?.countRating_5 || 0,
         ],
         backgroundColor: [
           "#FF6384",
@@ -82,12 +82,13 @@ export default function RatingChart() {
     ],
   };
 
+  const allZero = chartData.datasets[0].data.every((value) => value === 0);
   return (
     <Paper
       sx={{
         padding: "1.5rem",
         textAlign: "center",
-        border: "1px solid #000",
+        borderRadius: "1rem",
         width: { xs: "100%", md: "75%", lg: "100%" }, // Responsive width for medium size
         height: { xs: "300px", md: "350px", lg: "450px" }, // Responsive height for medium size
       }}>
@@ -127,12 +128,25 @@ export default function RatingChart() {
         sx={{
           display: "flex",
           justifyContent: "center",
-          alignItems: "center",
-          padding: "1rem",
+          alignItems: "start",
           width: "100%",
           height: { xs: "250px", md: "300px", lg: "350px" }, // Control the chart container size
         }}>
-        <Doughnut data={chartData} />
+        {allZero ? (
+          <Typography sx={{ marginTop: "2rem" }}>No ratings review</Typography>
+        ) : (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              padding: "2rem",
+              width: "100%",
+              height: { xs: "250px", md: "300px", lg: "350px" },
+            }}>
+            <Doughnut data={chartData} />
+          </Box>
+        )}
       </Box>
     </Paper>
   );
