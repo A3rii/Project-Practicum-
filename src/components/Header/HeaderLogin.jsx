@@ -1,15 +1,17 @@
 import "./../../index.css";
-import AccountBoxIcon from "@mui/icons-material/AccountBox";
-import MoveToInboxIcon from "@mui/icons-material/MoveToInbox";
-import HistoryIcon from "@mui/icons-material/History";
-import MenuIcon from "@mui/icons-material/Menu";
-import CloseIcon from "@mui/icons-material/Close";
-import NotificationsIcon from "@mui/icons-material/Notifications";
+import {
+  AccountBox as AccountBoxIcon,
+  MoveToInbox as MoveToInboxIcon,
+  History as HistoryIcon,
+  Menu as MenuIcon,
+  Close as CloseIcon,
+  Notifications as NotificationsIcon,
+  CalendarToday as CalendarTodayIcon,
+} from "@mui/icons-material";
 import currentUser from "./../../utils/currentUser";
 import authToken from "./../../utils/authToken";
 import axios from "axios";
 import dayjs from "dayjs";
-import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import { formatDate } from "./../../utils/timeCalculation";
 import {
   Popover,
@@ -43,7 +45,6 @@ const fetchUserBookings = async (token) => {
       (booking) =>
         formatDate(booking.date) === dayjs(new Date()).format("MMMM DD, YYYY")
     );
-    console.log(todayMatch);
     return todayMatch;
   } catch (err) {
     console.error("Error fetching user bookings:", err);
@@ -139,7 +140,6 @@ export default function Header() {
     queryFn: () => fetchIncomingBookings(token),
   });
 
-  console.log(pendingMatch);
   if (isError) return <p> Error Fetching Data </p>;
 
   return (
@@ -243,14 +243,14 @@ export default function Header() {
           open={openNotificationPop}
           anchorEl={notificationAnchorEl}
           onClose={handleNotificationClose}
-          sx={{ mt: 2 }}
+          sx={{ mt: 1 }} // Adjust margin if needed
           anchorOrigin={{
             vertical: "bottom",
-            horizontal: "center",
+            horizontal: "left",
           }}
           transformOrigin={{
             vertical: "top",
-            horizontal: "center",
+            horizontal: "right",
           }}>
           <Box
             sx={{

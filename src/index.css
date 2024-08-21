@@ -626,58 +626,6 @@ a {
 /*Booking Responsive*/
 @media screen and (max-width: 1200px) {
 
-   .booking-filter {
-      display: none;
-   }
-
-   .booking-filter input {
-      height: 100%;
-      width: 80rem;
-      outline: none;
-      font-size: 18px;
-      background-color: transparent;
-   }
-
-   .booking-filterSport {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      max-width: 100%;
-   }
-
-   .button {
-      display: none;
-   }
-
-   .booking-filter-none {
-      width: 70%;
-      display: flex;
-      justify-content: baseline;
-      align-items: center;
-      gap: 1.5rem;
-   }
-
-   .booking-filter-type {
-      display: none;
-   }
-
-   .booking-hover-filter {
-      display: flex;
-      justify-content: baseline;
-      align-items: center;
-   }
-
-   .booking-hover-filter h4 {
-      margin: 1rem 0 0 .5rem;
-
-   }
-
-   .booking-sportFieldCard {
-      display: flex;
-      justify-content: start;
-      align-items: start;
-   }
 
    /*Booking Responsive*/
 

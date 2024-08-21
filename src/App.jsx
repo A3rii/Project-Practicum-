@@ -52,6 +52,7 @@ const AllMatch = lazy(() => import("./view/page/user/AllMatch"));
 const RejectedMatch = lazy(() => import("./view/page/user/RejectedMatch"));
 const AcceptedMatch = lazy(() => import("./view/page/user/AcceptedMatch"));
 
+// Accessing super admin routes
 function RedirectHandler() {
   const location = useLocation();
   const navigate = useNavigate();

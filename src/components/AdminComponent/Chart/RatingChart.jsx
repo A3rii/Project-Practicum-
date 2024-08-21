@@ -88,6 +88,7 @@ export default function RatingChart() {
       sx={{
         padding: "1.5rem",
         textAlign: "center",
+        marginTop: "1rem",
         borderRadius: "1rem",
         width: { xs: "100%", md: "75%", lg: "100%" }, // Responsive width for medium size
         height: { xs: "300px", md: "350px", lg: "450px" }, // Responsive height for medium size

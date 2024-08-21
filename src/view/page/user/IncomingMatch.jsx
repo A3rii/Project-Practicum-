@@ -71,6 +71,7 @@ export default function IncomingMatch() {
         gap: "3rem",
         flexWrap: "wrap",
         my: 4,
+        margin: "1rem",
       }}>
       <Typography
         sx={{

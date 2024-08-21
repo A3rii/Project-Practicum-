@@ -97,6 +97,7 @@ export default function BookingChart() {
         borderRadius: "1rem",
         padding: "2rem",
         gap: "1rem",
+        marginTop: "1rem",
       }}>
       <Typography sx={{ fontSize: "1.2rem", fontWeight: "bold" }}>
         Total Bookings in ({year})

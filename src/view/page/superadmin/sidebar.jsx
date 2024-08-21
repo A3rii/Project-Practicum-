@@ -151,7 +151,7 @@ export default function SuperAdmin() {
     <Box
       sx={{
         display: "flex",
-        height: "max-height",
+        minHeight: "100vh",
         backgroundColor: (theme) =>
           theme.palette.mode === "light"
             ? theme.palette.grey[100]
@@ -251,21 +251,6 @@ export default function SuperAdmin() {
 
           <MenuItem
             component={Link}
-            to="/super-admin/comment"
-            sx={menuItemStyles}>
-            <CommentIcon
-              sx={{ color: "#fff", marginRight: isSmallScreen ? 0 : "10px" }}
-            />
-            {!isSmallScreen && (
-              <Typography
-                sx={{ color: "#fff", fontWeight: "bold", fontSize: ".9rem" }}>
-                Comments
-              </Typography>
-            )}
-          </MenuItem>
-
-          <MenuItem
-            component={Link}
             to="/super-admin/lessor"
             sx={menuItemStyles}>
             <CalendarMonthIcon
@@ -276,6 +261,21 @@ export default function SuperAdmin() {
               <Typography
                 sx={{ color: "#fff", fontWeight: "bold", fontSize: ".9rem" }}>
                 Confirm Lessor
+              </Typography>
+            )}
+          </MenuItem>
+
+          <MenuItem
+            component={Link}
+            to="/super-admin/comment"
+            sx={menuItemStyles}>
+            <CommentIcon
+              sx={{ color: "#fff", marginRight: isSmallScreen ? 0 : "10px" }}
+            />
+            {!isSmallScreen && (
+              <Typography
+                sx={{ color: "#fff", fontWeight: "bold", fontSize: ".9rem" }}>
+                Comments
               </Typography>
             )}
           </MenuItem>

@@ -635,112 +635,8 @@
 }
 
 
-
-
 /**Home Page*/
 
-
-
-
-/** Booking Page */
-.booking-header {
-   background: rgba(0, 0, 0, 0.4) url('./assets/BookingImags/pic1.jpg') center/cover;
-   background-blend-mode: darken;
-   max-width: 100%;
-   min-height: 5rem;
-   height: auto;
-   background-repeat: no-repeat;
-}
-
-
-
-
-
-.booking-field {
-   display: flex;
-   justify-content: center;
-   align-items: center;
-   flex-direction: column;
-   margin-top: 2rem;
-   row-gap: 5rem;
-}
-
-.booking-field h2 {
-   font-family: "Roboto", sans-serif;
-   font-weight: 600;
-   font-size: 1.5rem;
-}
-
-
-.booking-topic {
-   width: 100%;
-   display: flex;
-   justify-content: space-between;
-   align-items: center;
-}
-
-
-
-.booking-filter-none {
-   display: none;
-   font-size: 1.5rem;
-}
-
-.booking-btn {
-   background-color: var(--primary);
-   outline: none;
-   display: flex;
-   justify-content: center;
-   align-items: center;
-   border: none;
-   width: 7rem;
-   padding: .4rem;
-   color: var(--white);
-   border-radius: 3px;
-   margin: .5rem;
-}
-
-.booking-filterSport {
-   display: flex;
-   justify-content: space-between;
-   align-items: flex-start;
-   column-gap: 17rem;
-   max-width: 100%;
-}
-
-
-
-.btn-filter-schedule {
-   max-width: 50%;
-   background-color: var(--primary);
-   outline: none;
-   border: none;
-   width: 9rem;
-   padding: .6rem;
-   color: var(--white);
-   border-radius: 3px;
-}
-
-.booking-sportFieldCard {
-   max-width: 100%;
-   margin-top: 2rem;
-   display: flex;
-   justify-content: space-between;
-   align-items: start;
-   gap: 5rem;
-}
-
-.booking-centerCard {
-   display: flex;
-   align-items: flex-start;
-   justify-content: baseline;
-   flex-wrap: wrap;
-   gap: 4rem;
-}
-
-
-
-/** Booking Page */
 
 
 /** Center Detail */
@@ -1018,7 +914,7 @@
    background: rgba(0, 0, 0, 0.5) url('./assets/BookingImags/pic15.jpg') center/cover;
    background-blend-mode: darken;
    max-width: 100%;
-   min-height: 32rem;
+   min-height: 35rem;
    height: auto;
    background-repeat: no-repeat;
    color: var(--white);
