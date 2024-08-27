@@ -245,8 +245,11 @@ function UpcomingMatch() {
     isLoading,
     isError,
   } = useBookingsData("upcomingMatch", (bookings) =>
+    // If the match has been accepted and on the actual date
     bookings.filter(
-      (b) => formatDate(b.date) === dayjs(new Date()).format("MMMM DD, YYYY")
+      (b) =>
+        formatDate(b.date) === dayjs(new Date()).format("MMMM DD, YYYY") &&
+        b.status === "accepted"
     )
   );
 
@@ -267,7 +270,7 @@ function UpcomingMatch() {
       <Typography
         variant="h6"
         sx={{ fontWeight: "bold", marginBottom: "1rem" }}>
-        Upcoming Match
+        Today Match
       </Typography>
       <Divider />
       <TableContainer sx={{ maxHeight: "20rem" }}>

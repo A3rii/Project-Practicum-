@@ -319,8 +319,14 @@ function ReservationDate({ court }) {
       navigate("/login");
       return;
     }
-    // Check if booking date is today onward
+
+    if ((!sportCenterId, !formattedDate, !facility, !selectedCourt)) {
+      errorAlert("Select The requirement");
+      return;
+    }
+
     if (dayjs(date).isBefore(dayjs(), "day")) {
+      // Check if booking date is today onward
       errorAlert("Booking is only allowed for today onward.");
       setSelectedCourt("");
       setStartTime(null);

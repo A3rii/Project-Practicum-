@@ -11,8 +11,6 @@ const initialState = {
   error: null,
 };
 
-// Helper function to get token from localStorage and remove quotes
-
 // Async thunk to register a new user
 export const registerUser = createAsyncThunk(
   "auth/registerUser",

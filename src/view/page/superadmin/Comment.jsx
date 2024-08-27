@@ -109,7 +109,8 @@ export default function Comment() {
       const response = await axios.get(
         `${import.meta.env.VITE_API_URL}/lessor/auth/informations`
       );
-      return response.data.lessors;
+      const approvedLessor = response.data.lessors;
+      return approvedLessor.filter((lessor) => lessor.status === "approved");
     },
   });
 

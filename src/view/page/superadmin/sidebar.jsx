@@ -15,11 +15,11 @@ import {
   Badge,
   Menu,
 } from "@mui/material";
+import Notification from "../../../components/Superadmin/Notification";
 import { useDispatch } from "react-redux";
 import { logout } from "../../../app/slice";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import AccountCircle from "@mui/icons-material/AccountCircle";
-import MailIcon from "@mui/icons-material/Mail";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import CommentIcon from "@mui/icons-material/Comment";
@@ -102,14 +102,6 @@ export default function SuperAdmin() {
       }}
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}>
-      <MenuItem>
-        <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-          <Badge badgeContent={0} color="error">
-            <MailIcon />
-          </Badge>
-        </IconButton>
-        <p>Messages</p>
-      </MenuItem>
       <MenuItem>
         <IconButton
           size="large"
@@ -322,19 +314,9 @@ export default function SuperAdmin() {
                 }}>
                 <IconButton
                   size="large"
-                  aria-label="show 4 new mails"
-                  color="inherit">
-                  <Badge badgeContent={0} color="error">
-                    <MailIcon sx={{ color: "#636363" }} />
-                  </Badge>
-                </IconButton>
-                <IconButton
-                  size="large"
                   aria-label="show 17 new notifications"
                   color="inherit">
-                  <Badge badgeContent={1} color="error">
-                    <NotificationsIcon sx={{ color: "#636363" }} />
-                  </Badge>
+                  <Notification />
                 </IconButton>
                 <Avatar
                   alt="NK"
