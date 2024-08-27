@@ -1,4 +1,4 @@
-import { Box, Typography, Paper } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import NoDataImage from "./../../assets/no_data.jpg";
 
 export default function NoData() {

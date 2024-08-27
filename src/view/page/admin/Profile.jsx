@@ -27,6 +27,10 @@ import { storage } from "./../../../firebase/firebase"; // make sure you have fi
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { ToastContainer } from "react-toastify";
 import Loader from "../../../components/Loader.jsx";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
 
 // Styling Input type of MUI component
 const VisuallyHiddenInput = styled("input")({
@@ -113,8 +117,8 @@ export default function Profile() {
         firstName: currentLessor.first_name,
         lastName: currentLessor.last_name,
         sportName: currentLessor.sportcenter_name,
-        openTime: currentLessor.operating_hours.open,
-        closeTime: currentLessor.operating_hours.close,
+        openTime: dayjs(currentLessor.operating_hours.open, "hh:mma"),
+        closeTime: dayjs(currentLessor.operating_hours.close, "hh:mma"),
         street: currentLessor.address.street,
         state: currentLessor.address.state,
         city: currentLessor.address.city,
@@ -128,6 +132,13 @@ export default function Profile() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+  };
+
+  const handleTimeChange = (name, value) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
   //Function to Immediate Update when update information successfully
@@ -189,8 +200,8 @@ export default function Profile() {
         state: formData.state,
       },
       operating_hours: {
-        open: formData.openTime,
-        close: formData.closeTime,
+        open: dayjs(formData.openTime).format("hh:mma"),
+        close: dayjs(formData.closeTime).format("hh:mma"),
       },
       logo: downloadURL || formData.logo, // Add the photoURL to the credentials
     };
@@ -466,28 +477,32 @@ export default function Profile() {
                 />
               </Grid>
               <Grid item xs={12} md={3}>
-                <TextField
-                  fullWidth
-                  label="Open Time"
-                  name="openTime"
-                  value={formData.openTime}
-                  onChange={handleChange}
-                  variant="outlined"
-                  color="secondary"
-                  type="text"
-                />
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <TimePicker
+                    label="Opening Time"
+                    value={dayjs(formData.openTime, "hh:mma")}
+                    onChange={(newValue) =>
+                      handleTimeChange("openTime", newValue)
+                    }
+                    renderInput={(params) => (
+                      <TextField {...params} fullWidth />
+                    )}
+                  />
+                </LocalizationProvider>
               </Grid>
               <Grid item xs={12} md={3}>
-                <TextField
-                  fullWidth
-                  label="Close Time"
-                  name="closeTime"
-                  value={formData.closeTime}
-                  onChange={handleChange}
-                  variant="outlined"
-                  color="secondary"
-                  type="text"
-                />
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <TimePicker
+                    label="Closing Time"
+                    value={dayjs(formData.closeTime, "hh:mma")}
+                    onChange={(newValue) =>
+                      handleTimeChange("closeTime", newValue)
+                    }
+                    renderInput={(params) => (
+                      <TextField {...params} fullWidth />
+                    )}
+                  />
+                </LocalizationProvider>
               </Grid>
               <Grid item xs={12} md={4}>
                 <TextField

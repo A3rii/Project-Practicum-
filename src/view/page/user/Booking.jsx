@@ -32,11 +32,7 @@ const SportFieldCard = ({
   endTime,
   timeAvailability,
 }) => {
-  const {
-    data: sportCenter = [],
-
-    error,
-  } = useQuery({
+  const { data: sportCenter = [], error } = useQuery({
     queryKey: [
       "sportCenter",
       name,
@@ -54,7 +50,7 @@ const SportFieldCard = ({
             rating: selectedRatings,
             startTime: startTime || null,
             endTime: endTime || null,
-            timeAvailability: timeAvailability || true,
+            timeAvailability: timeAvailability,
           },
         }
       );
@@ -112,7 +108,7 @@ const SportFieldCard = ({
                 padding: "2px 2px",
                 fontSize: "10px",
                 fontWeight: "bold",
-                backgroundColor: "#7CFC00",
+                backgroundColor: timeAvailability ? "#7CFC00" : "#cccccc",
                 borderRadius: "8px",
                 textAlign: "center",
               }}>
@@ -124,7 +120,7 @@ const SportFieldCard = ({
                   color: "#fff",
                   fontWeight: "bold",
                 }}>
-                {data?.time_availability && "Open"}
+                {data?.time_availability ? "Open" : "Closed"}
               </Typography>
             </Box>
 
@@ -166,7 +162,7 @@ const SportFieldCard = ({
         </Card>
       ))
     );
-  }, [sportCenter]);
+  }, [sportCenter, timeAvailability]);
 
   if (error) return <Navigate to="/error" />;
   return <>{listSportCenter} </>;
@@ -180,6 +176,15 @@ const FilterSideBar = ({ data, setData }) => {
     }));
   };
 
+  const handleOnReset = () => {
+    setData({
+      sportCenterName: "",
+      selectedRatings: [],
+      startTime: null,
+      endTime: null,
+      timeAvailability: true,
+    });
+  };
   return (
     <Paper
       sx={{
@@ -196,28 +201,27 @@ const FilterSideBar = ({ data, setData }) => {
       }}
       elevation={3}>
       {/* Search bar */}
-      <Box>
-        <Paper
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            width: "100%",
-          }}>
-          <InputBase
-            sx={{ ml: 1, flex: 1 }}
-            placeholder="Search Sport Center"
-            inputProps={{ "aria-label": "search sport center" }}
-            value={data.sportCenterName}
-            onChange={(e) =>
-              handleInputChange("sportCenterName", e.target.value)
-            }
-          />
-          <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-          <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
-            <SearchIcon />
-          </IconButton>
-        </Paper>
-      </Box>
+
+      <Paper
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}>
+        <InputBase
+          sx={{ ml: 1, flex: 1 }}
+          placeholder="Search"
+          inputProps={{ "aria-label": "search" }}
+          value={data.sportCenterName}
+          onChange={(e) => handleInputChange("sportCenterName", e.target.value)}
+        />
+        <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
+          <SearchIcon />
+        </IconButton>
+        <Button onClick={handleOnReset} color="error">
+          Reset Filter
+        </Button>
+      </Paper>
 
       {/* Rating */}
       <Box
