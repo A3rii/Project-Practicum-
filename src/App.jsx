@@ -25,13 +25,14 @@ import ProtectedPage from "./components/ProtectedPage";
 import Error from "./components/Error";
 import LoginSuperAdmin from "./view/page/superadmin/auth/Login";
 import SuperAdmin from "./view/page/superadmin/Sidebar";
-
+import GeoSpatial from "./components/GeoSpatial";
 // Moderator
 const Comment = lazy(() => import("./view/page/superadmin/Comment"));
 const DashBoard = lazy(() => import("./view/page/superadmin/DashBoard"));
 const ConfirmLessor = lazy(() =>
   import("./view/page/superadmin/ConfirmLessor")
 );
+const ModeratorProfile = lazy(() => import("./view/page/superadmin/Profile"));
 const Lessor = lazy(() => import("./view/page/superadmin/Lessor"));
 // Lazy load components
 const BookingHistory = lazy(() => import("./view/page/user/BookingHistory"));
@@ -85,6 +86,7 @@ export default function App() {
               <Route path="comment" element={<Comment />} />
               <Route path="lessor" element={<ConfirmLessor />} />
               <Route path="lessor/informations" element={<Lessor />} />
+              <Route path="profile" element={<ModeratorProfile />} />
             </Route>
           </Route>
 
@@ -117,7 +119,7 @@ export default function App() {
             </Route>
             <Route path="/signup-admin" element={<SignUpLessor />} />
           </Route>
-
+          <Route path="/map" element={<GeoSpatial />} />
           {/* Admin Routes */}
           <Route element={<AdminProtectedRoute />}>
             <Route path="/admin" element={<AdminCenter />}>

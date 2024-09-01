@@ -26,7 +26,6 @@ import { v4 } from "uuid";
 import dayjs from "dayjs";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -154,7 +153,7 @@ export default function SignUpLessor() {
       email: email,
       sportcenter_name: sportName,
       operating_hours: {
-        open: dayjs(openTime).format("hh:mma"), // 12:00am
+        open: dayjs(openTime).format("hh:mma"),
         close: dayjs(closeTime).format("hh:mma"),
       },
       logo: downloadURL || photoURL,

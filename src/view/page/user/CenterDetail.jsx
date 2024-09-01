@@ -8,9 +8,9 @@ import ContactInfo from "../../../components/ContactInfo";
 import Loader from "../../../components/Loader";
 import dayjs from "dayjs";
 import currentUser from "./../../../utils/currentUser";
-import BarRating from "./../../../components/BarRating";
 import { ToastContainer } from "react-toastify";
 import { notify, errorAlert } from "./../../../utils/toastAlert";
+import GeoSpatial from "../../../components/GeoSpatial";
 import {
   Card,
   CardHeader,
@@ -430,16 +430,33 @@ export default function CenterDetail() {
           )}
         </div>
       </div>
-
-      <div className="center-map">
-        <div className="center-googleMap">
-          <h2>View the location</h2>
-          <span>You can find the sport center by viewing through this map</span>
-          <button type="button" className="center-buttonView">
-            View Map
-          </button>
-        </div>
-      </div>
+      <Box
+        sx={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+          flexDirection: "column",
+          alignItems: "center",
+          marginTop: "3rem",
+          padding: "1rem",
+        }}>
+        <Box
+          sx={{
+            width: "75%",
+            marginTop: "2rem",
+            borderRadius: ".5rem",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            flexDirection: "column",
+          }}
+          elevation={3}>
+          <Typography sx={{ fontSize: "1rem", fontWeight: "bold" }}>
+            Our Location
+          </Typography>
+          <GeoSpatial />
+        </Box>
+      </Box>
 
       <Box
         sx={{
@@ -453,7 +470,7 @@ export default function CenterDetail() {
         }}>
         <Paper
           sx={{ display: "flex", flexDirection: "column", width: "75%" }}
-          elevation={5}>
+          elevation={3}>
           <Typography
             sx={{
               padding: "2rem",

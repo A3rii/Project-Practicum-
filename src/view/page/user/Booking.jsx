@@ -54,8 +54,19 @@ const SportFieldCard = ({
           },
         }
       );
-
-      return getSportCenter.data.lessors;
+      const sportCenters = getSportCenter.data.lessors;
+      const checkingFacility = sportCenters.filter((lessor) => {
+        // Check if facilities exist and is an array with elements
+        if (Array.isArray(lessor.facilities) && lessor.facilities.length > 0) {
+          // Check if any facility has a court property that is a non-empty array
+          return lessor.facilities.some(
+            (facility) =>
+              Array.isArray(facility.court) && facility.court.length > 0
+          );
+        }
+        return null;
+      });
+      return checkingFacility;
     },
   });
 
@@ -154,7 +165,13 @@ const SportFieldCard = ({
             component={Link}
             to={`/sportcenter/${data?._id}`}
             size="small"
-            sx={{ marginLeft: "1rem" }}
+            disabled={!timeAvailability}
+            sx={{
+              marginLeft: "1rem",
+              "&:hover": {
+                color: "#fff",
+              },
+            }}
             variant="contained"
             color="error">
             Book Now
@@ -300,7 +317,9 @@ const FilterSideBar = ({ data, setData }) => {
           <Box sx={{ display: "flex", gap: "1rem", marginTop: "1rem" }}>
             <TimePicker
               label="From"
-              value={dayjs(data.startTime).format("hh:mma")}
+              value={
+                data.startTime ? dayjs(data.startTime).format("hh:mma") : null
+              }
               onChange={(newValue) =>
                 handleInputChange("startTime", dayjs(newValue).format("hh:mma"))
               }
@@ -308,7 +327,7 @@ const FilterSideBar = ({ data, setData }) => {
             />
             <TimePicker
               label="To"
-              value={dayjs(data.endTime).format("hh:mma")}
+              value={data.endTime ? dayjs(data.endTime).format("hh:mma") : null}
               onChange={(newValue) =>
                 handleInputChange("endTime", dayjs(newValue).format("hh:mma"))
               }

@@ -11,6 +11,12 @@ body {
    font-family: "Montserrat", sans-serif;
 }
 
+/* leaflet container */
+.leaflet-container {
+   height: 80vh;
+   width: 100%;
+}
+
 :root {
    --primary: #EE1E46;
    --solid-red: #FF4B44;

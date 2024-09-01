@@ -6,6 +6,7 @@ import Loader from "./../../components/Loader";
 import { Navigate, useNavigate } from "react-router-dom";
 import { Typography } from "@mui/material";
 import { notify, errorAlert } from "./../../utils/toastAlert";
+import { timeOverlapping } from "./../../utils/timeCalculation";
 import { useQuery } from "@tanstack/react-query";
 import {
   TextField,
@@ -24,7 +25,7 @@ import {
   OutlinedInput,
 } from "@mui/material";
 import { useParams } from "react-router-dom";
-import { useState } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -78,25 +79,34 @@ const TimeAvailability = ({ sportCenterId, facility, court }) => {
   );
   const [selectedCourt, setSelectedCourt] = useState("");
 
-  const handleOnSelectCourt = (e) => {
-    setSelectedCourt(e.target.value);
-  };
+  const courts = useMemo(() => court.map((c) => c.name), [court]);
+  const formattedDate = useMemo(
+    () => dayjs(selectedDate).format("YYYY-MM-DD"),
+    [selectedDate]
+  );
 
-  const courts = court.map((c) => c.name);
-  const handleDateChange = (newDate) =>
-    setSelectedDate(dayjs(newDate).format("YYYY-MM-DD"));
+  const handleDateChange = useCallback(
+    (newDate) => setSelectedDate(dayjs(newDate).format("YYYY-MM-DD")),
+    []
+  );
+
+  const handleOnSelectCourt = useCallback(
+    (e) => setSelectedCourt(e.target.value),
+    []
+  );
+
   const convertTo12HourFormat = (time) => dayjs(time, "HH:mm").format("h:mm A");
 
   const { data: timeSlots, error } = useQuery({
     queryKey: [
       "timeSlots",
       sportCenterId,
-      selectedDate,
+      formattedDate,
       facility,
       selectedCourt,
     ],
     queryFn: () =>
-      fetchTime(sportCenterId, selectedDate, facility, selectedCourt),
+      fetchTime(sportCenterId, formattedDate, facility, selectedCourt),
     refetchOnWindowFocus: true,
   });
 
@@ -104,7 +114,6 @@ const TimeAvailability = ({ sportCenterId, facility, court }) => {
 
   return (
     <>
-      {/* Date Picker Section */}
       <Paper
         sx={{
           display: "flex",
@@ -116,20 +125,17 @@ const TimeAvailability = ({ sportCenterId, facility, court }) => {
           marginTop: "1rem",
           width: { xs: "100%", md: "75%" },
         }}>
-        <Paper
-          sx={{
-            border: "1px solid #000",
-          }}>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          {/* Date Picker Section */}
+          <Paper sx={{ border: "1px solid #000" }}>
             <DateCalendar
               label="Select Date"
               value={dayjs(selectedDate)}
               onChange={handleDateChange}
             />
-          </LocalizationProvider>
-        </Paper>
+          </Paper>
+        </LocalizationProvider>
 
-        {/* Schedule Display Section */}
         <Box
           sx={{
             width: "100%",
@@ -153,9 +159,9 @@ const TimeAvailability = ({ sportCenterId, facility, court }) => {
               {dayjs(selectedDate).format("dddd, D MMM YYYY")}
             </Typography>
 
+            {/* Court Selection */}
             <FormControl sx={{ width: "50%" }}>
               <InputLabel>Court</InputLabel>
-
               <Select
                 value={selectedCourt}
                 onChange={handleOnSelectCourt}
@@ -178,7 +184,6 @@ const TimeAvailability = ({ sportCenterId, facility, court }) => {
               boxShadow: "none",
               marginBottom: "2rem",
               maxHeight: "20rem",
-              overflow: "hidden",
               overflowY: "scroll",
               height: "15rem",
               marginTop: "1rem",
@@ -203,7 +208,7 @@ const TimeAvailability = ({ sportCenterId, facility, court }) => {
               </TableHead>
               <TableBody>
                 {timeSlots?.length > 0 ? (
-                  timeSlots?.map((time, index) => (
+                  timeSlots.map((time, index) => (
                     <TableRow key={index}>
                       <TableCell sx={{ fontSize: "1rem" }}>
                         {time.user}
@@ -226,8 +231,8 @@ const TimeAvailability = ({ sportCenterId, facility, court }) => {
                             borderRadius: "10px",
                             textAlign: "center",
                           }}>
-                          {convertTo12HourFormat(time.start)} -
-                          {" " + convertTo12HourFormat(time.end)}
+                          {convertTo12HourFormat(time.start)} -{" "}
+                          {convertTo12HourFormat(time.end)}
                         </Box>
                       </TableCell>
                       <TableCell align="center" sx={{ fontSize: "1rem" }}>
@@ -266,7 +271,6 @@ const TimeAvailability = ({ sportCenterId, facility, court }) => {
     </>
   );
 };
-
 //* Reservation section
 
 function ReservationDate({ court }) {
@@ -278,18 +282,16 @@ function ReservationDate({ court }) {
   const [selectedCourt, setSelectedCourt] = useState("");
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
-  const formattedDate = dayjs(date).format("YYYY-MM-DD");
 
-  const handleOnSelectCourt = (e) => {
-    setSelectedCourt(e.target.value);
-  };
+  const formattedDate = useMemo(() => dayjs(date).format("YYYY-MM-DD"), [date]);
 
-  const handleDateChange = (newDate) => {
-    setDate(newDate);
-  };
+  const handleDateChange = useCallback((newDate) => setDate(newDate), []);
+  const handleOnSelectCourt = useCallback(
+    (e) => setSelectedCourt(e.target.value),
+    []
+  );
 
-  const courts = court.map((c) => c.name);
-
+  // Caching facility data using React Query
   const {
     data: facility,
     isLoading,
@@ -300,6 +302,7 @@ function ReservationDate({ court }) {
     retry: false,
   });
 
+  // Caching time slots data using React Query
   const { data: timeSlots } = useQuery({
     queryKey: [
       "timeSlots",
@@ -313,48 +316,34 @@ function ReservationDate({ court }) {
     refetchOnWindowFocus: true,
   });
 
-  const handleBooking = async () => {
-    // If not login route login page
-    if (user === null) {
+  const handleBooking = useCallback(async () => {
+    if (!user) {
       navigate("/login");
       return;
     }
 
-    if ((!sportCenterId, !formattedDate, !facility, !selectedCourt)) {
-      errorAlert("Select The requirement");
+    if (!sportCenterId || !formattedDate || !facility || !selectedCourt) {
+      errorAlert("Please select all the required fields.");
       return;
     }
 
     if (dayjs(date).isBefore(dayjs(), "day")) {
-      // Check if booking date is today onward
       errorAlert("Booking is only allowed for today onward.");
-      setSelectedCourt("");
-      setStartTime(null);
-      setEndTime(null);
+      resetFields();
       return;
     }
 
-    // Check if the selected time slot is already booked
-    if (timeSlots) {
-      const start = dayjs(startTime).format("HH:mm");
-      const end = dayjs(endTime).format("HH:mm");
-
-      const isTimeSlotBooked = timeSlots.some(
+    if (
+      timeSlots?.some(
         (slot) =>
-          (slot.court === selectedCourt && // Check if the court is the same
-            ((start >= slot.start && start < slot.end) || // Start time overlaps
-              (end > slot.start && end <= slot.end) || // End time overlaps
-              (start <= slot.start && end >= slot.end))) || // Encompasses an existing slot
+          (slot.court === selectedCourt &&
+            timeOverlapping(startTime, endTime, slot.start, slot.end)) ||
           (slot.status === "approved" && slot.status === "pending")
-      );
-
-      if (isTimeSlotBooked) {
-        errorAlert("The selected time slot is already booked.");
-        setSelectedCourt("");
-        setStartTime(null);
-        setEndTime(null);
-        return;
-      }
+      )
+    ) {
+      errorAlert("The selected time slot is already booked.");
+      resetFields();
+      return;
     }
 
     const bookingRequirement = {
@@ -362,13 +351,13 @@ function ReservationDate({ court }) {
       lessor: sportCenterId,
       facility: facility,
       court: selectedCourt,
-      date: date.toISOString(),
-      startTime: startTime.format("hh:mm a"), // Format date: 1:00 am, 12:00 am
+      date: formattedDate,
+      startTime: startTime.format("hh:mm a"),
       endTime: endTime.format("hh:mm a"),
     };
 
     try {
-      const booking = await axios.post(
+      const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/books/sport-center`,
         bookingRequirement,
         {
@@ -379,62 +368,77 @@ function ReservationDate({ court }) {
         }
       );
       notify("You have successfully booked");
-      setSelectedCourt("");
-      setStartTime(null);
-      setEndTime(null);
-      console.log(booking.data.message);
+      resetFields();
+      console.log(response.data.message);
     } catch (err) {
       errorAlert("There is a problem with the system.");
-      console.log(err.message);
+      console.error(err.message);
     }
+  }, [
+    user,
+    sportCenterId,
+    formattedDate,
+    facility,
+    selectedCourt,
+    date,
+    startTime,
+    endTime,
+    timeSlots,
+    navigate,
+    token,
+  ]);
+
+  const resetFields = () => {
+    setSelectedCourt("");
+    setStartTime(null);
+    setEndTime(null);
   };
+
+  const courts = useMemo(() => court.map((c) => c.name), [court]);
 
   if (isLoading) return <Loader />;
   if (error) return <div>Error loading facility information</div>;
+
   return (
     <div className="date-time">
-      <div className="sport-calendar">
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        {/* Calendar for Date Selection */}
+        <div className="sport-calendar">
           <DateCalendar
             sx={{ width: "100%" }}
             date={date}
             onChange={handleDateChange}
           />
-        </LocalizationProvider>
-      </div>
+        </div>
 
-      <div className="sport-date">
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
+        {/* Date Picker */}
+        <div className="sport-date">
           <DatePicker
             label="Select Date"
             value={date}
             onChange={handleDateChange}
           />
-        </LocalizationProvider>
-      </div>
+        </div>
+      </LocalizationProvider>
+
+      {/* Display Selected Date */}
       <div className="selected-date">
         <TextField
           sx={{ marginBottom: "15px", width: "100%" }}
           value={date.format("MMMM DD, YYYY")}
-          onChange={(e) => setDate(dayjs(e.target.value))}
           readOnly
         />
       </div>
 
-      <div className="sport-time">
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <TimePicker
-            label="From"
-            value={startTime}
-            onChange={(newTime) => setStartTime(newTime)}
-          />
-          <TimePicker
-            label="Till"
-            value={endTime}
-            onChange={(newTime) => setEndTime(newTime)}
-          />
-        </LocalizationProvider>
-      </div>
+      {/* Time Pickers for Start and End Times */}
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <div className="sport-time">
+          <TimePicker label="From" value={startTime} onChange={setStartTime} />
+          <TimePicker label="Till" value={endTime} onChange={setEndTime} />
+        </div>
+      </LocalizationProvider>
+
+      {/* Court Selection */}
       <div className="court-type">
         <FormControl sx={{ width: "100%" }}>
           <InputLabel>Court</InputLabel>
@@ -451,11 +455,11 @@ function ReservationDate({ court }) {
         </FormControl>
       </div>
 
+      {/* Booking Button */}
       <button onClick={handleBooking} className="sportField-reserver">
         Reserve
       </button>
     </div>
   );
 }
-
 export { ReservationDate, TimeAvailability };

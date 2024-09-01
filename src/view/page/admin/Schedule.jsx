@@ -5,7 +5,7 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { TimePicker, DatePicker } from "@mui/x-date-pickers";
-import { parseISO } from "date-fns";
+
 import dayjs from "dayjs";
 import format from "date-fns/format";
 import getDay from "date-fns/getDay";
@@ -15,7 +15,7 @@ import axios from "axios";
 import authToken from "./../../../utils/authToken";
 import useCurrentLessor from "../../../utils/useCurrentLessor";
 import { ToastContainer } from "react-toastify";
-
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   Button,
   TextField,
@@ -32,8 +32,10 @@ import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import AddIcon from "@mui/icons-material/Add";
 import ObjectID from "bson-objectid";
 import { notify, errorAlert } from "./../../../utils/toastAlert";
-
-//* React Big Calendar Formatation
+import {
+  timeOverlapping,
+  parseTimeString,
+} from "./../../../utils/timeCalculation";
 const locales = {
   "en-US": import("date-fns/locale/en-US"),
 };
@@ -50,194 +52,184 @@ const localizer = dateFnsLocalizer({
   getDay,
   locales: getLocale(),
 });
+// Fetching time availability
+const fetchTime = async (sportCenterId, date, facility, court) => {
+  const { data } = await axios.get(
+    `${
+      import.meta.env.VITE_API_URL
+    }/books/lessors/${sportCenterId}/time-slots/availability`,
+    { params: { date, facility, court } }
+  );
+  return data.bookings.filter(({ status }) =>
+    ["approved", "pending"].includes(status)
+  );
+};
 
-//* Function to parse time strings to Date objects
-const parseTimeString = (dateString, timeString) => {
-  const date = parseISO(dateString);
-  const [time, modifier] = timeString.split(" ");
-  let [hours, minutes] = time.split(":");
-  if (modifier === "pm" && hours !== "12") {
-    hours = parseInt(hours, 10) + 12;
-  }
-  if (modifier === "am" && hours === "12") {
-    hours = 0;
-  }
-  date.setHours(hours, minutes, 0, 0);
-  return date;
+// Fetching court details
+const fetchCourt = async (facilityId) => {
+  const token = authToken();
+  const { data } = await axios.get(
+    `${import.meta.env.VITE_API_URL}/lessor/facility/${facilityId}/courts`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return data.facility.courts;
 };
 
 export default function Schedule() {
+  const queryClient = useQueryClient();
   const token = authToken();
   const currentLessor = useCurrentLessor();
 
+  // States for booking requirements
   const [events, setEvents] = useState([]);
-
-  //* Requirements for booking
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [court, setCourt] = useState([]);
   const [facility, setFacility] = useState("");
   const [date, setDate] = useState(dayjs());
   const [selectedCourt, setSelectedCourt] = useState("");
   const [startTime, setStartTime] = useState(dayjs());
   const [endTime, setEndTime] = useState(dayjs());
+  const [open, setOpen] = useState(false);
 
-  //* Court and Facility Selection
-  const handleOnSelectCourt = (e) => {
-    setSelectedCourt(e.target.value);
-  };
-
-  const handleOnSelectFacility = (e) => {
-    setFacility(e.target.value);
-    setSelectedCourt(""); // Reset the selected court
-  };
-
-  const handleDateChange = (newDate) => {
-    setDate(newDate);
-  };
-
-  //* Get facility from lessor
-  const getFacilities = useMemo(() => {
-    return currentLessor?.facilities || [];
-  }, [currentLessor?.facilities]);
-
-  //* Get court from lessor
-  const getCourts = useCallback(
-    async (facilityId) => {
-      try {
-        const fetchCourts = await axios.get(
-          `${
-            import.meta.env.VITE_API_URL
-          }/lessor/facility/${facilityId}/courts`,
-          {
-            headers: {
-              Accept: "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setCourt(fetchCourts.data.facility.courts);
-      } catch (err) {
-        console.log(err.message);
-      }
-    },
-    [token]
+  // Memoized facilities list
+  const getFacilities = useMemo(
+    () => currentLessor?.facilities || [],
+    [currentLessor]
   );
 
-  //* Checking each facility and get each of the courts from it
-  useEffect(() => {
-    if (facility) {
-      // Find the selected facility ID
+  // Fetching court details
+  const { data: court = [] } = useQuery({
+    queryKey: ["court", facility],
+    queryFn: () => {
       const selectedFacility = getFacilities.find(
         (fac) => fac.name === facility
       );
-      if (selectedFacility) {
-        getCourts(selectedFacility._id); // Facility ID
-      }
-    }
-  }, [facility, getFacilities, getCourts]);
+      return selectedFacility ? fetchCourt(selectedFacility._id) : [];
+    },
+    enabled: !!facility,
+  });
 
-  //* Fetching all the booking of lessor
+  // Fetching available time slots
+  const { data: timeSlots = [] } = useQuery({
+    queryKey: ["timeSlots", currentLessor?._id, date, facility, selectedCourt],
+    queryFn: () => fetchTime(currentLessor?._id, date, facility, selectedCourt),
+    enabled: !!(currentLessor && date && facility && selectedCourt),
+  });
+
+  // Fetching bookings
   const fetchBooking = useCallback(async () => {
-    try {
-      const getBooking = await axios.get(
-        `${import.meta.env.VITE_API_URL}/books/sport-center`,
-        {
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      // Formatation of react big calendar  {title , start , ends}
-      const transformedEvents = getBooking.data.bookings.map((booking) => ({
-        title: `Customer: ${
-          booking?.user?.name || booking?.outside_user?.name
-        } , Facility: ${booking.facility} , Court: ${booking.court}`,
-        start: parseTimeString(booking.date, booking.startTime),
-        end: parseTimeString(booking.date, booking.endTime),
-      }));
-      setEvents(transformedEvents);
-    } catch (err) {
-      console.log(err.message);
-    }
+    const { data } = await axios.get(
+      `${import.meta.env.VITE_API_URL}/books/sport-center`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    const transformedEvents = data.bookings.map((booking) => ({
+      title: `Customer: ${
+        booking?.user?.name || booking?.outside_user?.name
+      }, Facility: ${booking.facility}, Court: ${booking.court}`,
+      start: parseTimeString(booking.date, booking.startTime),
+      end: parseTimeString(booking.date, booking.endTime),
+    }));
+    setEvents(transformedEvents);
   }, [token]);
 
+  // Fetch bookings when currentLessor changes
   useEffect(() => {
-    if (!currentLessor) return;
-    fetchBooking();
+    if (currentLessor) {
+      fetchBooking();
+    }
   }, [currentLessor, fetchBooking]);
 
-  //* Open modal
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
-  // Handle events for adding new booking for contact users
-  const handleAddEvent = async (e) => {
-    e.preventDefault();
-    const bookingRequirement = {
-      user: new ObjectID().toString(), // Random Bson Id if user contacts
-      outside_user: {
-        name: name,
-        phone_number: phone,
-      },
-      lessor: currentLessor._id,
-      facility: facility,
-      court: selectedCourt,
-      date: date.toISOString(),
-      startTime: startTime.format("hh:mm a"), // format date {1:00 am/pm}
-      endTime: endTime.format("hh:mm a"),
-    };
-    try {
-      const booking = await axios.post(
+  // Booking mutation
+  const bookingMutation = useMutation({
+    mutationFn: (bookingRequirement) =>
+      axios.post(
         `${import.meta.env.VITE_API_URL}/books/sport-center`,
         bookingRequirement,
         {
           headers: {
-            Accept: "application/json",
             Authorization: `Bearer ${token}`,
           },
         }
-      );
-      console.log(booking.data.message);
-      fetchBooking(); // Update data immediately
-      setName("");
-      setPhone("");
-      setFacility("");
-      setDate(dayjs());
-      setSelectedCourt("");
-      setStartTime(dayjs());
-      setEndTime(dayjs());
-      handleClose();
+      ),
+    onSuccess: () => {
+      queryClient.invalidateQueries("timeSlots");
+      resetBookingForm();
       notify("Booking Successfully");
-    } catch (err) {
+    },
+    onError: () => {
       errorAlert("Booking Failed");
-      console.log(err.message);
+    },
+  });
+
+  // Reset booking form
+  const resetBookingForm = () => {
+    setName("");
+    setPhone("");
+    setFacility("");
+    setDate(dayjs());
+    setSelectedCourt("");
+    setStartTime(dayjs());
+    setEndTime(dayjs());
+    setOpen(false);
+  };
+
+  // Handle add booking event
+  const handleAddEvent = (e) => {
+    e.preventDefault();
+
+    const start = startTime.format("HH:mm");
+    const end = endTime.format("HH:mm");
+
+    // Check for overlapping bookings
+    const isTimeSlotBooked = timeSlots?.some(
+      (slot) =>
+        (slot.court === selectedCourt &&
+          timeOverlapping(start, end, slot.start, slot.end)) ||
+        ["approved", "pending"].includes(slot.status)
+    );
+
+    if (isTimeSlotBooked) {
+      errorAlert("Time slots has already booked");
+      resetBookingForm();
+      return;
     }
+    if (dayjs(date).isBefore(dayjs(), "day")) {
+      errorAlert("The date is not available");
+      resetBookingForm();
+      return;
+    }
+
+    const bookingRequirement = {
+      user: new ObjectID().toString(),
+      outside_user: { name, phone_number: phone },
+      lessor: currentLessor._id,
+      facility,
+      court: selectedCourt,
+      date: date.toISOString(),
+      startTime: startTime.format("hh:mm a"),
+      endTime: endTime.format("hh:mm a"),
+    };
+
+    bookingMutation.mutate(bookingRequirement);
   };
 
   return (
     <div className="calendar">
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="colored"
-      />
+      <ToastContainer position="top-right" autoClose={5000} theme="colored" />
       <div>
         <Button
           startIcon={<AddIcon />}
           sx={{ marginLeft: "3rem" }}
           variant="contained"
-          onClick={handleOpen}>
+          onClick={() => setOpen(true)}>
           Add Events
         </Button>
         <Modal
@@ -264,7 +256,7 @@ export default function Schedule() {
             </Typography>
             <Divider />
 
-            {/** Date Picker */}
+            {/* Date Picker */}
             <Box
               sx={{
                 display: "flex",
@@ -299,13 +291,13 @@ export default function Schedule() {
                 <DatePicker
                   label="Select Date"
                   value={date}
-                  onChange={handleDateChange}
+                  onChange={setDate}
                   sx={{ width: "100%" }}
                 />
               </LocalizationProvider>
             </Box>
 
-            {/** Court and Facility Picker */}
+            {/* Court and Facility Picker */}
             <Box
               sx={{
                 display: "flex",
@@ -316,10 +308,12 @@ export default function Schedule() {
               }}>
               <FormControl sx={{ flex: 1 }}>
                 <InputLabel>Facility</InputLabel>
-                <Select value={facility} onChange={handleOnSelectFacility}>
-                  {getFacilities.map((facility, key) => (
-                    <MenuItem key={key} value={facility.name}>
-                      {facility.name}
+                <Select
+                  value={facility}
+                  onChange={(e) => setFacility(e.target.value)}>
+                  {getFacilities.map((fac, key) => (
+                    <MenuItem key={key} value={fac.name}>
+                      {fac.name}
                     </MenuItem>
                   ))}
                 </Select>
@@ -327,7 +321,9 @@ export default function Schedule() {
 
               <FormControl sx={{ flex: 1 }}>
                 <InputLabel>Court</InputLabel>
-                <Select value={selectedCourt} onChange={handleOnSelectCourt}>
+                <Select
+                  value={selectedCourt}
+                  onChange={(e) => setSelectedCourt(e.target.value)}>
                   {court.map((data, key) => (
                     <MenuItem key={key} value={data.name}>
                       {data.name}
@@ -337,7 +333,7 @@ export default function Schedule() {
               </FormControl>
             </Box>
 
-            {/** Time Picker */}
+            {/* Time Picker */}
             <Box
               sx={{
                 display: "flex",
@@ -349,13 +345,13 @@ export default function Schedule() {
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <TimePicker
                   value={startTime}
-                  onChange={(newTime) => setStartTime(newTime)}
+                  onChange={setStartTime}
                   label="Start Time"
                   sx={{ flex: 1 }}
                 />
                 <TimePicker
                   value={endTime}
-                  onChange={(newTime) => setEndTime(newTime)}
+                  onChange={setEndTime}
                   label="End Time"
                   sx={{ flex: 1 }}
                 />
@@ -370,7 +366,10 @@ export default function Schedule() {
                 alignItems: "center",
                 gap: "1rem",
               }}>
-              <Button variant="outlined" color="error" onClick={handleClose}>
+              <Button
+                variant="outlined"
+                color="error"
+                onClick={() => setOpen(false)}>
                 Cancel
               </Button>
               <Button variant="outlined" onClick={handleAddEvent}>

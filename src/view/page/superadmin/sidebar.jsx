@@ -27,6 +27,7 @@ import BarChartIcon from "@mui/icons-material/BarChart";
 import useModeratorProfile from "../../../utils/useModeratorProfile";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import LogoutIcon from "@mui/icons-material/Logout";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
 export default function SuperAdmin() {
   const dispatch = useDispatch();
@@ -272,6 +273,21 @@ export default function SuperAdmin() {
             )}
           </MenuItem>
 
+          <MenuItem
+            component={Link}
+            to="/super-admin/profile"
+            sx={menuItemStyles}>
+            <AccountCircleIcon
+              sx={{ color: "#fff", marginRight: isSmallScreen ? 0 : "10px" }}
+            />
+            {!isSmallScreen && (
+              <Typography
+                sx={{ color: "#fff", fontWeight: "bold", fontSize: ".9rem" }}>
+                Profile
+              </Typography>
+            )}
+          </MenuItem>
+
           <MenuItem onClick={handleLogOut} sx={menuItemStyles}>
             <LogoutIcon
               sx={{ color: "#fff", marginRight: isSmallScreen ? 0 : "10px" }}
@@ -320,7 +336,7 @@ export default function SuperAdmin() {
                 </IconButton>
                 <Avatar
                   alt="NK"
-                  src="https://images2.alphacoders.com/122/1221814.jpg"
+                  src={moderator?.avatar}
                   sx={{ width: 30, height: 30 }}
                 />
               </Box>
