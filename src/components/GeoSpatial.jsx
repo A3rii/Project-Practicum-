@@ -1,20 +1,28 @@
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, Circle } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-export default function GeoSpatial() {
+export default function GeoSpatial({ latitude, longitude, name }) {
+  // Checking default lat and lon of Phnom Penh
+
   return (
     <MapContainer
-      center={[11.580222464665711, 104.9103721460326]}
+      center={[latitude, longitude]}
       zoom={20}
       scrollWheelZoom={false}>
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      <Marker position={[11.580222464665711, 104.9103721460326]}>
-        <Popup>
-          A pretty CSS3 popup. <br /> Easily customizable.
-        </Popup>
+      <Marker position={[latitude, longitude]}>
+        <Popup>{name}</Popup>
       </Marker>
+      {/* Add a Circle component */}
+      <Circle
+        center={[latitude, longitude]}
+        radius={30} // Set the radius in meters
+        color="blue"
+        fillColor="blue"
+        fillOpacity={0.2}
+      />
     </MapContainer>
   );
 }

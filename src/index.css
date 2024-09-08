@@ -12,9 +12,22 @@ body {
 }
 
 /* leaflet container */
+
 .leaflet-container {
-   height: 80vh;
+   height: 100vh;
    width: 100%;
+   z-index: 10;
+}
+
+.leaflet-routing-container {
+   background-color: #fff;
+   overflow: scroll;
+   width: 25%;
+   height: 15%,
+}
+
+.leaflet-routing-alt h2 {
+   font-size: 1rem;
 }
 
 :root {

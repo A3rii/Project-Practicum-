@@ -123,6 +123,7 @@ const TimeAvailability = ({ sportCenterId, facility, court }) => {
           gap: "5rem",
           padding: "2rem",
           marginTop: "1rem",
+          borderRadius: ".8rem",
           width: { xs: "100%", md: "75%" },
         }}>
         <LocalizationProvider dateAdapter={AdapterDayjs}>

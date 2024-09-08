@@ -22,13 +22,15 @@ import {
   PhotoCamera as PhotoCameraIcon,
   Settings as SettingsIcon,
 } from "@mui/icons-material";
+import authToken from "../../../utils/authToken";
 import { storage } from "./../../../firebase/firebase"; // make sure you have firebase initialized
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-
-import authToken from "../../../utils/authToken";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { notify, errorAlert } from "./../../../utils/toastAlert";
+
+
+
 // Styling Input type of MUI component
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -304,7 +306,7 @@ export default function Profile() {
             </Box>
           </Box>
         </Paper>
-        <Paper sx={{ padding: "3rem" }}>
+        <Paper sx={{ padding: "3rem", maxWidth: "100%" }}>
           <Box
             sx={{
               display: "flex",

@@ -321,6 +321,8 @@ export default function CenterDetail() {
     },
   });
 
+  console.log(sportCenter);
+
   // Handling the comment post of user and update the data immediately after
   const mutation = useMutation({
     mutationFn: () =>
@@ -351,7 +353,6 @@ export default function CenterDetail() {
     enable: !!sportCenterId,
   });
 
-  console.log(overviewRating);
   // Handle comment submission
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -449,12 +450,21 @@ export default function CenterDetail() {
             justifyContent: "center",
             alignItems: "center",
             flexDirection: "column",
+            gap: "1rem",
           }}
           elevation={3}>
-          <Typography sx={{ fontSize: "1rem", fontWeight: "bold" }}>
+          <Typography
+            sx={{
+              fontSize: "1.5rem",
+              fontWeight: "bold",
+            }}>
             Our Location
           </Typography>
-          <GeoSpatial />
+          <GeoSpatial
+            latitude={sportCenter?.location?.coordinates[1]}
+            longitude={sportCenter?.location?.coordinates[0]}
+            name={sportCenter?.sportcenter_name}
+          />
         </Box>
       </Box>
 

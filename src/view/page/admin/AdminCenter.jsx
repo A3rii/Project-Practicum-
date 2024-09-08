@@ -30,6 +30,7 @@ import {
   PersonAddAlt1 as PersonAddAlt1Icon,
   Logout as LogoutIcon,
   AccountCircle as AccountCircleIcon,
+  Map as MapIcon,
 } from "@mui/icons-material";
 import Notification from "../../../components/AdminComponent/Notification/Notification.jsx";
 import useCurrentLessor from "../../../utils/useCurrentLessor.jsx";
@@ -169,6 +170,15 @@ export default function AdminCenter() {
 
                   <Link to="/admin/facility">
                     <li>Facility</li>
+                  </Link>
+                </div>
+                <div className="admin-icon">
+                  <Link to="/admin/sport-center/location">
+                    <MapIcon sx={{ color: "#444444" }} />
+                  </Link>
+
+                  <Link to="/admin/sport-center/location">
+                    <li>Location</li>
                   </Link>
                 </div>
 

@@ -79,13 +79,6 @@ export default function SportField() {
       </div>
 
       <div className="sport-schedule">
-        <Typography
-          sx={{
-            fontWeight: "bold",
-            fontSize: "1.5rem",
-          }}>
-          Booked Schedule
-        </Typography>
         <TimeAvailability
           sportCenterId={sportCenterId}
           facility={facilityInformation.name}
