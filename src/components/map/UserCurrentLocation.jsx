@@ -8,22 +8,7 @@ import {
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { useEffect, useState } from "react";
-import "leaflet-routing-machine"; // Import Leaflet Routing Machine
-
-const locations = [
-  {
-    latitude: 11.580453694384412,
-    longitude: 104.91050089206516,
-    city: "Liuzhi",
-    country: "China",
-  },
-  {
-    latitude: 11.588014571444408,
-    longitude: 104.92847840873094,
-    city: "That Phanom",
-    country: "Thailand",
-  },
-];
+import "leaflet-routing-machine";
 
 function SetViewOnLocationChange({ location }) {
   const map = useMap();
@@ -49,7 +34,11 @@ function DrawRoute({ waypoints }) {
         lineOptions: {
           styles: [{ color: "#6FA1EC", weight: 4 }],
         },
-        createMarker: () => null, // Disable markers for each point
+        routeWhileDragging: true,
+        draggableWaypoints: true,
+        fitSelectedRoutes: true,
+        showAlternatives: false,
+        createMarker: () => null,
       }).addTo(map);
 
       return () => map.removeControl(routingControl);
@@ -59,7 +48,7 @@ function DrawRoute({ waypoints }) {
   return null;
 }
 
-export default function UserCurrentLocation() {
+export default function UserCurrentLocation({ latitude, longitude, name }) {
   const [userLocation, setUserLocation] = useState(null);
 
   useEffect(() => {
@@ -81,10 +70,14 @@ export default function UserCurrentLocation() {
 
   const defaultCenter = [11.598824446578117, 104.9272459050655];
 
-  // Add the user location to the start of the waypoints array
-  const waypoints = userLocation
-    ? [{ latitude: userLocation[0], longitude: userLocation[1] }, ...locations]
-    : locations;
+  // Create waypoints array, including the user location and destination
+  const waypoints =
+    userLocation && latitude && longitude
+      ? [
+          { latitude: userLocation[0], longitude: userLocation[1] },
+          { latitude, longitude },
+        ]
+      : [];
 
   return (
     <MapContainer
@@ -110,21 +103,24 @@ export default function UserCurrentLocation() {
           <SetViewOnLocationChange location={userLocation} />
         </>
       )}
-      {locations.map((coordinate, key) => (
-        <Marker
-          key={key}
-          position={[coordinate.latitude, coordinate.longitude]}>
-          <Popup>{coordinate.city}</Popup>
+
+      {latitude && longitude && (
+        <>
+          <Marker position={[latitude, longitude]}>
+            <Popup>{name}</Popup>
+          </Marker>
           <Circle
-            center={[coordinate.latitude, coordinate.longitude]}
+            center={[latitude, longitude]}
             radius={100}
-            color="red"
-            fillColor="red"
+            color="blue"
+            fillColor="blue"
             fillOpacity={0.2}
           />
-        </Marker>
-      ))}
-      <DrawRoute waypoints={waypoints} />
+        </>
+      )}
+
+      {/* Draw route if both locations are available */}
+      {waypoints.length > 1 && <DrawRoute waypoints={waypoints} />}
     </MapContainer>
   );
 }

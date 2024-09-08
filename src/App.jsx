@@ -25,10 +25,12 @@ import ProtectedPage from "./components/ProtectedPage";
 import Error from "./components/Error";
 import LoginSuperAdmin from "./view/page/superadmin/auth/Login";
 import SuperAdmin from "./view/page/superadmin/Sidebar";
-import GeoSpatial from "./components/GeoSpatial";
-import Location from "./view/page/admin/Location";
-
-import UserCurrentLocation from "./utils/UserCurrentLocation";
+import Map from "./view/page/superadmin/Map";
+const Location = lazy(() => import("./view/page/admin/Location"));
+const AllSportCenter = lazy(() => import("./components/map/AllSportCenter"));
+const UserCurrentLocation = lazy(() =>
+  import("./components/map/UserCurrentLocation")
+);
 // Moderator
 const Comment = lazy(() => import("./view/page/superadmin/Comment"));
 const DashBoard = lazy(() => import("./view/page/superadmin/DashBoard"));
@@ -91,6 +93,7 @@ export default function App() {
               <Route path="lessor" element={<ConfirmLessor />} />
               <Route path="lessor/informations" element={<Lessor />} />
               <Route path="profile" element={<ModeratorProfile />} />
+              <Route path="map" element={<Map />} />
             </Route>
           </Route>
 
@@ -123,7 +126,12 @@ export default function App() {
             </Route>
             <Route path="/signup-admin" element={<SignUpLessor />} />
           </Route>
-          <Route path="/map" element={<GeoSpatial />} />
+
+          {/* Map */}
+          <Route
+            path="/all-sportcenters-location"
+            element={<AllSportCenter />}
+          />
 
           {/* Admin Routes */}
           <Route element={<AdminProtectedRoute />}>

@@ -10,7 +10,8 @@ import dayjs from "dayjs";
 import currentUser from "./../../../utils/currentUser";
 import { ToastContainer } from "react-toastify";
 import { notify, errorAlert } from "./../../../utils/toastAlert";
-import GeoSpatial from "../../../components/GeoSpatial";
+
+import UserCurrentLocation from "../../../components/map/UserCurrentLocation";
 import {
   Card,
   CardHeader,
@@ -431,42 +432,6 @@ export default function CenterDetail() {
           )}
         </div>
       </div>
-      <Box
-        sx={{
-          width: "100%",
-          display: "flex",
-          justifyContent: "center",
-          flexDirection: "column",
-          alignItems: "center",
-          marginTop: "3rem",
-          padding: "1rem",
-        }}>
-        <Box
-          sx={{
-            width: "75%",
-            marginTop: "2rem",
-            borderRadius: ".5rem",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            flexDirection: "column",
-            gap: "1rem",
-          }}
-          elevation={3}>
-          <Typography
-            sx={{
-              fontSize: "1.5rem",
-              fontWeight: "bold",
-            }}>
-            Our Location
-          </Typography>
-          <GeoSpatial
-            latitude={sportCenter?.location?.coordinates[1]}
-            longitude={sportCenter?.location?.coordinates[0]}
-            name={sportCenter?.sportcenter_name}
-          />
-        </Box>
-      </Box>
 
       <Box
         sx={{
@@ -625,6 +590,43 @@ export default function CenterDetail() {
             <CommentsSection />
           </Box>
         </Paper>
+      </Box>
+      <Box
+        sx={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+          flexDirection: "column",
+          alignItems: "center",
+          marginTop: "3rem",
+          padding: "1rem",
+        }}>
+        <Box
+          sx={{
+            width: "75%",
+            marginTop: "2rem",
+            borderRadius: ".5rem",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            flexDirection: "column",
+            gap: "1rem",
+          }}
+          elevation={3}>
+          <Typography
+            sx={{
+              fontSize: "1.5rem",
+              fontWeight: "bold",
+            }}>
+            Our Location
+          </Typography>
+          <UserCurrentLocation
+            user
+            latitude={sportCenter?.location?.coordinates[1]}
+            longitude={sportCenter?.location?.coordinates[0]}
+            name={sportCenter?.sportcenter_name}
+          />
+        </Box>
       </Box>
 
       <div className="center-contact">

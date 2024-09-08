@@ -429,7 +429,6 @@
    font-family: "Roboto", sans-serif;
    font-weight: 600;
    text-align: center;
-
 }
 
 .home-viewmap {
@@ -442,6 +441,12 @@
    border-radius: 3px;
    margin-top: .7rem;
 }
+
+.home-viewmap a:hover {
+   color: var(--white);
+}
+
+
 
 
 .home-processing {

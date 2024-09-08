@@ -1,5 +1,5 @@
 import axios from "axios";
-import GeoSpatial from "../../../components/GeoSpatial";
+import GeoSpatial from "../../../components/map/GeoSpatial";
 import useCurrentLessor from "../../../utils/useCurrentLessor";
 import authToken from "./../../../utils/authToken";
 import {
@@ -17,18 +17,19 @@ import { notify, errorAlert } from "./../../../utils/toastAlert";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 
-const headers = {
-  Accept: "application/json",
-  Authorization: `Bearer ${authToken()}`,
-  "Content-Type": "application/json",
-};
-
 const setLocation = async (coordinates) => {
+  const token = authToken();
   try {
     const { data } = await axios.put(
       `${import.meta.env.VITE_API_URL}/location/update/coordinate`,
       coordinates,
-      { headers }
+      {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
     );
 
     return data.message;

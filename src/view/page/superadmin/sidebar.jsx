@@ -18,16 +18,20 @@ import {
 import Notification from "../../../components/Superadmin/Notification";
 import { useDispatch } from "react-redux";
 import { logout } from "../../../app/slice";
-import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import AccountCircle from "@mui/icons-material/AccountCircle";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import MoreIcon from "@mui/icons-material/MoreVert";
-import CommentIcon from "@mui/icons-material/Comment";
-import BarChartIcon from "@mui/icons-material/BarChart";
+import {
+  CalendarMonth as CalendarMonthIcon,
+  AccountCircle as AccountCircle,
+  Notifications as NotificationsIcon,
+  MoreVert as MoreIcon,
+  Comment as CommentIcon,
+  BarChart as BarChartIcon,
+  PersonOutline as PersonOutlineIcon,
+  Logout as LogoutIcon,
+  AccountCircle as AccountCircleIcon,
+  Map as MapIcon,
+} from "@mui/icons-material";
+
 import useModeratorProfile from "../../../utils/useModeratorProfile";
-import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
-import LogoutIcon from "@mui/icons-material/Logout";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
 export default function SuperAdmin() {
   const dispatch = useDispatch();
@@ -273,6 +277,19 @@ export default function SuperAdmin() {
             )}
           </MenuItem>
 
+          <MenuItem component={Link} to="/super-admin/map" sx={menuItemStyles}>
+            <MapIcon
+              sx={{ color: "#fff", marginRight: isSmallScreen ? 0 : "10px" }}
+            />
+
+            {!isSmallScreen && (
+              <Typography
+                sx={{ color: "#fff", fontWeight: "bold", fontSize: ".9rem" }}>
+                Map
+              </Typography>
+            )}
+          </MenuItem>
+
           <MenuItem
             component={Link}
             to="/super-admin/profile"
@@ -288,6 +305,7 @@ export default function SuperAdmin() {
             )}
           </MenuItem>
 
+          <Divider sx={{ background: "#fff" }} />
           <MenuItem onClick={handleLogOut} sx={menuItemStyles}>
             <LogoutIcon
               sx={{ color: "#fff", marginRight: isSmallScreen ? 0 : "10px" }}

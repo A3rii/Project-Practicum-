@@ -23,9 +23,12 @@ function MapSection() {
     <div className="home-googleMap">
       <h2>View The Nearest Sport Center</h2>
       <span>You can find the sport center by viewing through this map</span>
-      <button type="button" className="home-viewmap">
-        View Map
-      </button>
+
+      <Link to={"/all-sportcenters-location"}>
+        <button type="button" className="home-viewmap">
+          View Map
+        </button>
+      </Link>
     </div>
   );
 }

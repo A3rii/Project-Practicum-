@@ -1,8 +1,6 @@
 import { MapContainer, TileLayer, Marker, Popup, Circle } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 export default function GeoSpatial({ latitude, longitude, name }) {
-  // Checking default lat and lon of Phnom Penh
-
   return (
     <MapContainer
       center={[latitude, longitude]}
