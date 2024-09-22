@@ -58,7 +58,7 @@ export default function Notification() {
     queryKey: ["upComingMatch"],
     queryFn: async () => {
       const bookings = await fetchBookings();
-      const match = bookings.filter((booking) => booking.status === "accepted");
+      const match = bookings.filter((booking) => booking.status === "approved");
       return match;
     },
   });

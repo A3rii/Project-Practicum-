@@ -48,6 +48,7 @@ const timeOverlapping = (inputStartTime, inputEndTime, startTime, endTime) => {
   return false; // Time ranges do not overlap
 };
 
+// Calculating to indochina format
 const parseTimeString = (dateString, timeString) => {
   const date = parseISO(dateString);
   const [time, modifier] = timeString.split(" ");

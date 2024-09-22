@@ -41,7 +41,7 @@ function DrawRoute({ waypoints }) {
         createMarker: () => null,
       }).addTo(map);
 
-      return () => map.removeControl(routingControl);
+      return () => map.removeLayer(routingControl);
     }
   }, [waypoints, map]);
 

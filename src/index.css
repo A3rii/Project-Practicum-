@@ -11,6 +11,13 @@ body {
    font-family: "Montserrat", sans-serif;
 }
 
+img {
+   max-width: 100%;
+   height: auto;
+   padding: 0;
+   margin: 0;
+}
+
 /* leaflet container */
 
 .leaflet-container {
@@ -43,6 +50,8 @@ h3 {
 }
 
 /*  */
+
+
 
 :root {
    --primary: #EE1E46;
@@ -585,7 +594,8 @@ a {
    }
 
    .home-processes {
-      row-gap: 1rem;
+
+      row-gap: 3rem;
    }
 
    .home-mapping,
@@ -756,21 +766,63 @@ a {
 
 }
 
-
-
-
-
-
-
 @media screen and (max-width: 600px) {
+   .home-header {
+      max-width: 100%;
+      min-height: 20rem;
+
+   }
+
+   .home-banner span {
+      display: none;
+   }
+
+   .home-processing {
+      min-height: 15rem;
+   }
+
+   .home-process {
+      min-height: 8rem;
+   }
+
+   .home-process span {
+      display: none
+   }
+
+   .home-map {
+      min-height: 20rem;
+   }
+
+   .home-googleMap {
+      height: 15rem;
+   }
+
+   .home-googleMap span {
+      display: none;
+   }
+
+
+   .home-rental {
+      min-height: 22rem;
+   }
+
+   .home-description {
+      display: none;
+   }
 
    /* center responsive*/
+
+   .center-header {
+      min-height: 10rem;
+   }
+
    .center-banner h2 {
       font-size: 1.2rem;
    }
 
+   .center-banner i,
    .center-banner span {
-      font-size: .8rem
+      display: none;
    }
 
    .center-location span {

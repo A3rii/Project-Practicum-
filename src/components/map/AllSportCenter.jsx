@@ -37,7 +37,7 @@ const DrawRoute = ({ userLocation, destinations }) => {
           window.L.latLng(destination.latitude, destination.longitude),
         ];
 
-        return window.L.Routing.control({
+        const control = window.L.Routing.control({
           waypoints: waypoints,
           lineOptions: {
             styles: [{ color: "#6FA1EC", weight: 4 }],
@@ -48,22 +48,28 @@ const DrawRoute = ({ userLocation, destinations }) => {
           showAlternatives: false,
           createMarker: () => null,
         }).addTo(map);
+
+        return control;
       });
 
+      // Cleanup function to remove routing controls
       return () =>
-        routingControls.forEach((control) => map.removeControl(control));
+        routingControls.forEach((control) => {
+          if (control) map.removeControl(control);
+        });
     }
   }, [userLocation, destinations, map]);
 
   return null;
 };
 
+// Correctly update location in SetViewOnLocationChange
 const SetViewOnLocationChange = ({ location }) => {
   const map = useMap();
 
   useEffect(() => {
     if (location) {
-      map.setView(location, map.getZoom());
+      map.setView(location, map.getZoom()); // Use setView properly
     }
   }, [location, map]);
 
@@ -78,7 +84,7 @@ export default function AllSportCenter() {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          setUserLocation([latitude, longitude]);
+          setUserLocation([latitude, longitude]); // Correctly set as an array
           console.log("User location set to:", { latitude, longitude });
         },
         (error) => {
@@ -99,9 +105,10 @@ export default function AllSportCenter() {
     queryFn: fetchSportCentersLocation,
     refetchOnWindowFocus: true,
   });
+  console.log(locations);
 
   const destinations = locations
-    ? locations.map((data) => ({
+    ? locations?.map((data) => ({
         latitude: data.location.coordinates[1],
         longitude: data.location.coordinates[0],
         name: data.sportcenter_name,
@@ -113,9 +120,11 @@ export default function AllSportCenter() {
 
   return (
     <MapContainer
-      center={userLocation && userLocation}
+      center={userLocation || [11.598824446578117, 104.9272459050655]} // Use default center if no user location
       zoom={12}
-      scrollWheelZoom={false}>
+      scrollWheelZoom={false}
+      style={{ height: "100vh", width: "100%" }} // Ensure the map container has size
+    >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -137,18 +146,20 @@ export default function AllSportCenter() {
       )}
 
       {destinations.map((destination, key) => (
-        <div key={key}>
-          <Marker position={[destination.latitude, destination.longitude]}>
+        <>
+          <Marker
+            key={key}
+            position={[destination.latitude, destination.longitude]}>
             <Popup>{destination.name}</Popup>
           </Marker>
           <Circle
             center={[destination.latitude, destination.longitude]}
-            radius={150}
+            radius={100}
             color="red"
             fillColor="red"
             fillOpacity={0.2}
           />
-        </div>
+        </>
       ))}
 
       {userLocation && (

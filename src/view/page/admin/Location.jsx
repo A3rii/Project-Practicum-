@@ -12,10 +12,10 @@ import {
   Divider,
 } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { notify, errorAlert } from "./../../../utils/toastAlert";
-import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const setLocation = async (coordinates) => {
   const token = authToken();
@@ -47,10 +47,13 @@ export default function Location() {
   });
 
   // get the text field input
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setCoordinatesData({ ...coordinatesData, [name]: value });
-  };
+  const handleChange = useCallback(
+    (e) => {
+      const { name, value } = e.target;
+      setCoordinatesData({ ...coordinatesData, [name]: value });
+    },
+    [coordinatesData]
+  );
 
   const updateLocation = useMutation({
     mutationFn: (updateData) => setLocation(updateData),

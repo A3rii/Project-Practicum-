@@ -39,7 +39,7 @@ const fetchBookings = async () => {
 // Custom hook for data fetching
 const useBookingsData = (queryKey, selectFn) =>
   useQuery({
-    queryKey,
+    queryKey: [queryKey],
     queryFn: fetchBookings,
     select: selectFn,
     refetchOnWindowFocus: true,
@@ -249,9 +249,11 @@ function UpcomingMatch() {
     bookings.filter(
       (b) =>
         formatDate(b.date) === dayjs(new Date()).format("MMMM DD, YYYY") &&
-        b.status === "accepted"
+        b.status === "approved"
     )
   );
+
+  console.log(matches);
 
   if (isLoading) return <Loader />;
   if (isError) return <p>Error fetching data</p>;

@@ -25,7 +25,8 @@ import ProtectedPage from "./components/ProtectedPage";
 import Error from "./components/Error";
 import LoginSuperAdmin from "./view/page/superadmin/auth/Login";
 import SuperAdmin from "./view/page/superadmin/Sidebar";
-import Map from "./view/page/superadmin/Map";
+
+const Map = lazy(() => import("./view/page/superadmin/Map"));
 const Location = lazy(() => import("./view/page/admin/Location"));
 const AllSportCenter = lazy(() => import("./components/map/AllSportCenter"));
 const UserCurrentLocation = lazy(() =>

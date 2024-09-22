@@ -94,6 +94,7 @@ const MatchHistory = ({ token, filter }) => {
               maxWidth: 500,
               width: { lg: 250, md: 210, xs: 200 },
               height: { xs: 370 },
+              border: "1px solid #dedede",
             }}>
             <CardMedia
               sx={{ height: 180 }}

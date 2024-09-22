@@ -68,10 +68,9 @@ export default function IncomingMatch() {
         justifyContent: "center",
         alignItems: "center",
         flexDirection: "column",
-        gap: "3rem",
+        gap: "2rem",
         flexWrap: "wrap",
-        my: 4,
-        margin: "1rem",
+        margin: "1rem 0 2rem 0 ",
       }}>
       <Typography
         sx={{
@@ -144,9 +143,9 @@ export default function IncomingMatch() {
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              gap: "1rem",
+              gap: ".8rem",
               boxShadow:
-                "0 4px 8px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.1)", // Cool box shadow
+                "0 4px 8px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.1)",
               transition: "box-shadow 0.3s ease-in-out", // Smooth transition for shadow
               "&:hover": {
                 boxShadow:

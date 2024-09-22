@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -30,6 +30,8 @@ const SportFieldCard = ({
   selectedRatings,
   startTime,
   endTime,
+  latitude,
+  longitude,
   timeAvailability,
 }) => {
   const { data: sportCenter = [], error } = useQuery({
@@ -39,6 +41,8 @@ const SportFieldCard = ({
       selectedRatings,
       startTime,
       endTime,
+      latitude,
+      longitude,
       timeAvailability,
     ],
     queryFn: async () => {
@@ -47,10 +51,12 @@ const SportFieldCard = ({
         {
           params: {
             name: name || null,
-            rating: selectedRatings,
+            rating: selectedRatings || [],
             startTime: startTime || null,
             endTime: endTime || null,
             timeAvailability: timeAvailability,
+            latitude: latitude || null,
+            longitude: longitude || null,
           },
         }
       );
@@ -79,8 +85,8 @@ const SportFieldCard = ({
         <Card
           key={key}
           sx={{
-            width: { lg: 240, md: 210, xs: 200 },
-            height: 380,
+            width: { lg: 240, md: 220, xs: 200 },
+            height: { lg: 380, xs: 360 },
             marginBottom: "2rem",
           }}
           elevation={4}>
@@ -94,13 +100,16 @@ const SportFieldCard = ({
               flexDirection: "column",
               gap: ".2rem",
             }}>
-            <Typography variant="h6" component="div" sx={{ fontSize: "1rem" }}>
+            <Typography
+              variant="h6"
+              component="div"
+              sx={{ fontSize: { lg: 15, sm: 10, xs: 10 } }}>
               {data?.sportcenter_name}
             </Typography>
             <Typography
               variant="body2"
               color="text.secondary"
-              sx={{ marginBottom: "3px", fontSize: "0.7rem" }}>
+              sx={{ marginBottom: "3px", fontSize: { lg: 12, sm: 9, xs: 9 } }}>
               {data?.address?.street},{data?.address?.city},
               {data?.address?.state}
             </Typography>
@@ -127,7 +136,7 @@ const SportFieldCard = ({
                 variant="body2"
                 color="text.secondary"
                 sx={{
-                  fontSize: "0.6rem", // Smaller font size for text
+                  fontSize: { lg: 10, sm: 8, xs: 8 },
                   color: "#fff",
                   fontWeight: "bold",
                 }}>
@@ -143,7 +152,7 @@ const SportFieldCard = ({
                 gap: ".6rem",
               }}>
               <Rating
-                sx={{ fontSize: "1.2rem" }}
+                sx={{ fontSize: { lg: 19, sm: 15, xs: 12 } }}
                 value={data?.overallRating}
                 precision={0.5}
                 readOnly
@@ -152,7 +161,7 @@ const SportFieldCard = ({
                 <Typography
                   sx={{
                     fontWeight: "light",
-                    fontSize: ".8rem",
+                    fontSize: { lg: 12, sm: 10 },
                     color: "#595959",
                   }}>
                   ({data?.ratings.length})
@@ -186,11 +195,38 @@ const SportFieldCard = ({
 };
 
 const FilterSideBar = ({ data, setData }) => {
-  const handleInputChange = (key, value) => {
-    setData((prev) => ({
-      ...prev,
-      [key]: value,
-    }));
+  const [nearestLocation, setNearestLocation] = useState(false);
+
+  const handleInputChange = useCallback(
+    (key, value) => {
+      setData((prev) => ({
+        ...prev,
+        [key]: value,
+      }));
+    },
+    [setData]
+  );
+  const handleNearestLocationChange = (checked) => {
+    setNearestLocation(checked);
+
+    if (checked && navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+
+          // Update the state with latitude and longitude
+          handleInputChange("latitude", latitude);
+          handleInputChange("longitude", longitude);
+        },
+        (error) => {
+          console.error("Error getting user location:", error);
+        }
+      );
+    } else {
+      // Reset latitude and longitude if unchecked
+      handleInputChange("latitude", null);
+      handleInputChange("longitude", null);
+    }
   };
 
   const handleOnReset = () => {
@@ -199,46 +235,101 @@ const FilterSideBar = ({ data, setData }) => {
       selectedRatings: [],
       startTime: null,
       endTime: null,
+      latitude: null,
+      longitude: null,
       timeAvailability: true,
     });
+    setNearestLocation(false);
   };
   return (
     <Paper
       sx={{
-        width: "23%",
+        width: { xs: "90%", sm: "80%", md: "50%", lg: "25%" }, // Responsive widths
+        maxWidth: "100%",
         height: "100%",
-        padding: "2rem",
+        padding: { xs: "1rem", sm: "1.5rem", md: "2rem" }, // Responsive padding
         margin: "1rem",
         display: "flex",
         flexDirection: "column",
         justifyContent: "start",
         alignItems: "start",
         borderRadius: "1rem",
-        gap: "2rem",
+        gap: "1rem",
       }}
       elevation={3}>
       {/* Search bar */}
-
-      <Paper
+      <Box
         sx={{
           display: "flex",
-          justifyContent: "center",
+          justifyContent: "space-between",
           alignItems: "center",
+          width: "100%",
         }}>
-        <InputBase
-          sx={{ ml: 1, flex: 1 }}
-          placeholder="Search"
-          inputProps={{ "aria-label": "search" }}
-          value={data.sportCenterName}
-          onChange={(e) => handleInputChange("sportCenterName", e.target.value)}
-        />
-        <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
-          <SearchIcon />
-        </IconButton>
-        <Button onClick={handleOnReset} color="error">
-          Reset Filter
+        <Paper
+          sx={{
+            width: { xs: "100%", sm: "75%" }, // Adjust width on smaller screens
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}>
+          <InputBase
+            sx={{ ml: 1, flex: 1 }}
+            placeholder="Search"
+            inputProps={{ "aria-label": "search" }}
+            value={data.sportCenterName}
+            onChange={(e) =>
+              handleInputChange("sportCenterName", e.target.value)
+            }
+          />
+          <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
+            <SearchIcon />
+          </IconButton>
+        </Paper>
+
+        <Button
+          onClick={handleOnReset}
+          color="error"
+          sx={{ display: { xs: "none", sm: "block" } }} // Hide Reset button on smaller screens
+        >
+          Reset
         </Button>
-      </Paper>
+      </Box>
+
+      {/* Nearest location */}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "start",
+          alignItems: "start",
+          flexDirection: "column",
+          gap: ".5rem",
+          marginTop: "1rem",
+        }}>
+        <Typography variant="h5" sx={{ fontSize: "1rem", fontWeight: "bold" }}>
+          Closest Distance
+        </Typography>
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={nearestLocation}
+              size="small"
+              sx={{
+                "& + .MuiFormControlLabel-label": {
+                  fontSize: ".9rem",
+                },
+              }}
+              onChange={(e) => handleNearestLocationChange(e.target.checked)}
+            />
+          }
+          label="Nearest Location"
+        />
+      </Box>
+
+      <Divider
+        sx={{
+          width: "100%",
+        }}
+      />
 
       {/* Rating */}
       <Box
@@ -271,6 +362,7 @@ const FilterSideBar = ({ data, setData }) => {
               }}
               key={rating}>
               <Checkbox
+                size="small"
                 sx={{ width: 16, height: 16 }}
                 checked={data.selectedRatings.includes(rating)}
                 onChange={(e) => {
@@ -314,7 +406,14 @@ const FilterSideBar = ({ data, setData }) => {
           Opening Time
         </Typography>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <Box sx={{ display: "flex", gap: "1rem", marginTop: "1rem" }}>
+          <Box
+            sx={{
+              display: "flex",
+              gap: { xs: ".5rem", sm: "1rem" }, // Responsive gap
+              marginTop: "1rem",
+              flexDirection: { xs: "column", sm: "row" }, // Stack time pickers on smaller screens
+              width: "100%",
+            }}>
             <TimePicker
               label="From"
               value={
@@ -323,7 +422,7 @@ const FilterSideBar = ({ data, setData }) => {
               onChange={(newValue) =>
                 handleInputChange("startTime", dayjs(newValue).format("hh:mma"))
               }
-              sx={{ width: 140 }} // Adjust the width here
+              sx={{ width: "100%" }}
             />
             <TimePicker
               label="To"
@@ -331,7 +430,7 @@ const FilterSideBar = ({ data, setData }) => {
               onChange={(newValue) =>
                 handleInputChange("endTime", dayjs(newValue).format("hh:mma"))
               }
-              sx={{ width: 140 }} // Adjust the width here
+              sx={{ width: "100%" }}
             />
           </Box>
         </LocalizationProvider>
@@ -369,6 +468,7 @@ const FilterSideBar = ({ data, setData }) => {
         <FormControlLabel
           control={
             <Checkbox
+              size="small"
               checked={!data.timeAvailability}
               onChange={(e) =>
                 handleInputChange("timeAvailability", !e.target.checked)
@@ -387,6 +487,8 @@ export default function Booking() {
     sportCenterName: "",
     selectedRatings: [],
     startTime: null,
+    latitude: null,
+    longitude: null,
     endTime: null,
     timeAvailability: true,
   });
@@ -403,6 +505,9 @@ export default function Booking() {
         sx={{
           margin: "2rem",
           display: "flex",
+          flexWrap: "wrap",
+          justifyContent: "start",
+          alignItems: "center",
           gap: "4rem",
         }}>
         <SportFieldCard
@@ -410,6 +515,8 @@ export default function Booking() {
           selectedRatings={data.selectedRatings}
           startTime={data.startTime}
           endTime={data.endTime}
+          latitude={data.latitude}
+          longitude={data.longitude}
           timeAvailability={data.timeAvailability}
         />
       </Box>

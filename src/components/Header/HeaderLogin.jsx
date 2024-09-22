@@ -1,6 +1,5 @@
 import "./../../index.css";
 import {
-  AccountBox as AccountBoxIcon,
   MoveToInbox as MoveToInboxIcon,
   History as HistoryIcon,
   Menu as MenuIcon,
@@ -11,16 +10,20 @@ import {
 import currentUser from "./../../utils/currentUser";
 import authToken from "./../../utils/authToken";
 import axios from "axios";
+import UserIcon from "./../../assets/HomeImages/pic10.png";
 import dayjs from "dayjs";
 import { formatDate } from "./../../utils/timeCalculation";
 import {
+  Grid,
   Popover,
   Box,
+  IconButton,
   Typography,
   Button,
   Avatar,
   Badge,
   Alert,
+  Slide,
   Tooltip,
 } from "@mui/material";
 import { useDispatch } from "react-redux";
@@ -65,7 +68,8 @@ const fetchIncomingBookings = async (token) => {
     );
     const bookings = response.data.booking;
     const pendingMatch = bookings.filter(
-      (booking) => booking.status === "pending"
+      (booking) =>
+        booking.status === "approved" && dayjs(new Date()).isSame(booking.date)
     );
     return pendingMatch.length;
   } catch (err) {
@@ -155,55 +159,66 @@ export default function Header() {
             cursor: "pointer",
           }}
         />
-
-        <Popover
-          id={id}
-          open={openPop}
-          anchorEl={anchorEl}
-          onClose={handleClose}
-          sx={{ mt: 2 }}
-          anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "left",
-          }}>
-          <CloseIcon
-            sx={{ fontSize: "1.5rem", mt: 2, ml: 2, cursor: "pointer" }}
-            onClick={handleClose}
-          />
-          <Box
-            sx={{
-              width: "24rem",
-              height: "15rem",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "flex-start",
-              alignItems: "center",
-              gap: "1.3rem",
-              pt: 1,
-            }}>
-            <NavLink to="/">
-              <Typography color="textPrimary">
-                <li>Home</li>
-              </Typography>
-            </NavLink>
-            <NavLink to="/booking">
-              <Typography color="textPrimary">
-                <li>Renting</li>
-              </Typography>
-            </NavLink>
-            <NavLink to="/signup-admin">
-              <Typography color="textPrimary">
-                <li>Lessor</li>
-              </Typography>
-            </NavLink>
-            <NavLink to="/contact">
-              <Typography color="textPrimary">
-                <li>Contact</li>
-              </Typography>
-            </NavLink>
-          </Box>
-        </Popover>
       </div>
+      <Popover
+        id={id}
+        open={openPop}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        sx={{
+          mt: 3,
+          "& .MuiPopover-paper": {
+            width: "100%",
+            padding: "2rem",
+          },
+        }}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "left",
+        }}
+        TransitionComponent={Slide}
+        TransitionProps={{ direction: "down" }} // Slide down animation
+      >
+        <Box sx={{ position: "relative" }}>
+          {/* Close Icon */}
+          <IconButton
+            sx={{ position: "absolute", top: "1rem", right: "1rem" }}
+            onClick={handleClose}>
+            <CloseIcon sx={{ fontSize: "1.5rem", cursor: "pointer" }} />
+          </IconButton>
+
+          <Grid
+            container
+            spacing={4}
+            direction="column"
+            alignItems="center"
+            justifyContent="center">
+            {/* Section 1 */}
+            <Grid spacing={12} item xs={12} sm={4}>
+              <Typography
+                variant="h6"
+                sx={{ mb: 4, fontWeight: "bold", color: "#000" }}>
+                Menu
+              </Typography>
+              <NavLink to="/" onClick={handleClose}>
+                <Typography sx={{ mb: 2, color: "#000" }}>Home</Typography>
+              </NavLink>
+
+              <NavLink to="/booking" onClick={handleClose}>
+                <Typography sx={{ mb: 2, color: "#000" }}>Renting</Typography>
+              </NavLink>
+
+              <NavLink to="/signup-admin" onClick={handleClose}>
+                <Typography sx={{ mb: 2, color: "#000" }}>Lessor</Typography>
+              </NavLink>
+
+              <NavLink to="/contact" onClick={handleClose}>
+                <Typography sx={{ mb: 2, color: "#000" }}>Contact</Typography>
+              </NavLink>
+            </Grid>
+          </Grid>
+        </Box>
+      </Popover>
 
       <nav className="header-navbar">
         <ul>
@@ -276,7 +291,8 @@ export default function Header() {
                   variant="outlined"
                   sx={{ width: "100%" }}
                   severity="success">
-                  Match today at {match.startTime} - {match.endTime}
+                  Match today at {match.startTime} - {match.endTime} (
+                  {match.facility})
                 </Alert>
               ))
             ) : (
@@ -297,10 +313,7 @@ export default function Header() {
               onClick={() => {
                 setOpen(!open);
               }}>
-              <Avatar
-                alt="Remy Sharp"
-                src="https://media.sproutsocial.com/uploads/2022/06/profile-picture.jpeg"
-              />
+              <Avatar alt="Remy Sharp" src={UserIcon} />
               <span>{user.name}</span>
             </div>
 
@@ -310,10 +323,6 @@ export default function Header() {
               }`}>
               <ul className="dealer-option">
                 <div className="dealer-category">
-                  <Link className="app-dropdownItem" to="/">
-                    <AccountBoxIcon />
-                    <li> Profile</li>
-                  </Link>
                   <Link className="app-dropdownItem" to="/incoming-match">
                     <Badge
                       anchorOrigin={{

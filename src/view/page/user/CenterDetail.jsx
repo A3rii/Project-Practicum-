@@ -6,18 +6,12 @@ import "swiper/css/pagination";
 import axios from "axios";
 import ContactInfo from "../../../components/ContactInfo";
 import Loader from "../../../components/Loader";
-import dayjs from "dayjs";
+import CenterCard from "../../../components/User/CenterCard";
 import currentUser from "./../../../utils/currentUser";
 import { ToastContainer } from "react-toastify";
 import { notify, errorAlert } from "./../../../utils/toastAlert";
-
 import UserCurrentLocation from "../../../components/map/UserCurrentLocation";
 import {
-  Card,
-  CardHeader,
-  CardActions,
-  CardContent,
-  CardMedia,
   Button,
   Avatar,
   Rating,
@@ -27,52 +21,12 @@ import {
   FormControl,
   Input,
 } from "@mui/material";
-import { useState, useMemo } from "react";
-import { Link, useParams, Navigate } from "react-router-dom";
-import { red } from "@mui/material/colors";
-import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-  useInfiniteQuery,
-} from "@tanstack/react-query";
+import { useState, useCallback } from "react";
+import { useParams, Navigate } from "react-router-dom";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import authToken from "./../../../utils/authToken";
 import BarRatings from "./../../../components/BarRating";
-
-// Get all comments of a specific sport center
-const fetchComments = async ({ pageParam = 1, sportCenterId }) => {
-  try {
-    const response = await axios.get(
-      `${import.meta.env.VITE_API_URL}/user/posts/public/comments`,
-      {
-        params: {
-          sportCenterId: sportCenterId,
-          page: pageParam,
-          limit: 1,
-        },
-      }
-    );
-
-    const { comments, currentPage, hasNextPage } = response.data;
-
-    // Filter only approved comments only
-    const approvedComments =
-      comments.length > 0
-        ? comments.filter((comment) => comment.status === "approved")
-        : [];
-
-    return {
-      comments: approvedComments,
-
-      // To load more comments check the api does it provides the next page.
-      // If it has , it means we can load more comments.
-      nextCursor: hasNextPage ? currentPage + 1 : null,
-    };
-  } catch (err) {
-    console.error("Error fetching comments:", err);
-    throw new Error("Failed to fetch comments. Please try again later.");
-  }
-};
+import CommentsSection from "../../../components/User/Comment";
 
 // Handle Posting comment by user
 const postComment = async (userId, sportCenterId, comment, ratingValue) => {
@@ -126,179 +80,6 @@ const ratingOverview = async (sportCenterId) => {
   }
 };
 
-//* Comment Section
-function CommentsSection() {
-  const { sportCenterId } = useParams();
-
-  // Infinite scrolling
-  const {
-    data: commentPages = { page: [] },
-    error,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    status,
-  } = useInfiniteQuery({
-    queryKey: ["userComments", sportCenterId],
-    queryFn: ({ pageParam }) => fetchComments({ pageParam, sportCenterId }),
-    getNextPageParam: (lastPage) => lastPage.nextCursor || undefined,
-  });
-
-  // Checking if the center does not have comments.
-  // In react query it return an array of comment object which if have to check only first array.
-  // If it empty , all the array are empty
-  const emptyComments = useMemo(() => {
-    // Check if `commentPages.pages` is defined and is an array
-    if (!commentPages.pages || !Array.isArray(commentPages.pages)) {
-      return null;
-    }
-
-    // Check if every page's comments array is empty
-    const allCommentsEmpty = commentPages.pages.every(
-      (page) => !page.comments || page.comments.length === 0
-    );
-
-    return allCommentsEmpty ? (
-      <Box
-        sx={{
-          width: "100%",
-          padding: "1rem",
-          outline: "1px solid #000",
-          borderRadius: "5px",
-        }}
-        elevation={3}>
-        No Comment
-      </Box>
-    ) : null;
-  }, [commentPages.pages]);
-
-  if (status === "pending") return <Loader />;
-  if (error) return <p>Error loading comments</p>;
-
-  return (
-    <>
-      {emptyComments}
-      {commentPages.pages.map((page, pageIndex) => (
-        <Box sx={{ width: "100%" }} key={pageIndex}>
-          {page.comments.map((data, key) => (
-            <Card
-              key={key}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                width: "100%",
-              }}
-              square={false}
-              elevation={4}
-              variant="outlined">
-              <CardHeader
-                sx={{ width: "75%" }}
-                avatar={
-                  <Avatar sx={{ bgcolor: red[500] }}>
-                    {data?.postBy?.name[0]}
-                  </Avatar>
-                }
-                title={data?.postBy?.name}
-                subheader={dayjs(data.commentedAt).format("MMMM, DD YYYY")}
-              />
-              <CardContent
-                sx={{
-                  display: "flex",
-                  justifyContent: "end",
-                  alignItems: "end",
-                  flexDirection: "column",
-                  width: "100%",
-                }}>
-                <Typography color="text.secondary">{data?.comment}</Typography>
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    gap: ".5rem",
-                  }}>
-                  <Rating
-                    name="read-only"
-                    precision={0.5}
-                    value={data?.ratingValue || 0}
-                    readOnly
-                  />
-                  <Typography
-                    sx={{
-                      fontWeight: "light",
-                      fontSize: ".8rem",
-                      color: "#595959",
-                    }}>
-                    ({data.ratingValue})
-                  </Typography>
-                </Box>
-              </CardContent>
-            </Card>
-          ))}
-        </Box>
-      ))}
-
-      {/* Load More Button */}
-      {hasNextPage && (
-        <Button
-          onClick={() => fetchNextPage()}
-          disabled={isFetchingNextPage}
-          sx={{ background: "#dedede", color: "#000" }}
-          fullWidth>
-          {isFetchingNextPage ? "Loading more..." : "Load More"}
-        </Button>
-      )}
-    </>
-  );
-}
-
-//* Facility Card
-function CenterCard({ image, type, time, price, facilityId, sportCenterId }) {
-  return (
-    <Card
-      sx={{
-        width: { lg: 250, md: 210, xs: 200 },
-        height: { lg: 410, md: 360, xs: 350 },
-      }}>
-      <CardMedia
-        sx={{ height: { lg: 250, md: 210, xs: 200 } }}
-        loading="lazy"
-        image={image}
-        title="Sport Category"
-      />
-      <CardContent>
-        <Typography
-          gutterBottom
-          variant="h5"
-          component="div"
-          sx={{ fontSize: "1rem" }}>
-          {type}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          <i
-            className="fa-regular fa-calendar-check"
-            style={{ marginRight: "12px" }}></i>
-          {time}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          <i
-            className="fa-solid fa-calendar-days"
-            style={{ marginRight: "12px" }}></i>
-          {price}
-        </Typography>
-      </CardContent>
-      <CardActions>
-        <Link to={`/facility/${facilityId}/sport-center/${sportCenterId}`}>
-          <Button variant="outlined" color="error">
-            Explore more
-          </Button>
-        </Link>
-      </CardActions>
-    </Card>
-  );
-}
-
 export default function CenterDetail() {
   const user = currentUser();
   const queryClient = useQueryClient();
@@ -321,8 +102,6 @@ export default function CenterDetail() {
       return response.data.lessor;
     },
   });
-
-  console.log(sportCenter);
 
   // Handling the comment post of user and update the data immediately after
   const mutation = useMutation({
@@ -355,22 +134,25 @@ export default function CenterDetail() {
   });
 
   // Handle comment submission
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = useCallback(
+    (e) => {
+      e.preventDefault();
 
-    // Guest mode if not logged in, can't comment
-    if (!user) {
-      setComment("");
-      return errorAlert("You need to login to comment.");
-    }
+      // Guest mode if not logged in, can't comment
+      if (!user) {
+        setComment("");
+        return errorAlert("You need to login to comment.");
+      }
 
-    if (!comment || !ratingValue) {
-      errorAlert("You are missing the fields.");
-      return;
-    }
+      if (!comment || !ratingValue) {
+        errorAlert("You are missing the fields.");
+        return;
+      }
 
-    mutation.mutate();
-  };
+      mutation.mutate();
+    },
+    [comment, ratingValue, user, mutation]
+  );
 
   if (isLoading) {
     return <Loader />;
@@ -433,6 +215,8 @@ export default function CenterDetail() {
         </div>
       </div>
 
+      {/*  Review and rating */}
+
       <Box
         sx={{
           width: "100%",
@@ -444,7 +228,12 @@ export default function CenterDetail() {
           padding: "1rem",
         }}>
         <Paper
-          sx={{ display: "flex", flexDirection: "column", width: "75%" }}
+          sx={{
+            display: "flex",
+            width: "75%",
+            borderRadius: "1.5rem",
+            flexDirection: "column",
+          }}
           elevation={3}>
           <Typography
             sx={{
@@ -456,7 +245,11 @@ export default function CenterDetail() {
             Reviews and ratings
           </Typography>
 
-          <Box sx={{ display: "flex", justifyContent: "space-around" }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-around",
+            }}>
             <Box
               sx={{
                 width: "95%",
@@ -587,7 +380,7 @@ export default function CenterDetail() {
               gap: "1rem",
             }}
             tabIndex={0}>
-            <CommentsSection />
+            <CommentsSection sportCenterId={sportCenterId} />
           </Box>
         </Paper>
       </Box>

@@ -1,7 +1,7 @@
+import { useQuery } from "@tanstack/react-query";
 import { MapContainer, TileLayer, Marker, Popup, Circle } from "react-leaflet";
 import axios from "axios";
 import Loader from "./../../../components/Loader";
-import { useQuery } from "@tanstack/react-query";
 import "leaflet/dist/leaflet.css";
 
 // Fetch sport centers location
@@ -35,6 +35,7 @@ export default function Map() {
     : [];
   if (isLoading) return <Loader />;
   if (error) return <p>Error loading locations</p>;
+
   return (
     <MapContainer
       center={[11.576337732358134, 104.92334082407501]}

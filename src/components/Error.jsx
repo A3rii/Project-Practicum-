@@ -29,7 +29,7 @@ export default function Error() {
           color: "var(--white)",
           fontSize: "1rem",
         }}>
-        Sorry, We found an error in this page 
+        Sorry, We found an error in this page
       </Typography>
       <Typography
         sx={{
@@ -37,7 +37,7 @@ export default function Error() {
           fontSize: "2rem",
           fontWeight: "bold",
         }}>
-        Page Not Found
+        Page Error
       </Typography>
       <Button
         component={Link}

@@ -285,7 +285,7 @@ export default function SuperAdmin() {
             {!isSmallScreen && (
               <Typography
                 sx={{ color: "#fff", fontWeight: "bold", fontSize: ".9rem" }}>
-                Map
+                Centers Location
               </Typography>
             )}
           </MenuItem>

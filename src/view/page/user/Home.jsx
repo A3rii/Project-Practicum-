@@ -21,7 +21,7 @@ function Banner() {
 function MapSection() {
   return (
     <div className="home-googleMap">
-      <h2>View The Nearest Sport Center</h2>
+      <h2>View Sport Centers Around You</h2>
       <span>You can find the sport center by viewing through this map</span>
 
       <Link to={"/all-sportcenters-location"}>
@@ -63,9 +63,9 @@ function RentalSection() {
         <Link to="/lessor">
           <button className="home-rentalButton">Become A Lessor</button>
         </Link>
-        <a href="#">Contact Us Now</a>
+        <Link to="/contact">Contact Us Now</Link>
       </div>
-      <span>
+      <span className="home-description">
         Advertising your sport center on this site, offering online rental
         places, making your sport center noticeable
       </span>

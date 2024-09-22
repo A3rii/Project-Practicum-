@@ -4,6 +4,7 @@ import Loader from "./../../../components/Loader";
 import { useState } from "react";
 import dayjs from "dayjs";
 import { useQuery } from "@tanstack/react-query";
+import LessorInformation from "../../../components/Superadmin/LessorInformation";
 import DeleteModal from "../../../components/Superadmin/DeleteModal";
 import {
   Table,
@@ -15,9 +16,10 @@ import {
   Paper,
   Avatar,
   Box,
+  Stack,
   Button,
 } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { Delete as DeleteIcon, Info as InfoIcon } from "@mui/icons-material";
 const fetchLessors = async () => {
   const token = authToken();
   try {
@@ -38,8 +40,10 @@ const fetchLessors = async () => {
 
 export default function Lessor() {
   const [openDelete, setOpenDelete] = useState(false);
+  const [openDetails, setOpenDetails] = useState(false);
   const [sportCenterId, setSportCenterId] = useState(null);
   const [sportCenterName, setSportCenterName] = useState(null);
+  const [sportCenterDetails, setSportCenterDetails] = useState(null);
   const {
     data: lessors,
     isLoading,
@@ -52,6 +56,10 @@ export default function Lessor() {
   //* delete facility
   const handleOpenDelete = () => setOpenDelete(true);
   const handleCloseDelete = () => setOpenDelete(false);
+
+  //* open details
+  const handleOpenDetails = () => setOpenDetails(true);
+  const handleCloseDetails = () => setOpenDetails(false);
 
   if (isLoading) return <Loader />;
   if (error) return <p>{error}</p>;
@@ -66,12 +74,21 @@ export default function Lessor() {
           sportCenterName={sportCenterName}
         />
       )}
+      {openDetails && (
+        <LessorInformation
+          openModal={openDetails}
+          closeModal={handleCloseDetails}
+          lessor={sportCenterDetails}
+        />
+      )}
+
       <TableContainer sx={{ borderRadius: ".9rem" }} component={Paper}>
         <Table
           sx={{ minWidth: 600, fontSize: ".6rem" }}
           aria-label="simple table">
           <TableHead sx={{ background: "#f2f2f2" }}>
             <TableRow>
+              <TableCell>ID</TableCell>
               <TableCell>Sport Center</TableCell>
               <TableCell align="center">Owner's Name</TableCell>
               <TableCell align="center">Email</TableCell>
@@ -83,7 +100,7 @@ export default function Lessor() {
           </TableHead>
           <TableBody>
             {lessors && lessors.length > 0 ? (
-              lessors.map((data) => (
+              lessors.map((data, index) => (
                 <TableRow
                   sx={{
                     "&:hover": {
@@ -91,6 +108,7 @@ export default function Lessor() {
                     },
                   }}
                   key={data._id}>
+                  <TableCell>{index + 1}</TableCell>
                   <TableCell>
                     <Box
                       sx={{
@@ -115,18 +133,29 @@ export default function Lessor() {
                     {dayjs(data.created_at).format("MMMM DD,YYYY")}
                   </TableCell>
                   <TableCell align="center">
-                    <Button
-                      size="small"
-                      variant="outlined"
-                      onClick={() => {
-                        handleOpenDelete();
-                        setSportCenterId(data._id);
-                        setSportCenterName(data.sportcenter_name);
-                      }}
-                      startIcon={<DeleteIcon />}
-                      color="error">
-                      Delete
-                    </Button>
+                    <Stack direction="row" spacing={2}>
+                      <Button
+                        onClick={() => {
+                          handleOpenDetails();
+                          setSportCenterDetails(data);
+                        }}
+                        startIcon={<InfoIcon />}
+                        variant="outlined">
+                        Details
+                      </Button>
+                      <Button
+                        size="small"
+                        variant="outlined"
+                        onClick={() => {
+                          handleOpenDelete();
+                          setSportCenterId(data._id);
+                          setSportCenterName(data.sportcenter_name);
+                        }}
+                        startIcon={<DeleteIcon />}
+                        color="error">
+                        Delete
+                      </Button>
+                    </Stack>
                   </TableCell>
                 </TableRow>
               ))
