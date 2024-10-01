@@ -46,10 +46,8 @@ export default function UserProtectedRoute() {
 
   // The route can only access by admin, and they've been approved by moderator
   if (lessorRole === "admin" && lessorStatus === "approved") {
-    console.log("You are admin");
     return <Outlet />;
   } else {
-    console.log("You are not admin");
     return <Navigate to="/protected" replace />;
   }
 }

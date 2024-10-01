@@ -32,7 +32,6 @@ const fetchBookings = async (token, filter) => {
         (booking) =>
           booking.status === "approved" || booking.status === "rejected"
       );
-      console.log(filteredMatches);
       return filteredMatches;
     }
 

@@ -54,8 +54,8 @@ h3 {
 
 
 :root {
-   --primary: #EE1E46;
-   --solid-red: #FF4B44;
+   --solid-red: #EE1E46;
+   --primary: #FF4B44;
    --blue-burry: #222831;
    --dark-blue: #0D0F13;
    --green: #34A853;
@@ -63,7 +63,7 @@ h3 {
    --dark: #000;
    --grey: #e8e8e8;
    --blue: #4267B2;
-   --soft-grey: #D9D9D9;
+   --soft-grey: #fafafa;
 }
 
 li {

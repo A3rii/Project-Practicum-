@@ -87,7 +87,7 @@ const SportFieldCard = ({
           sx={{
             width: { lg: 240, md: 220, xs: 200 },
             height: { lg: 380, xs: 360 },
-            marginBottom: "2rem",
+            marginBottom: "1rem",
           }}
           elevation={4}>
           <CardMedia sx={{ height: 190 }} loading="lazy" image={data?.logo} />
@@ -110,8 +110,8 @@ const SportFieldCard = ({
               variant="body2"
               color="text.secondary"
               sx={{ marginBottom: "3px", fontSize: { lg: 12, sm: 9, xs: 9 } }}>
-              {data?.address?.street},{data?.address?.city},
-              {data?.address?.state}
+              {data?.address?.street},{data?.address?.state},
+              {data?.address?.city}
             </Typography>
 
             <Typography
@@ -161,7 +161,7 @@ const SportFieldCard = ({
                 <Typography
                   sx={{
                     fontWeight: "light",
-                    fontSize: { lg: 12, sm: 10 },
+                    fontSize: { lg: 12, sm: 10, xs: 10 },
                     color: "#595959",
                   }}>
                   ({data?.ratings.length})
@@ -508,7 +508,7 @@ export default function Booking() {
           flexWrap: "wrap",
           justifyContent: "start",
           alignItems: "center",
-          gap: "4rem",
+          gap: "2rem",
         }}>
         <SportFieldCard
           name={data.sportCenterName}

@@ -84,8 +84,6 @@ export default function Comment() {
   const [sportCenterId, setSportCenterId] = useState("");
   const [status, setStatus] = useState("pending");
 
-  console.log(status);
-
   // Handle Popover event open and close
   const [anchorEl, setAnchorEl] = useState(null);
   const handleClick = (event) => {

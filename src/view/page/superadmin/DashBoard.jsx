@@ -21,7 +21,7 @@ import PendingActionsIcon from "@mui/icons-material/PendingActions";
 import PersonIcon from "@mui/icons-material/Person";
 import authToken from "../../../utils/authToken";
 
-// Unified API fetcher function for lessors
+// API fetcher functions
 const fetchLessors = async () => {
   const token = authToken();
   const { data } = await axios.get(
@@ -36,7 +36,6 @@ const fetchLessors = async () => {
   return data.lessors;
 };
 
-// Unified fetcher for users
 const fetchUsers = async () => {
   const token = authToken();
   const { data } = await axios.get(
@@ -51,33 +50,38 @@ const fetchUsers = async () => {
   return data;
 };
 
-// Reusable component for displaying metrics
+// Reusable MetricCard component
 function MetricCard({ title, value, icon: Icon, color }) {
   return (
     <Paper
       sx={{
         width: "100%",
-        height: "100%",
         display: "flex",
         justifyContent: "space-between",
         alignItems: "start",
         padding: "10px",
         borderRadius: "10px",
         color: "#000",
+        height: { xs: "100px", sm: "130px", md: "150px" },
       }}
       elevation={3}>
-      <Box sx={{ display: "flex", flexDirection: "column", padding: "1.2rem" }}>
+      <Box sx={{ display: "flex", flexDirection: "column", padding: "1rem" }}>
         <Typography
-          sx={{ fontWeight: "bold", fontSize: "1rem", color: "#666" }}>
+          sx={{
+            fontWeight: "bold",
+            fontSize: { xs: "0.8rem", sm: "1rem" },
+            color: "#666",
+          }}>
           {title}
         </Typography>
-        <Typography sx={{ fontSize: "2.2rem", fontWeight: "bold" }}>
+        <Typography
+          sx={{ fontSize: { xs: "1.6rem", sm: "2rem" }, fontWeight: "bold" }}>
           {value}
         </Typography>
       </Box>
       <Icon
         sx={{
-          fontSize: "4rem",
+          fontSize: { xs: "2.5rem", sm: "3rem", md: "4rem" },
           margin: "14px",
           padding: "10px",
           backgroundColor: color,
@@ -89,7 +93,7 @@ function MetricCard({ title, value, icon: Icon, color }) {
   );
 }
 
-// Dashboard cards for specific metrics
+// Dashboard components
 function TotalApprovedLessor() {
   const { data: lessors = [] } = useQuery({
     queryKey: ["lessors"],
@@ -164,7 +168,7 @@ function ListUsers() {
   return (
     <Paper
       sx={{
-        padding: "15px",
+        padding: { xs: "10px", sm: "15px" },
         borderRadius: ".8rem",
         maxWidth: "100%",
         height: "100%",
@@ -173,7 +177,7 @@ function ListUsers() {
       <Typography variant="h6" sx={{ padding: "14px", fontWeight: "bold" }}>
         Users
       </Typography>
-      <TableContainer sx={{ maxHeight: "20rem" }}>
+      <TableContainer sx={{ maxHeight: { xs: "12rem", sm: "20rem" } }}>
         <Table stickyHeader>
           <TableHead>
             <TableRow>
@@ -222,22 +226,22 @@ export default function DashBoard() {
   return (
     <Stack sx={{ flexGrow: 1, marginTop: "1rem", margin: "1rem" }}>
       <Grid container spacing={2}>
-        <Grid item xs={12} xl={3} lg={4} sm={4}>
+        <Grid item xs={12} sm={6} md={3}>
           <TotalApprovedLessor />
         </Grid>
-        <Grid item xs={12} xl={3} lg={4} sm={4}>
+        <Grid item xs={12} sm={6} md={3}>
           <TotalPendingLessor />
         </Grid>
-        <Grid item xs={12} xl={3} lg={4} sm={4}>
+        <Grid item xs={12} sm={6} md={3}>
           <TotalUsers />
         </Grid>
-        <Grid item xs={12} xl={3} lg={4} sm={4}>
+        <Grid item xs={12} sm={6} md={3}>
           <ListOpenSportCenter />
         </Grid>
-        <Grid item xs={12} xl={7} lg={4} sm={4}>
+        <Grid item xs={12} md={7}>
           <UserChart />
         </Grid>
-        <Grid item xs={12} xl={5} lg={4} sm={4}>
+        <Grid item xs={12} md={5}>
           <ListUsers />
         </Grid>
       </Grid>

@@ -179,12 +179,9 @@ export default function CenterDetail() {
           <h2>Welcome to {sportCenter?.sportcenter_name}</h2>
           <span>{sportCenter?.sportcenter_description}</span>
           <div className="center-location">
-            <i className="fa-solid fa-location-dot"></i>
-            <span className="center-address">
-              <p>{sportCenter?.address?.street}</p>
-              <p>{sportCenter?.address?.city}</p>
-              <p>{sportCenter?.address?.state}</p>
-            </span>
+            <p>{sportCenter?.address?.street},</p>
+            <p>{sportCenter?.address?.state}</p>
+            <p>{sportCenter?.address?.city},</p>
           </div>
         </div>
       </div>
@@ -192,7 +189,8 @@ export default function CenterDetail() {
         <Typography
           sx={{
             fontWeight: "bold",
-            fontSize: { lg: "1.5rem", md: "1.2rem", xs: "1rem" },
+            fontSize: { lg: "1.8rem", md: "1.2rem", xs: "1rem" },
+            color: "var(--primary)",
           }}>
           Our Sport Services
         </Typography>
@@ -260,7 +258,7 @@ export default function CenterDetail() {
                 alignItems: "start",
                 flexDirection: "column",
                 gap: ".8rem",
-                outline: "2px solid #3b9ebf",
+                outline: "1px solid var(--primary)",
                 borderRadius: ".9rem",
               }}
               tabIndex={0}>
@@ -288,8 +286,8 @@ export default function CenterDetail() {
                   placeholder="Write your thought here!"
                   value={comment}
                   sx={{
-                    width: "100%", // Ensure proper width
-                    padding: "0.5rem", // Adequate padding for the placeholder to be visible
+                    width: "100%",
+                    padding: "0.5rem",
                   }}
                   onChange={(e) => setComment(e.target.value)}
                 />
@@ -384,6 +382,7 @@ export default function CenterDetail() {
           </Box>
         </Paper>
       </Box>
+
       <Box
         sx={{
           width: "100%",
@@ -392,12 +391,12 @@ export default function CenterDetail() {
           flexDirection: "column",
           alignItems: "center",
           marginTop: "3rem",
-          padding: "1rem",
+          padding: "1.5rem",
+          background: "var(--soft-grey)",
         }}>
         <Box
           sx={{
             width: "75%",
-            marginTop: "2rem",
             borderRadius: ".5rem",
             display: "flex",
             justifyContent: "center",
@@ -408,8 +407,9 @@ export default function CenterDetail() {
           elevation={3}>
           <Typography
             sx={{
-              fontSize: "1.5rem",
+              fontSize: "1.8rem",
               fontWeight: "bold",
+              color: "var(--primary)",
             }}>
             Our Location
           </Typography>

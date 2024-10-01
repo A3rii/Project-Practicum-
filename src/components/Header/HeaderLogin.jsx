@@ -14,7 +14,7 @@ import UserIcon from "./../../assets/HomeImages/pic10.png";
 import dayjs from "dayjs";
 import { formatDate } from "./../../utils/timeCalculation";
 import {
-  Grid,
+  Modal,
   Popover,
   Box,
   IconButton,
@@ -23,7 +23,6 @@ import {
   Avatar,
   Badge,
   Alert,
-  Slide,
   Tooltip,
 } from "@mui/material";
 import { useDispatch } from "react-redux";
@@ -160,65 +159,79 @@ export default function Header() {
           }}
         />
       </div>
-      <Popover
-        id={id}
-        open={openPop}
-        anchorEl={anchorEl}
-        onClose={handleClose}
-        sx={{
-          mt: 3,
-          "& .MuiPopover-paper": {
+      <Modal open={openPop} onClose={handleClose}>
+        <Box
+          sx={{
             width: "100%",
-            padding: "2rem",
-          },
-        }}
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "left",
-        }}
-        TransitionComponent={Slide}
-        TransitionProps={{ direction: "down" }} // Slide down animation
-      >
-        <Box sx={{ position: "relative" }}>
+            height: "100%",
+            backgroundColor: "transparent",
+            backdropFilter: "blur(5px)",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            paddingTop: "2rem",
+            gap: "2rem",
+          }}>
           {/* Close Icon */}
           <IconButton
             sx={{ position: "absolute", top: "1rem", right: "1rem" }}
             onClick={handleClose}>
-            <CloseIcon sx={{ fontSize: "1.5rem", cursor: "pointer" }} />
+            <CloseIcon
+              sx={{ fontSize: "1.5rem", cursor: "pointer", color: "white" }}
+            />
           </IconButton>
 
-          <Grid
-            container
-            spacing={4}
-            direction="column"
-            alignItems="center"
-            justifyContent="center">
-            {/* Section 1 */}
-            <Grid spacing={12} item xs={12} sm={4}>
-              <Typography
-                variant="h6"
-                sx={{ mb: 4, fontWeight: "bold", color: "#000" }}>
-                Menu
-              </Typography>
-              <NavLink to="/" onClick={handleClose}>
-                <Typography sx={{ mb: 2, color: "#000" }}>Home</Typography>
-              </NavLink>
+          {/* Section 1 */}
+          <NavLink to="/" onClick={handleClose}>
+            <Typography
+              sx={{
+                mb: 2,
+                color: "#fff",
+                fontWeight: "bold",
+                fontSize: "1.2rem",
+              }}>
+              Home
+            </Typography>
+          </NavLink>
 
-              <NavLink to="/booking" onClick={handleClose}>
-                <Typography sx={{ mb: 2, color: "#000" }}>Renting</Typography>
-              </NavLink>
+          <NavLink to="/booking" onClick={handleClose}>
+            <Typography
+              sx={{
+                mb: 2,
+                color: "#fff",
+                fontWeight: "bold",
+                fontSize: "1.2rem",
+              }}>
+              Renting
+            </Typography>
+          </NavLink>
 
-              <NavLink to="/signup-admin" onClick={handleClose}>
-                <Typography sx={{ mb: 2, color: "#000" }}>Lessor</Typography>
-              </NavLink>
+          <NavLink to="/signup-admin" onClick={handleClose}>
+            <Typography
+              sx={{
+                mb: 2,
+                color: "#fff",
+                fontWeight: "bold",
+                fontSize: "1.2rem",
+              }}>
+              Lessor
+            </Typography>
+          </NavLink>
 
-              <NavLink to="/contact" onClick={handleClose}>
-                <Typography sx={{ mb: 2, color: "#000" }}>Contact</Typography>
-              </NavLink>
-            </Grid>
-          </Grid>
+          <NavLink to="/contact" onClick={handleClose}>
+            <Typography
+              sx={{
+                mb: 1,
+                color: "#fff",
+                fontWeight: "bold",
+                fontSize: "1.2rem",
+              }}>
+              Contact
+            </Typography>
+          </NavLink>
         </Box>
-      </Popover>
+      </Modal>
 
       <nav className="header-navbar">
         <ul>
@@ -313,8 +326,8 @@ export default function Header() {
               onClick={() => {
                 setOpen(!open);
               }}>
-              <Avatar alt="Remy Sharp" src={UserIcon} />
-              <span>{user.name}</span>
+              <Avatar alt="Remy Sharp" src={user ? user?.avatar : UserIcon} />
+              <span>{user?.name}</span>
             </div>
 
             <div

@@ -249,13 +249,18 @@ export default function SignUpLessor() {
             width: "50%",
             maxWidth: "600px",
           }}>
-          <Typography variant="h4">Be a Lessor</Typography>
+          <Typography
+            sx={{ fontWeight: "bold", fontSize: "1.2rem" }}
+            variant="h4">
+            Be a Lessor
+          </Typography>
           <Typography
             variant="body2"
             sx={{
               fontSize: "0.8rem",
               margin: "1rem 0",
               padding: "0 1rem",
+              display: { lg: "block", xs: "none" },
               textAlign: "justify",
             }}>
             Becoming a lessor of sports fields is an entrepreneurial venture
@@ -460,6 +465,7 @@ export default function SignUpLessor() {
               <Button
                 component="label"
                 variant="contained"
+                color="error"
                 startIcon={<CloudUploadIcon />}>
                 Upload Center Profile
                 <VisuallyHiddenInput

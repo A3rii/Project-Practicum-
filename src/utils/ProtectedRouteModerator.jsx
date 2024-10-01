@@ -42,10 +42,8 @@ export default function ProtectedRouteModerator() {
   }
 
   if (role === "moderator") {
-    console.log("You are moderator");
     return <Outlet />;
   } else {
-    console.log("You are not moderator");
     return <Navigate to="/protected" replace />;
   }
 }

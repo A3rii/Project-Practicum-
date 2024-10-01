@@ -11,6 +11,10 @@ export default function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const handleGoogleLogin = () => {
+    window.location.href = `${import.meta.env.VITE_API_URL}/auth/google`;
+  };
+
   /**
    *
    *  wheater user login with email or phone number
@@ -28,10 +32,8 @@ export default function Login() {
       if (action.payload) {
         const userRole = action.payload.role;
         if (userRole === "admin") {
-          console.log(`This is ${userRole} `);
           navigate("/admin");
         } else {
-          console.log(`This is ${userRole}: `);
           navigate("/");
         }
         setCredential("");
@@ -64,7 +66,10 @@ export default function Login() {
             <span> Continue with Facebook</span>
           </button>
 
-          <button type="button" className="login-Gmail">
+          <button
+            onClick={handleGoogleLogin}
+            type="button"
+            className="login-Gmail">
             <i className="fa-brands fa-google"></i>
             <span> Continue with Gmail</span>
           </button>

@@ -18,5 +18,6 @@ module.exports = {
     ],
     "react/prop-types": 0,
     "react/no-unescaped-entities": 0,
+    // "no-console": ["error", { allow: ["warn", "error"] }],
   },
 };

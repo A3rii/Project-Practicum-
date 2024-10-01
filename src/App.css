@@ -275,15 +275,12 @@
 
 
 
-
-
-
 /**Home Page*/
 .home-header {
    background: rgba(0, 0, 0, 0.6) url('./assets/HomeImages/pic1.jpg') center/cover;
    background-blend-mode: darken;
    max-width: 100%;
-   min-height: 30rem;
+   min-height: 28rem;
    height: auto;
    object-fit: cover;
    background-repeat: no-repeat;
@@ -328,7 +325,7 @@
    font-weight: bolder;
    width: 9rem;
    padding: .7rem;
-   border-radius: 7px;
+   border-radius: 4px;
 }
 
 
@@ -445,8 +442,6 @@
 .home-viewmap a:hover {
    color: var(--white);
 }
-
-
 
 
 .home-processing {
@@ -646,10 +641,10 @@
 
 /** Center Detail */
 .center-header {
-   background: rgba(0, 0, 0, 0.6) url('./assets//BookingImags/pic2.jpg') center/cover;
+   background: rgba(0, 0, 0, 0.8) url('./assets//BookingImags/pic2.jpg') center/cover;
    background-blend-mode: darken;
    max-width: 100%;
-   min-height: 38rem;
+   min-height: 28rem;
    height: auto;
    background-repeat: no-repeat;
 }
@@ -661,7 +656,7 @@
    align-items: center;
    flex-direction: column;
    row-gap: 1.5rem;
-   padding-top: 9rem;
+   padding-top: 5rem;
 }
 
 .center-banner h2 {
@@ -688,17 +683,10 @@
    justify-content: center;
    align-items: center;
    color: var(--white);
-   column-gap: 1rem;
    margin-top: 3rem;
-
+   gap: .5rem
 }
 
-.center-address {
-   display: flex;
-   justify-content: center;
-   align-items: center;
-   gap: 1rem;
-}
 
 
 .center-sport {
@@ -706,7 +694,8 @@
    justify-content: center;
    align-items: center;
    flex-direction: column;
-   margin-top: 2rem;
+   background: var(--soft-grey);
+   padding: 1.5rem;
 }
 
 .center-card {
@@ -717,9 +706,6 @@
    gap: 4rem;
    margin-top: 2rem;
 }
-
-
-
 
 
 .center-contact {
@@ -770,7 +756,7 @@
 
 /** Sport Field */
 .sportField-header {
-   background: rgba(0, 0, 0, 0.4) url('./assets/BookingImags/pic1.jpg') center/cover;
+   background: rgba(0, 0, 0, 0.7) url('./assets/BookingImags/pic1.jpg') center/cover;
    background-blend-mode: darken;
    aspect-ratio: 16;
    max-width: 100%;
@@ -877,7 +863,7 @@
 }
 
 .sport-schedule {
-   background: rgba(0, 0, 0, 0.5) url('./assets/BookingImags/pic15.jpg') center/cover;
+   background: rgba(0, 0, 0, 0.6) url('./assets/BookingImags/pic15.jpg') center/cover;
    background-blend-mode: darken;
    max-width: 100%;
    min-height: 35rem;

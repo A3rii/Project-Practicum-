@@ -23,8 +23,7 @@ const fetchMonthBookings = async () => {
     );
     return bookingByMonth.data.month_booking;
   } catch (err) {
-    console.log(err.message);
-    throw err;
+    throw new Error(err);
   }
 };
 
@@ -93,7 +92,7 @@ export default function BookingChart() {
         justifyContent: "center",
         alignItems: "center",
         width: "100%",
-        height: { xs: "300px", md: "350px", lg: "450px" }, // Responsive height for medium size
+        height: { xs: "300px", md: "350px", lg: "450px" },
         borderRadius: "1rem",
         padding: "3rem",
         gap: "1rem",

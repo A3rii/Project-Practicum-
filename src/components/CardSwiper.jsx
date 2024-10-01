@@ -63,13 +63,13 @@ export default function CardSwiper({ court }) {
                 sx={{
                   width: "25%",
                   display: "inline-block",
-                  padding: "5px",
+                  padding: "2px",
                   fontSize: { lg: ".8rem", xs: ".6rem" },
                   fontWeight: "bold",
-                  backgroundColor: "orange",
+                  backgroundColor: "var(--primary)",
                   color: "white",
-                  borderRadius: "10px",
                   textAlign: "center",
+                  borderRadius: "5px",
                 }}>
                 {courtItem.name}
               </Typography>

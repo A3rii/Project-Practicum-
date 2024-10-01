@@ -90,16 +90,18 @@ export default function RatingChart() {
         textAlign: "center",
         marginTop: "1rem",
         borderRadius: "1rem",
-        width: { xs: "100%", md: "75%", lg: "100%" }, // Responsive width for medium size
-        height: { xs: "300px", md: "350px", lg: "450px" }, // Responsive height for medium size
+        width: { xs: "100%", md: "75%", lg: "100%" },
+        height: { xs: "250px", md: "350px", lg: "450px" },
       }}>
-      <Typography sx={{ fontSize: "1.2rem", fontWeight: "bold" }} gutterBottom>
+      <Typography
+        sx={{ fontSize: "1.2rem", fontWeight: "bold", display: { xs: "none" } }}
+        gutterBottom>
         Ratings Overview
       </Typography>
 
       <Stack
         sx={{
-          display: "flex",
+          display: { lg: "flex", xs: "none" },
           justifyContent: "center",
           alignItems: "center",
         }}>
@@ -131,7 +133,8 @@ export default function RatingChart() {
           justifyContent: "center",
           alignItems: "start",
           width: "100%",
-          height: { xs: "250px", md: "300px", lg: "350px" }, // Control the chart container size
+          maxWidth: "100%",
+          height: { xs: "350px", md: "300px", lg: "350px" },
         }}>
         {allZero ? (
           <Typography sx={{ marginTop: "2rem" }}>No ratings review</Typography>

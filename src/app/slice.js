@@ -127,6 +127,7 @@ export const getCurrentUser = createAsyncThunk(
       const response = await axios.get(
         `${import.meta.env.VITE_API_URL}/auth/profile`,
         {
+          withCredentials: true,
           headers: {
             Accept: `application/json`,
             Authorization: `Bearer ${token}`,

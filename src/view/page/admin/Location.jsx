@@ -95,6 +95,10 @@ export default function Location() {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
+          flexDirection: {
+            xs: "column",
+            lg: "row",
+          },
           gap: "3rem",
         }}>
         <Paper
@@ -106,7 +110,7 @@ export default function Location() {
             alignItems: "center",
             borderRadius: "1rem",
             gap: "1.5rem",
-            width: "75%",
+            width: { lg: "75%", xs: "100%" },
           }}>
           <Typography
             sx={{

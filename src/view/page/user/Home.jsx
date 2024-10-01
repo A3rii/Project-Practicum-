@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import currentUser from "../../../utils/currentUser";
 
 function Banner() {
   return (
@@ -88,8 +87,6 @@ function RentalSection() {
 }
 
 export default function Home() {
-  const user = currentUser();
-  console.log(user);
   return (
     <>
       <div className="home-header">
