@@ -139,13 +139,6 @@ const MatchHistory = ({ token, filter }) => {
             justifyContent: "center",
             alignItems: "center",
             gap: "1rem",
-            boxShadow:
-              "0 4px 8px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.1)", // Cool box shadow
-            transition: "box-shadow 0.3s ease-in-out", // Smooth transition for shadow
-            "&:hover": {
-              boxShadow:
-                "0 8px 16px rgba(0, 0, 0, 0.2), 0 12px 40px rgba(0, 0, 0, 0.2)", // Enhanced shadow on hover
-            },
           }}>
           <EventBusyIcon />
           <Typography sx={{ fontSize: "1rem" }}>

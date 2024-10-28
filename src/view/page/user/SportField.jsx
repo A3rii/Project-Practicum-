@@ -3,10 +3,8 @@ import ContactInfo from "../../../components/ContactInfo";
 import CardSwiper from "../../../components/CardSwiper";
 import axios from "axios";
 import Loader from "./../../../components/Loader";
-import {
-  ReservationDate,
-  TimeAvailability,
-} from "./../../../components/User/TimeReservation";
+import TimeAvailability from "./../../../components/User/TimeReservation";
+import ReservationDate from "./../../../components/User/Reservation";
 import { Navigate } from "react-router-dom";
 import { Typography } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";

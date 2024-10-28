@@ -129,7 +129,12 @@ export default function Schedule() {
         },
       }
     );
-    const transformedEvents = data.bookings.map((booking) => ({
+
+    // filter only the approved bookings
+    const approvedBookings = data.bookings.filter(
+      (booking) => booking.status === "approved"
+    );
+    const transformedEvents = approvedBookings.map((booking) => ({
       title: `Customer: ${
         booking?.user?.name || booking?.outside_user?.name
       }, Facility: ${booking.facility}, Court: ${booking.court}`,

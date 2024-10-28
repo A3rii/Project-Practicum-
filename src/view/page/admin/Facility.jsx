@@ -14,12 +14,15 @@ import {
   Stack,
 } from "@mui/material";
 import { useMemo, useState } from "react";
-import EditIcon from "@mui/icons-material/Edit";
 import AddFacility from "../../../components/AdminComponent/Facility/AddFacility";
-import AddIcon from "@mui/icons-material/Add";
 import EditModal from "../../../components/AdminComponent/Facility/EditModal";
 import DeleteModal from "../../../components/AdminComponent/Facility/DeleteModal";
-import DeleteIcon from "@mui/icons-material/Delete";
+import {
+  Delete as DeleteIcon,
+  Visibility as VisibilityIcon,
+  Edit as EditIcon,
+  Add as AddIcon,
+} from "@mui/icons-material/";
 import axios from "axios";
 import authToken from "./../../../utils/authToken";
 import { ToastContainer } from "react-toastify";
@@ -111,15 +114,14 @@ export default function Facility() {
           </Box>
         </TableCell>
 
-        <TableCell align="left">
-          <Button
+        <TableCell>
+          <VisibilityIcon
+            sx={{ cursor: "pointer" }}
             onClick={() => {
               handleOpenCourt();
               setId(data._id);
             }}
-            variant="outlined">
-            View
-          </Button>
+          />
         </TableCell>
 
         <TableCell align="left">

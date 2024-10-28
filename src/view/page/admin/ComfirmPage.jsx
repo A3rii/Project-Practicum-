@@ -6,7 +6,6 @@ import {
   Table,
   TableHead,
   TableBody,
-  Button,
   TableRow,
   TableCell,
   TextField,
@@ -18,148 +17,145 @@ import {
   FormControlLabel,
   FormControl,
   Pagination,
+  Checkbox,
   PaginationItem,
+  Chip,
+  Select,
+  MenuItem,
+  Snackbar,
+  InputLabel,
+  Button,
+  IconButton,
 } from "@mui/material";
-import authToken from "./../../../utils/authToken";
-import axios from "axios";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import dayjs from "dayjs";
-import FilterAltIcon from "@mui/icons-material/FilterAlt";
+import {
+  CheckCircle as CheckCircleIcon,
+  ArrowForward as ArrowForwardIcon,
+  ArrowBack as ArrowBackIcon,
+  Cancel as CancelIcon,
+  Close as CloseIcon,
+  Delete as DeleteIcon,
+  FilterList as FilterListIcon,
+  Replay as ReplayIcon,
+} from "@mui/icons-material";
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ToastContainer } from "react-toastify";
 import { notify, errorAlert } from "./../../../utils/toastAlert";
 import { formatDate, totalHour } from "./../../../utils/timeCalculation";
-import Loader from "../../../components/Loader";
+import useCurrentLessor from "./../../../utils/useCurrentLessor";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import "react-toastify/dist/ReactToastify.css";
 
-//* Fetching all the bookings with limit data but only pending bookings
-const fetchBookings = async (page) => {
-  const token = authToken();
-  const response = await axios.get(
-    `${import.meta.env.VITE_API_URL}/books/customer/pagination`,
-    {
-      params: { page, limit: 4 },
-      headers: {
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-  const bookings = response.data.bookings;
+import {
+  fetchBookings,
+  fetchAndProcessExpiredBookings,
+  updateBookingStatus,
+  fetchSportCenter,
+  fetchCourt,
+  updateMultipleBookingStatus,
+} from "./../../../utils/bookingUtil";
 
-  // Search for pending bookings
-  const getPendingBookings = bookings.filter(
-    (bookings) => bookings.status === "pending"
-  );
-  return getPendingBookings;
-};
-
-//* Checking for the expire bookings if expire reject all of those (in case situation)
-const fetchAndProcessExpiredBookings = async () => {
-  const token = authToken();
-  const response = await axios.get(
-    `${import.meta.env.VITE_API_URL}/books/sport-center`,
-    {
-      headers: {
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-
-  const bookings = response.data.bookings;
-
-  const currentDate = new Date(); //Get current date
-  currentDate.setHours(0, 0, 0, 0); // set all the time to all 0
-
-  const promises = bookings.map(async (booking) => {
-    const bookingDate = new Date(booking.date);
-
-    // Checking if the date is expire and the status is pending put them to rejected
-    if (bookingDate < currentDate && booking.status === "pending") {
-      await axios.put(
-        `${import.meta.env.VITE_API_URL}/books/${booking._id}/status`,
-        { status: "rejected" },
-        {
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-    }
-  });
-
-  await Promise.all(promises);
-  return bookings;
-};
-
-//* Updating Status Approved or rejected
-const updateBookingStatus = async ({ status, bookingId }) => {
-  const token = authToken();
-  const response = await axios.put(
-    `${import.meta.env.VITE_API_URL}/books/${bookingId}/status`,
-    { status },
-    {
-      headers: {
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-  return response.data;
-};
-
-export default function ConfirmPage() {
+const ConfirmPage = () => {
   const queryClient = useQueryClient();
-
+  const lessor = useCurrentLessor();
+  const [isOpenSnackBar, setIsOpenSnackBar] = useState(false);
+  const [countBookings, setCountBookings] = useState(0);
+  const [selected, setSelected] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const [search, setSearch] = useState("");
+  const [date, setDate] = useState(null);
+  const [facility, setFacility] = useState("");
+  const [court, setCourt] = useState("");
   const [pageTotal, setPageTotal] = useState(1);
   const [selectedFilter, setSelectedFilter] = useState("all");
 
-  // Popover for filtering MUI components
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
+  const resetFilter = () => {
+    setSearch("");
+    setFacility("");
+    setCourt("");
+    setDate(null);
   };
-  const handleClose = () => {
-    setAnchorEl(null);
+  const handleOpenSnackBar = () => setIsOpenSnackBar(true);
+  const handleCloseSnackBar = () => setIsOpenSnackBar(false);
+
+  const handleSelect = (item) => {
+    setSelected((prev) =>
+      prev.includes(item) ? prev.filter((i) => i !== item) : [...prev, item]
+    );
   };
+
+  const handleSelectAll = (data) => {
+    if (selected.length === data.length) {
+      setSelected([]);
+    } else {
+      handleOpenSnackBar();
+      setCountBookings(data.length);
+      setSelected(data);
+    }
+  };
+
+  const bulkMutation = useMutation({
+    mutationFn: updateMultipleBookingStatus,
+    onSuccess: () => {
+      notify("Bulk booking statuses updated");
+      queryClient.invalidateQueries("bookings");
+    },
+    onError: () => errorAlert("Error updating booking statuses"),
+  });
+
+  const handleBulkAction = (status) => {
+    const bookingIds = selected.map((booking) => booking._id);
+    bulkMutation.mutate({ status, bookingIds });
+  };
+
+  const handleAccept = (status, bookingId) => {
+    mutation.mutate({ status, bookingId });
+  };
+
+  const handleFilterChange = (event) => setSelectedFilter(event.target.value);
+
+  const handleClick = (event) => setAnchorEl(event.currentTarget);
+  const handleClose = () => setAnchorEl(null);
   const open = Boolean(anchorEl);
-  const id = open ? "simple-popover" : undefined;
 
-  const handlePageChange = (event, value) => {
-    setPageTotal(value);
-  };
+  const handlePageChange = (_, value) => setPageTotal(value);
 
-  // Get Pending Booking from API
-  const {
-    data: pendingBookings,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["bookings", pageTotal],
-    queryFn: () => fetchBookings(pageTotal),
+  const { data: facilities } = useQuery({
+    queryKey: ["facilities", lessor?._id],
+    queryFn: () => fetchSportCenter(lessor?._id),
     keepPreviousData: true,
   });
 
-  // Query for expired date
+  const { data: courts = [] } = useQuery({
+    queryKey: ["court", facility],
+    queryFn: () => {
+      const selectedFacility = facilities.find((fac) => fac.name === facility);
+      return selectedFacility ? fetchCourt(selectedFacility._id) : [];
+    },
+    enabled: !!facility,
+  });
+
+  const { data: pendingBookings, error } = useQuery({
+    queryKey: ["bookings", pageTotal, facility, court, date],
+    queryFn: () => fetchBookings(pageTotal, facility, court, date),
+    keepPreviousData: true,
+  });
+
   const expiredBookingsQuery = useQuery({
     queryKey: ["expiredBookings"],
     queryFn: fetchAndProcessExpiredBookings,
     refetchOnWindowFocus: false,
   });
 
-  // If the date of booking is expired refetch the api and the status of booking is rejected
   useEffect(() => {
     if (expiredBookingsQuery.data) {
       expiredBookingsQuery.refetch();
     }
   }, [expiredBookingsQuery]);
 
-  // Update the status of user and update constantly
   const mutation = useMutation({
     mutationFn: updateBookingStatus,
     onSuccess: () => {
@@ -172,26 +168,15 @@ export default function ConfirmPage() {
     },
   });
 
-  //
-  const handleAccept = (status, bookingId) => {
-    mutation.mutate({ status, bookingId });
-  };
-
-  const handleFilterChange = (event) => {
-    setSelectedFilter(event.target.value);
-  };
-
-  // Filter for today match
   const filteredBookings = pendingBookings?.filter((booking) => {
     if (selectedFilter === "today") {
-      return formatDate(booking.date) === dayjs().format("MMMM DD, YYYY"); // Example: July 12, 2024
+      return formatDate(booking.date) === dayjs().format("MMMM DD, YYYY");
     }
     return true;
   });
 
-  // Search By name or phone number
   const searchFilteredBookings = filteredBookings?.filter((booking) => {
-    const user = booking.user || booking.outside_user; // have contact user and online user
+    const user = booking.user || booking.outside_user;
     return (
       user.name.toLowerCase().includes(search.toLowerCase()) ||
       user.phone_number.toLowerCase().includes(search.toLowerCase())
@@ -200,6 +185,12 @@ export default function ConfirmPage() {
 
   const listBookings = searchFilteredBookings?.map((data, key) => (
     <TableRow key={key}>
+      <TableCell>
+        <Checkbox
+          checked={selected.includes(data)}
+          onChange={() => handleSelect(data)}
+        />
+      </TableCell>
       <TableCell align="left">
         {data?.user?.name || data?.outside_user?.name}
       </TableCell>
@@ -209,170 +200,222 @@ export default function ConfirmPage() {
       <TableCell align="center">{data.facility}</TableCell>
       <TableCell align="center">{data.court}</TableCell>
       <TableCell align="center">{formatDate(data.date)}</TableCell>
-      <TableCell align="center">{data.startTime}</TableCell>
-      <TableCell align="center">{data.endTime}</TableCell>
+      <TableCell align="center">
+        {data.startTime || "N/A"} - {data.endTime || "N/A"}
+      </TableCell>
       <TableCell align="center">
         {totalHour(data.startTime, data.endTime)}
       </TableCell>
-      <TableCell
-        sx={{
-          display: "inline-block",
-          marginTop: "1.2rem",
-          padding: "5px 10px",
-          fontSize: "12px",
-          fontWeight: "bold",
-          backgroundColor: "orange",
-          color: "white",
-          borderRadius: "10px",
-          textAlign: "center",
-        }}>
-        {data.status}
-      </TableCell>
       <TableCell align="center">
+        <Chip
+          label={data.status}
+          color="warning"
+          size="small"
+          variant="outlined"
+        />
+      </TableCell>
+      <TableCell>
         <Stack direction="row" spacing={1}>
-          <Button
+          <CheckCircleIcon
             onClick={() => handleAccept("approved", data._id)}
-            variant="outlined"
-            color="success">
-            Accept
-          </Button>
-          <Button
+            sx={{ cursor: "pointer" }}
+            color="success"
+          />
+          <CancelIcon
+            sx={{ cursor: "pointer" }}
             onClick={() => handleAccept("rejected", data._id)}
-            variant="outlined"
-            color="error">
-            Cancel
-          </Button>
+            color="error"
+          />
         </Stack>
       </TableCell>
     </TableRow>
   ));
 
-  if (isLoading) return <Loader />;
   if (error) return <p>Error loading lessor information</p>;
 
   return (
     <>
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="colored"
+      <ToastContainer position="top-right" autoClose={5000} theme="colored" />
+      <Snackbar
+        open={isOpenSnackBar}
+        onClose={handleCloseSnackBar}
+        action={
+          <Box sx={{ display: "flex", alignItems: "center", gap: ".6rem" }}>
+            <Typography sx={{ color: "var(--dark)", fontSize: "1em" }}>
+              ({countBookings}) booking selected
+            </Typography>
+            <Stack direction="row" spacing={2}>
+              <Button
+                variant="outlined"
+                color="success"
+                size="small"
+                onClick={() => handleBulkAction("approved")}
+                startIcon={<CheckCircleIcon />}>
+                Approve
+              </Button>
+              <Button
+                variant="outlined"
+                color="error"
+                size="small"
+                onClick={() => handleBulkAction("rejected")}
+                startIcon={<DeleteIcon />}>
+                Reject
+              </Button>
+            </Stack>
+            <IconButton
+              size="small"
+              color="inherit"
+              onClick={handleCloseSnackBar}>
+              <CloseIcon sx={{ color: "var(--dark)" }} fontSize="small" />
+            </IconButton>
+          </Box>
+        }
+        ContentProps={{
+          sx: {
+            width: "100%",
+            color: "var (--dark)",
+            backgroundColor: "var(--white)",
+            "& .MuiSnackbarContent-message": { color: "var(--dark)" },
+          },
+        }}
       />
       <Paper
         sx={{
           maxWidth: "100%",
           overflow: "hidden",
+          borderRadius: 0,
           padding: "15px",
-          marginTop: "2rem",
           marginLeft: "2rem",
         }}
-        elevation={15}>
-        <div
-          style={{
+        elevation={0}>
+        <Box
+          sx={{
             display: "flex",
-            justifyContent: "space-between",
+            justifyContent: "start",
             alignItems: "center",
-            marginBottom: "1rem",
+            padding: ".8rem",
           }}>
-          <Typography
-            display="flex"
-            alignItems="center"
-            gutterBottom
-            variant="h5"
-            component="div"
-            sx={{ padding: "14px", fontWeight: "bold" }}>
-            Confirmation Table
-          </Typography>
-
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignContent: "center",
-              gap: "1rem",
-            }}>
-            <Box sx={{ maxWidth: "100%" }}>
-              <TextField
-                onChange={(e) => setSearch(e.target.value)}
-                size="small"
-                sx={{ width: "20rem" }}
-                label="Search"
-              />
-            </Box>
-            <FilterAltIcon
-              aria-describedby={id}
-              variant="contained"
-              onClick={handleClick}
-              style={{
-                fontSize: "2rem",
-                marginRight: "20px",
-                cursor: "pointer",
-              }}
+          <Box display="flex" gap={2} alignItems="center">
+            <ReplayIcon sx={{ cursor: "pointer" }} onClick={resetFilter} />
+            <TextField
+              size="small"
+              label="Search"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
             />
-            <Popover
-              id={id}
-              open={open}
-              anchorEl={anchorEl}
-              onClose={handleClose}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "left",
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                label="Date"
+                value={date}
+                onChange={(newValue) => setDate(newValue)}
+                sx={{ width: 150 }}
+                slotProps={{ textField: { size: "small" } }}
+              />
+            </LocalizationProvider>
+            <Stack
+              direction="row"
+              gap={1}
+              alignItems="center"
+              sx={{ cursor: "pointer", fontWeight: "bold" }}
+              onClick={handleClick}>
+              <FilterListIcon />
+              <Typography>Filter</Typography>
+            </Stack>
+          </Box>
+
+          <Popover
+            open={open}
+            onClose={handleClose}
+            anchorEl={anchorEl}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "center",
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}>
+            <Box
+              sx={{
+                padding: "1rem",
+                maxWidth: "100%",
+                width: "15rem",
+                display: "flex",
+                flexDirection: "column",
+                gap: "1rem",
               }}>
-              <FormControl
-                sx={{
-                  width: "10rem",
-                  height: "10rem",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}>
+              <FormControl fullWidth>
+                <InputLabel>Facility</InputLabel>
+                <Select
+                  value={facility}
+                  label="Facility"
+                  onChange={(e) => setFacility(e.target.value)}>
+                  <MenuItem value="">All</MenuItem>
+                  {facilities?.map((fac, key) => (
+                    <MenuItem key={key} value={fac.name}>
+                      {fac.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <FormControl fullWidth>
+                <InputLabel>Court</InputLabel>
+                <Select
+                  value={court}
+                  label="Court"
+                  onChange={(e) => setCourt(e.target.value)}>
+                  <MenuItem value="">All</MenuItem>
+
+                  {courts?.map((court, key) => (
+                    <MenuItem key={key} value={court.name}>
+                      {court.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <FormControl>
                 <RadioGroup
                   value={selectedFilter}
-                  onChange={handleFilterChange}
-                  name="radio-buttons-group">
+                  onChange={handleFilterChange}>
                   <FormControlLabel
                     value="all"
                     control={<Radio />}
-                    label="All"
+                    label="All Bookings"
                   />
                   <FormControlLabel
                     value="today"
                     control={<Radio />}
-                    label="Today"
+                    label="Today Bookings"
                   />
                 </RadioGroup>
               </FormControl>
-            </Popover>
-          </div>
-        </div>
-
+            </Box>
+          </Popover>
+        </Box>
         <Divider />
-        <TableContainer style={{ height: "100%" }}>
-          <Table stickyHeader aria-label="sticky table">
+        <TableContainer>
+          <Table stickyHeader>
             <TableHead>
               <TableRow>
-                <TableCell>User</TableCell>
-                <TableCell sx={{ fontStyle: "bold" }} align="center">
-                  Phone Number
+                <TableCell>
+                  <Checkbox
+                    checked={selected.length === pendingBookings?.length}
+                    onChange={() => handleSelectAll(pendingBookings)}
+                  />
                 </TableCell>
+                <TableCell>User</TableCell>
+                <TableCell align="center">Contact</TableCell>
                 <TableCell align="center">Facility</TableCell>
                 <TableCell align="center">Court</TableCell>
-                <TableCell align="center">Date</TableCell>
-                <TableCell align="center">Start</TableCell>
-                <TableCell align="center">End</TableCell>
-                <TableCell align="center">Hour</TableCell>
-                <TableCell align="left">Status</TableCell>
+                <TableCell align="center">Booking Date</TableCell>
+                <TableCell align="center">Time</TableCell>
+                <TableCell align="center">Duration</TableCell>
+                <TableCell align="center">Status</TableCell>
                 <TableCell align="center">Action</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {listBookings.length > 0 ? (
+              {listBookings?.length > 0 ? (
                 listBookings
               ) : (
                 <TableRow>
@@ -383,28 +426,28 @@ export default function ConfirmPage() {
               )}
             </TableBody>
           </Table>
-          <Stack
-            spacing={2}
-            sx={{
-              display: "flex",
-              justifyContent: "end",
-              alignItems: "end",
-              padding: "1.5rem",
-            }}>
-            <Pagination
-              count={pendingBookings?.totalPages || 1}
-              page={pageTotal}
-              onChange={handlePageChange}
-              renderItem={(item) => (
-                <PaginationItem
-                  slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }}
-                  {...item}
-                />
-              )}
-            />
-          </Stack>
         </TableContainer>
+        <Divider />
+        <Pagination
+          count={pageTotal}
+          page={pageTotal}
+          onChange={handlePageChange}
+          sx={{
+            marginTop: "1rem",
+            display: "flex",
+            justifyContent: "flex-end",
+            paddingRight: "2rem",
+          }}
+          renderItem={(item) => (
+            <PaginationItem
+              components={{ previous: ArrowBackIcon, next: ArrowForwardIcon }}
+              {...item}
+            />
+          )}
+        />
       </Paper>
     </>
   );
-}
+};
+
+export default ConfirmPage;

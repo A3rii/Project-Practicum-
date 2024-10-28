@@ -183,7 +183,7 @@ function ListUsers() {
             <TableRow>
               <TableCell align="left">Name</TableCell>
               <TableCell align="center">Email</TableCell>
-              <TableCell align="center">Phone number</TableCell>
+              <TableCell align="center">Phone number / Provider</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -204,7 +204,9 @@ function ListUsers() {
                     </Box>
                   </TableCell>
                   <TableCell align="center">{user?.email}</TableCell>
-                  <TableCell align="center">{user?.phone_number}</TableCell>
+                  <TableCell align="center">
+                    {user?.phone_number || user?.provider}
+                  </TableCell>
                 </TableRow>
               ))
             ) : (

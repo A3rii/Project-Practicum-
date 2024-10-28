@@ -14,14 +14,12 @@ import {
   Typography,
 } from "@mui/material";
 import "react-toastify/dist/ReactToastify.css";
-
 import axios from "axios";
 import dayjs from "dayjs";
 import authToken from "./../../../utils/authToken";
 import Loader from "../../../components/Loader";
 import { notify, errorAlert } from "./../../../utils/toastAlert";
 import { ToastContainer } from "react-toastify";
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -152,7 +150,6 @@ const InformationModal = ({ lessorId }) => {
 
 export default function ConfirmLessor() {
   const queryClient = useQueryClient();
-
   const {
     data: lessors,
     isLoading,

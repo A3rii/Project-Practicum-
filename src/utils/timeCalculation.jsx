@@ -40,7 +40,7 @@ const timeOverlapping = (inputStartTime, inputEndTime, startTime, endTime) => {
   if (
     (inputStart >= startTime && inputStart < endTime) || // Case 1: Input starts inside the range
     (inputEnd > startTime && inputEnd <= endTime) || // Case 2: Input ends inside the range
-    (inputStart <= startTime && inputEnd >= endTime) // Case 3: Input completely covers the range
+    (inputStart < startTime && inputEnd > endTime) // Case 3: Input completely covers the range
   ) {
     return true; // Time ranges overlap
   }

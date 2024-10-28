@@ -12,6 +12,7 @@ import {
   Box,
   TextField,
 } from "@mui/material";
+import CountUp from "react-countup";
 import { useState, useMemo } from "react";
 import { formatDate, totalHour } from "../../../utils/timeCalculation";
 import { useQuery } from "@tanstack/react-query";
@@ -65,7 +66,7 @@ const InfoCard = ({ title, value, icon: Icon, color }) => (
       <Icon sx={{ fontSize: "2rem" }} />
       <Typography
         sx={{ padding: "14px", fontSize: "2rem", fontWeight: "bold" }}>
-        {value}
+        <CountUp start={0} end={parseInt(value)} duration={2.5} />
       </Typography>
     </Box>
   </Paper>
@@ -252,8 +253,6 @@ function UpcomingMatch() {
         b.status === "approved"
     )
   );
-
-  console.log(matches);
 
   if (isLoading) return <Loader />;
   if (isError) return <p>Error fetching data</p>;

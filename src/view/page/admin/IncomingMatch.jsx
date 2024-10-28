@@ -9,14 +9,17 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  Box,
-  TextField,
   Popover,
   Radio,
   RadioGroup,
   FormControlLabel,
+  Chip,
   FormControl,
+  Select,
+  MenuItem,
+  InputLabel,
 } from "@mui/material";
+import useCurrentLessor from "./../../../utils/useCurrentLessor";
 import { useQuery } from "@tanstack/react-query";
 import { formatDate, totalHour } from "./../../../utils/timeCalculation";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
@@ -43,14 +46,61 @@ const fetchBookings = async (token) => {
   }
 };
 
+// Fetching sport center information
+const fetchSportCenter = async (sportCenterId) => {
+  try {
+    const { data } = await axios.get(
+      `${
+        import.meta.env.VITE_API_URL
+      }/lessor/auth/informations/${sportCenterId}`
+    );
+    return data.lessor.facilities;
+  } catch (err) {
+    console.error("Error fetching sport center:", err.message);
+    throw err;
+  }
+};
+
+// Fetch court by the facility
+const fetchCourt = async (facilityId) => {
+  const token = authToken();
+  const { data } = await axios.get(
+    `${import.meta.env.VITE_API_URL}/lessor/facility/${facilityId}/courts`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return data.facility.courts;
+};
+
 export default function IncomingMatch() {
   const token = authToken();
-  const [selectedFilter, setSelectedFilter] = useState("all");
+  const lessor = useCurrentLessor();
+  const [facility, setFacility] = useState("");
+  const [court, setCourt] = useState("");
+
+  const [selectedFilter, setSelectedFilter] = useState("approved");
   const [anchorEl, setAnchorEl] = useState(null);
 
-  // Get the bookings data
+  const handleChangeFacility = (event) => {
+    setFacility(event.target.value);
+  };
+  const handleChangeCourt = (event) => {
+    setCourt(event.target.value);
+  };
+
+  // Fetch facilities
+  const { data: facilities = [] } = useQuery({
+    queryKey: ["facilities", lessor?._id],
+    queryFn: () => fetchSportCenter(lessor?._id),
+    keepPreviousData: true,
+  });
+
+  // Fetch all bookings
   const {
-    data: allBookings = [], // Default to empty array if no data
+    data: allBookings = [],
     isLoading,
     error,
   } = useQuery({
@@ -73,17 +123,37 @@ export default function IncomingMatch() {
     setSelectedFilter(event.target.value);
   };
 
-  // Filter the rejected bookings or approved bookings
-  const filteredBookings = useMemo(() => {
-    if (selectedFilter === "rejected") {
-      return allBookings.filter((booking) => booking.status === "rejected");
-    }
-    return allBookings.filter((booking) => booking.status === "approved");
-  }, [allBookings, selectedFilter]);
+  // Fetching court details
+  const { data: courts = [] } = useQuery({
+    queryKey: ["court", facility],
+    queryFn: () => {
+      const selectedFacility = facilities.find((fac) => fac.name === facility);
+      return selectedFacility ? fetchCourt(selectedFacility._id) : [];
+    },
+    enabled: !!facility,
+  });
 
-  // List all the bookings in data table
+  // Filter bookings by facility and status (approved/rejected)
+  const filteredBookings = useMemo(() => {
+    return allBookings.filter((booking) => {
+      const matchesFacility = facility ? booking.facility === facility : true;
+      const matchesCourt = court ? booking.court === court : true;
+      const matchesStatus = booking.status === selectedFilter;
+      return matchesCourt && matchesFacility && matchesStatus;
+    });
+  }, [allBookings, facility, selectedFilter, court]);
+
+  // Generate the list of bookings
   const listBookings = useMemo(() => {
-    if (filteredBookings.length === 0) return null;
+    if (filteredBookings.length === 0) {
+      return (
+        <TableRow>
+          <TableCell align="center" colSpan={9}>
+            No matches found
+          </TableCell>
+        </TableRow>
+      );
+    }
 
     return filteredBookings.map((data, key) => (
       <TableRow key={key}>
@@ -98,33 +168,28 @@ export default function IncomingMatch() {
         <TableCell align="center">{data.facility || "N/A"}</TableCell>
         <TableCell align="center">{data.court || "N/A"}</TableCell>
         <TableCell align="center">{formatDate(data.date) || "N/A"}</TableCell>
-        <TableCell align="left">{data.startTime || "N/A"}</TableCell>
-        <TableCell align="left">{data.endTime || "N/A"}</TableCell>
+        <TableCell align="center">
+          {data.startTime || "N/A"} - {data.endTime || "N/A"}
+        </TableCell>
         <TableCell align="left">
           {totalHour(data.startTime, data.endTime) || "N/A"}
         </TableCell>
-        <TableCell
-          sx={{
-            display: "inline-block",
-            margin: "12px",
-            padding: "5px 9px",
-            fontSize: "12px",
-            fontWeight: "bold",
-            backgroundColor: data.status === "approved" ? "#00FF00" : "#FF0000",
-            color: "white",
-            borderRadius: "10px",
-            textAlign: "center",
-          }}>
-          {data.status || "N/A"}
+        <TableCell align="center">
+          <Chip
+            label={data.status}
+            color={data.status === "approved" ? "success" : "error"}
+            size="small"
+            variant="outlined"
+          />
         </TableCell>
       </TableRow>
     ));
   }, [filteredBookings]);
 
-  // If it is still fetching
+  // If it is still fetching data
   if (isLoading) return <Loader />;
 
-  // If  fetching is error
+  // If there was an error while fetching data
   if (error) return <div>Error loading bookings</div>;
 
   return (
@@ -133,10 +198,12 @@ export default function IncomingMatch() {
         maxWidth: "100%",
         overflow: "hidden",
         padding: "15px",
-        marginTop: "2rem",
         marginLeft: "2rem",
+        border: 0,
+        borderTop: 0,
+        borderRadius: 0,
       }}
-      elevation={10}>
+      elevation={0}>
       <div
         style={{
           display: "flex",
@@ -147,7 +214,6 @@ export default function IncomingMatch() {
           display="flex"
           alignItems="center"
           gutterBottom
-          variant="h5"
           component="div"
           sx={{ padding: "14px", fontWeight: "bold" }}>
           Match Acception
@@ -160,10 +226,31 @@ export default function IncomingMatch() {
             alignContent: "center",
             gap: "1rem",
           }}>
-          <Box sx={{ maxWidth: "100%" }}>
-            <TextField size="small" sx={{ width: "20rem" }} label="Search..." />
-          </Box>
-
+          <FormControl sx={{ minWidth: 120 }} size="small">
+            <InputLabel>Facility</InputLabel>
+            <Select
+              label="facility"
+              value={facility}
+              onChange={handleChangeFacility}>
+              <MenuItem value="">All</MenuItem>
+              {facilities.map((facility, key) => (
+                <MenuItem value={facility.name} key={key}>
+                  {facility.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl sx={{ minWidth: 120 }} size="small">
+            <InputLabel>Court</InputLabel>
+            <Select label="court" value={court} onChange={handleChangeCourt}>
+              <MenuItem value="">All</MenuItem>
+              {courts.map((court, key) => (
+                <MenuItem value={court.name} key={key}>
+                  {court.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
           <FilterAltIcon
             aria-describedby={id}
             variant="contained"
@@ -192,9 +279,9 @@ export default function IncomingMatch() {
                 justifyContent: "center",
                 alignItems: "center",
               }}>
-              <RadioGroup name="radio-buttons-group">
+              <RadioGroup name="radio-buttons-group" value={selectedFilter}>
                 <FormControlLabel
-                  value="all"
+                  value="approved"
                   control={<Radio />}
                   label="Accepted"
                 />
@@ -219,24 +306,13 @@ export default function IncomingMatch() {
               <TableCell align="left">Phone Number</TableCell>
               <TableCell align="center">Facility</TableCell>
               <TableCell align="center">Court</TableCell>
-              <TableCell align="center">Date </TableCell>
-              <TableCell align="left">Start </TableCell>
-              <TableCell align="left">End </TableCell>
-              <TableCell align="left">Hour </TableCell>
-              <TableCell align="left">Status</TableCell>
+              <TableCell align="center">Date</TableCell>
+              <TableCell align="center">Time</TableCell>
+              <TableCell align="left">Hour</TableCell>
+              <TableCell align="center">Status</TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
-            {listBookings ? (
-              listBookings
-            ) : (
-              <TableRow>
-                <TableCell align="center" colSpan={9}>
-                  No Incoming match
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
+          <TableBody>{listBookings}</TableBody>
         </Table>
       </TableContainer>
     </Paper>
