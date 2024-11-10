@@ -25,6 +25,7 @@ import ProtectedPage from "./components/ProtectedPage";
 import Error from "./components/Error";
 import LoginSuperAdmin from "./view/page/superadmin/auth/Login";
 import SuperAdmin from "./view/page/superadmin/Sidebar";
+import Credentials from "./view/page/superadmin/Credentials";
 
 const Map = lazy(() => import("./view/page/superadmin/Map"));
 const Location = lazy(() => import("./view/page/admin/Location"));
@@ -95,6 +96,7 @@ export default function App() {
               <Route path="lessor/informations" element={<Lessor />} />
               <Route path="profile" element={<ModeratorProfile />} />
               <Route path="map" element={<Map />} />
+              <Route path="lessor/credentials" element={<Credentials />} />
             </Route>
           </Route>
 

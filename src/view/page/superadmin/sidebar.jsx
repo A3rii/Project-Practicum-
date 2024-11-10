@@ -1,5 +1,5 @@
 import { Link, Outlet, useNavigate } from "react-router-dom";
-import React from "react";
+import { useState } from "react";
 import {
   Box,
   List,
@@ -14,10 +14,15 @@ import {
   IconButton,
   Badge,
   Menu,
+  Collapse,
+  ListItemButton,
+  ListItemText,
 } from "@mui/material";
 import Notification from "../../../components/Superadmin/Notification";
 import { useDispatch } from "react-redux";
 import { logout } from "../../../app/slice";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import InfoIcon from "@mui/icons-material/Info";
 import {
   CalendarMonth as CalendarMonthIcon,
   AccountCircle as AccountCircle,
@@ -29,6 +34,9 @@ import {
   Logout as LogoutIcon,
   AccountCircle as AccountCircleIcon,
   Map as MapIcon,
+  Key as KeyIcon,
+  ExpandLess as ExpandLessIcon,
+  ExpandMore as ExpandMoreIcon,
 } from "@mui/icons-material";
 
 import useModeratorProfile from "../../../utils/useModeratorProfile";
@@ -36,9 +44,13 @@ import useModeratorProfile from "../../../utils/useModeratorProfile";
 export default function SuperAdmin() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
   const moderator = useModeratorProfile();
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
+  const handleToggle = () => {
+    setOpen(!open);
+  };
 
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
@@ -232,19 +244,75 @@ export default function SuperAdmin() {
           </MenuItem>
 
           <MenuItem
-            component={Link}
-            to="/super-admin/lessor/informations"
-            sx={menuItemStyles}>
+            onClick={handleToggle}
+            sx={{ display: "flex", alignItems: "center", color: "#fff" }}>
             <PersonOutlineIcon
-              sx={{ color: "#fff", marginRight: isSmallScreen ? 0 : "10px" }}
+              sx={{ marginRight: isSmallScreen ? 0 : "10px" }}
             />
-            {!isSmallScreen && (
-              <Typography
-                sx={{ color: "#fff", fontWeight: "bold", fontSize: ".9rem" }}>
-                Official Lessor
-              </Typography>
+            <Typography sx={{ fontWeight: "bold", fontSize: ".9rem" }}>
+              Official Lessor
+            </Typography>
+            {open ? (
+              <ExpandLessIcon fontSize="small" />
+            ) : (
+              <ExpandMoreIcon fontSize="small" />
             )}
           </MenuItem>
+
+          {/* Nested Sub-menu Items */}
+          <Collapse in={open} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              <ListItemButton
+                component={Link}
+                to="/super-admin/lessor/informations"
+                sx={{
+                  pl: 4,
+                  color: "#fff",
+                  "&:hover": {
+                    backgroundColor: "transparent",
+                    color: "#fff",
+                    textDecoration: "none",
+                  },
+                }}>
+                <ListItemIcon sx={{ color: "#fff", minWidth: "auto", mr: 1 }}>
+                  <InfoIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Lessor Info"
+                  primaryTypographyProps={{
+                    fontWeight: "bold",
+                    fontSize: ".8rem",
+                    textDecoration: "none",
+                  }}
+                />
+              </ListItemButton>
+
+              <ListItemButton
+                component={Link}
+                to="/super-admin/lessor/credentials"
+                sx={{
+                  pl: 4,
+                  color: "#fff",
+                  "&:hover": {
+                    backgroundColor: "transparent",
+                    color: "#fff",
+                    textDecoration: "none",
+                  },
+                }}>
+                <ListItemIcon sx={{ color: "#fff", minWidth: "auto", mr: 1 }}>
+                  <KeyIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Credentials"
+                  primaryTypographyProps={{
+                    fontWeight: "bold",
+                    fontSize: ".8rem",
+                    textDecoration: "none",
+                  }}
+                />
+              </ListItemButton>
+            </List>
+          </Collapse>
 
           <MenuItem
             component={Link}

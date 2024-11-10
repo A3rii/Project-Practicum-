@@ -1,5 +1,6 @@
 import "react-toastify/dist/ReactToastify.css";
 import "ldrs/ring";
+import authToken from "./../../../utils/authToken.jsx";
 import { v4 } from "uuid";
 import {
   Paper,
@@ -21,8 +22,6 @@ import { notify } from "./../../../utils/toastAlert";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
 import SettingsIcon from "@mui/icons-material/Settings";
-import axios from "axios";
-import authToken from "../../../utils/authToken";
 import { storage } from "./../../../firebase/firebase"; // make sure you have firebase initialized
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { ToastContainer } from "react-toastify";
@@ -31,7 +30,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
-
+import { profileAPI } from "../../../api/admin/index";
 // Styling Input type of MUI component
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -44,36 +43,6 @@ const VisuallyHiddenInput = styled("input")({
   whiteSpace: "nowrap",
   width: 1,
 });
-
-// Fetching profile of lessor
-const fetchLessor = async (token) => {
-  const response = await axios.get(
-    `${import.meta.env.VITE_API_URL}/lessor/auth/profile`,
-    {
-      headers: {
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-  return response.data.lessor; // return all the data
-};
-
-// Update API for lessor's information
-const updateLessor = async (updatedData, token) => {
-  const response = await axios.put(
-    `${import.meta.env.VITE_API_URL}/lessor/update`,
-    updatedData,
-    {
-      headers: {
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    }
-  );
-  return response.data;
-};
 
 export default function Profile() {
   const token = authToken();
@@ -89,7 +58,7 @@ export default function Profile() {
     isError,
   } = useQuery({
     queryKey: ["currentLessor"],
-    queryFn: () => fetchLessor(token),
+    queryFn: () => profileAPI.fetchLessor(token),
     refetchOnWindowFocus: true, // update immediately without refreshing
   });
 
@@ -143,7 +112,7 @@ export default function Profile() {
 
   //Function to Immediate Update when update information successfully
   const updateLessorMutation = useMutation({
-    mutationFn: (updatedData) => updateLessor(updatedData, token),
+    mutationFn: (updatedData) => profileAPI.updateLessor(updatedData, token),
     onSuccess: () => {
       notify("Lessor updated successfully");
       queryClient.invalidateQueries({ queryKey: ["currentLessor"] });

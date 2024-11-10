@@ -14,66 +14,20 @@ import {
   Typography,
 } from "@mui/material";
 import "react-toastify/dist/ReactToastify.css";
-import axios from "axios";
 import dayjs from "dayjs";
-import authToken from "./../../../utils/authToken";
 import Loader from "../../../components/Loader";
 import { notify, errorAlert } from "./../../../utils/toastAlert";
 import { ToastContainer } from "react-toastify";
 import { useState } from "react";
+import authToken from "./../../../utils/authToken";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-
-// Fetch lessor for moderators
-const fetchLessors = async (lessorId) => {
-  const token = authToken();
-  try {
-    const getLessors = await axios.get(
-      `${import.meta.env.VITE_API_URL}/moderator/find/lessors`,
-      {
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        // If there is no id provided , it will display all the lessors
-        params: {
-          lessorId,
-        },
-      }
-    );
-    const lessors = getLessors.data.lessors;
-    const approvedLessor = lessors.filter(
-      (lessor) => lessor.status === "pending"
-    );
-    return approvedLessor;
-  } catch (err) {
-    throw new Error(err.message);
-  }
-};
-
-const updateLessorStatus = async ({ lessorId, status }) => {
-  const token = authToken();
-  try {
-    const lessorUpdate = await axios.put(
-      `${import.meta.env.VITE_API_URL}/moderator/update/lessors/${lessorId}`,
-      { status },
-      {
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    return lessorUpdate.data;
-  } catch (err) {
-    throw new Error(err.message);
-  }
-};
+import { confirmLessorAPI } from "./../../../api/superadmin/index";
 
 //* Information modal for specific lessor
-const InformationModal = ({ lessorId }) => {
+const InformationModal = ({ token, lessorId }) => {
   const { data: lessorById } = useQuery({
-    queryKey: ["lessorsById", lessorId],
-    queryFn: () => fetchLessors(lessorId),
+    queryKey: ["lessorsById", token, lessorId],
+    queryFn: () => confirmLessorAPI.fetchLessors(lessorId),
     enable: !!lessorId,
   });
 
@@ -150,18 +104,19 @@ const InformationModal = ({ lessorId }) => {
 
 export default function ConfirmLessor() {
   const queryClient = useQueryClient();
+  const token = authToken();
   const {
     data: lessors,
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["lessors"],
-    queryFn: () => fetchLessors(),
+    queryKey: ["lessors", token],
+    queryFn: () => confirmLessorAPI.fetchLessors(token),
     refetchOnWindowFocus: true,
   });
 
   const mutation = useMutation({
-    mutationFn: updateLessorStatus,
+    mutationFn: confirmLessorAPI.updateLessorStatus,
     onSuccess: () => {
       notify("lessors updated successfully");
       queryClient.invalidateQueries("lessors");
@@ -171,8 +126,8 @@ export default function ConfirmLessor() {
     },
   });
 
-  const handleAcceptLessor = (status, lessorId) => {
-    mutation.mutate({ status, lessorId });
+  const handleAcceptLessor = (token, status, lessorId) => {
+    mutation.mutate({ token, status, lessorId });
   };
 
   if (isLoading) return <Loader />;
@@ -236,7 +191,7 @@ export default function ConfirmLessor() {
                   {/* Email */}
                   <TableCell align="center">{data.phone_number}</TableCell>
                   <TableCell align="center">
-                    {<InformationModal lessorId={data._id} />}
+                    {<InformationModal token={token} lessorId={data._id} />}
                   </TableCell>
                   <TableCell align="center">
                     {dayjs(data.created_at).format("MMMM DD, YYYY")}
@@ -261,14 +216,18 @@ export default function ConfirmLessor() {
                     <Stack direction="row" spacing={1}>
                       <Button
                         size="small"
-                        onClick={() => handleAcceptLessor("approved", data._id)}
+                        onClick={() =>
+                          handleAcceptLessor(token, "approved", data._id)
+                        }
                         variant="outlined"
                         color="success">
                         Accept
                       </Button>
                       <Button
                         size="small"
-                        onClick={() => handleAcceptLessor("rejected", data._id)}
+                        onClick={() =>
+                          handleAcceptLessor(token, "rejected", data._id)
+                        }
                         variant="outlined"
                         color="error">
                         Cancel

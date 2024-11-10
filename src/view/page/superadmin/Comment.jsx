@@ -9,6 +9,7 @@ import {
   Table,
   Paper,
   TableBody,
+  Typography,
   TableCell,
   TableContainer,
   TableHead,
@@ -17,7 +18,6 @@ import {
   Button,
   Box,
   Avatar,
-  Typography,
   Divider,
   InputLabel,
   MenuItem,
@@ -29,60 +29,23 @@ import {
   Radio,
   Popover,
 } from "@mui/material";
-import FilterAltIcon from "@mui/icons-material/FilterAlt";
+
+import {
+  FilterList as FilterListIcon,
+  Replay as ReplayIcon,
+} from "@mui/icons-material";
 import authToken from "../../../utils/authToken";
-import Loader from "../../../components/Loader";
-
-//* Fetching all comments from sport centers
-const fetchComments = async (sportCenterId, status) => {
-  const token = authToken();
-  try {
-    const response = await axios.get(
-      `${import.meta.env.VITE_API_URL}/user/posts/comments`,
-      {
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        params: {
-          sportCenterId,
-          status,
-        },
-      }
-    );
-
-    return response.data.comments;
-  } catch (err) {
-    console.error("Error fetching comments:", err);
-    throw new Error("Failed to fetch comments. Please try again later.");
-  }
-};
-
-//* Update status for comment to sport center
-const updateCommentStatus = async ({ status, commentId }) => {
-  const token = authToken();
-  try {
-    const response = await axios.put(
-      `${import.meta.env.VITE_API_URL}/user/posts/comments/${commentId}`,
-      { status },
-      {
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    return response.data;
-  } catch (err) {
-    console.error("Error updating comment status:", err);
-    throw new Error("Failed to update comment status. Please try again later.");
-  }
-};
+import { commentAPI } from "./../../../api/superadmin/index";
 
 export default function Comment() {
   const queryClient = useQueryClient();
   const [sportCenterId, setSportCenterId] = useState("");
   const [status, setStatus] = useState("pending");
+  const token = authToken();
+  const resetFilter = () => {
+    setSportCenterId("");
+    setStatus("pending");
+  };
 
   // Handle Popover event open and close
   const [anchorEl, setAnchorEl] = useState(null);
@@ -113,19 +76,15 @@ export default function Comment() {
   });
 
   // Get all comments
-  const {
-    data: comments,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["comments", sportCenterId, status],
-    queryFn: () => fetchComments(sportCenterId, status),
+  const { data: comments, error } = useQuery({
+    queryKey: ["comments", token, sportCenterId, status],
+    queryFn: () => commentAPI.fetchComments(token, sportCenterId, status),
     enabled: !!sportCenterId, // Only run query if sportCenterId is selected
     refetchOnWindowFocus: true,
   });
 
   const mutation = useMutation({
-    mutationFn: updateCommentStatus,
+    mutationFn: commentAPI.updateCommentStatus,
     onSuccess: () => {
       notify("Comment status updated successfully");
       queryClient.invalidateQueries(["comments"]);
@@ -136,8 +95,8 @@ export default function Comment() {
   });
 
   // Handle accept or reject comments
-  const handleAccept = (status, commentId) => {
-    mutation.mutate({ status, commentId });
+  const handleAccept = (token, status, commentId) => {
+    mutation.mutate({ token, status, commentId });
   };
 
   const statusColor = (status) => {
@@ -153,7 +112,6 @@ export default function Comment() {
     }
   };
 
-  if (isLoading) return <Loader />;
   if (error) return <p>Error loading comments.</p>;
 
   return (
@@ -178,111 +136,94 @@ export default function Comment() {
         }}>
         <Box
           sx={{
+            minWidth: 120,
+            width: "30rem",
+            padding: "2rem",
             display: "flex",
-            justifyContent: "space-between",
+            justifyContent: "center",
             alignItems: "center",
-            marginBottom: "1rem",
+            gap: ".5rem",
           }}>
-          <Typography
-            display="flex"
-            alignItems="center"
-            gutterBottom
-            variant="h6"
-            component="div"
-            sx={{ padding: "2rem", fontWeight: "bold" }}>
-            Pending Comments
-          </Typography>
-
-          <Box
-            sx={{
-              minWidth: 120,
-              width: "30%",
-              padding: "2rem",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              gap: ".5rem",
-            }}>
-            <FormControl fullWidth>
-              <InputLabel id="select-sport-center-label">
-                Sport Center
-              </InputLabel>
-              <Select
-                labelId="select-sport-center-label"
-                value={sportCenterId}
-                onChange={(e) => setSportCenterId(e.target.value)}>
-                {allLessors &&
-                  allLessors.map((lessor) => (
-                    <MenuItem
-                      value={lessor._id}
-                      key={lessor._id}
+          <ReplayIcon sx={{ cursor: "pointer" }} onClick={resetFilter} />
+          <FormControl fullWidth>
+            <InputLabel id="select-sport-center-label">Sport Center</InputLabel>
+            <Select
+              labelId="select-sport-center-label"
+              value={sportCenterId}
+              onChange={(e) => setSportCenterId(e.target.value)}>
+              {allLessors &&
+                allLessors.map((lessor) => (
+                  <MenuItem
+                    value={lessor._id}
+                    key={lessor._id}
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      gap: ".4rem",
+                    }}>
+                    <Avatar
                       sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        gap: ".4rem",
-                      }}>
-                      <Avatar
-                        sx={{
-                          width: 30,
-                          height: 30,
-                        }}
-                        loading="lazy"
-                        src={lessor.logo}
-                        alt="Lessor Logo"
-                      />
-                      <ListItemText primary={lessor.sportcenter_name} />
-                    </MenuItem>
-                  ))}
-              </Select>
-            </FormControl>
+                        width: 30,
+                        height: 30,
+                      }}
+                      loading="lazy"
+                      src={lessor.logo}
+                      alt="Lessor Logo"
+                    />
+                    <ListItemText primary={lessor.sportcenter_name} />
+                  </MenuItem>
+                ))}
+            </Select>
+          </FormControl>
 
-            <FilterAltIcon
+          <Box sx={{ display: "flex", gap: "5px" }}>
+            <FilterListIcon
               aria-describedby={id}
               onClick={handleClick}
               style={{
                 fontSize: "1.5rem",
-                marginRight: "20px",
                 cursor: "pointer",
               }}
             />
-            <Popover
-              id={id}
-              open={open}
-              anchorEl={anchorEl}
-              onClose={handleClose}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "left",
-              }}>
-              <FormControl
-                sx={{
-                  width: "10rem",
-                  padding: "1rem",
-                }}>
-                <RadioGroup
-                  value={status}
-                  onChange={handleFilterChange}
-                  name="radio-buttons-group">
-                  <FormControlLabel
-                    value="pending"
-                    control={<Radio />}
-                    label="Pending"
-                  />
-                  <FormControlLabel
-                    value="approved"
-                    control={<Radio />}
-                    label="Approved"
-                  />
-                  <FormControlLabel
-                    value="rejected"
-                    control={<Radio />}
-                    label="Rejected"
-                  />
-                </RadioGroup>
-              </FormControl>
-            </Popover>
+            <Typography> Filter</Typography>
           </Box>
+          <Popover
+            id={id}
+            open={open}
+            anchorEl={anchorEl}
+            onClose={handleClose}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "left",
+            }}>
+            <FormControl
+              sx={{
+                width: "10rem",
+                padding: "1rem",
+              }}>
+              <RadioGroup
+                value={status}
+                onChange={handleFilterChange}
+                name="radio-buttons-group">
+                <FormControlLabel
+                  value="pending"
+                  control={<Radio />}
+                  label="Pending"
+                />
+                <FormControlLabel
+                  value="approved"
+                  control={<Radio />}
+                  label="Approved"
+                />
+                <FormControlLabel
+                  value="rejected"
+                  control={<Radio />}
+                  label="Rejected"
+                />
+              </RadioGroup>
+            </FormControl>
+          </Popover>
         </Box>
 
         <Divider />
@@ -356,18 +297,43 @@ export default function Comment() {
                     </TableCell>
                     <TableCell align="center">
                       <Stack direction="row" spacing={1}>
-                        <Button
-                          onClick={() => handleAccept("approved", data._id)}
-                          variant="outlined"
-                          color="success">
-                          Accept
-                        </Button>
-                        <Button
-                          onClick={() => handleAccept("rejected", data._id)}
-                          variant="outlined"
-                          color="error">
-                          Cancel
-                        </Button>
+                        {data.status === "pending" ? (
+                          <>
+                            <Button
+                              onClick={() =>
+                                handleAccept(token, "approved", data._id)
+                              }
+                              variant="outlined"
+                              color="success">
+                              Accept
+                            </Button>
+                            <Button
+                              onClick={() =>
+                                handleAccept(token, "rejected", data._id)
+                              }
+                              variant="outlined"
+                              color="error">
+                              Cancel
+                            </Button>
+                          </>
+                        ) : (
+                          <Button
+                            onClick={() =>
+                              handleAccept(
+                                token,
+                                data.status === "approved"
+                                  ? "rejected"
+                                  : "approved",
+                                data._id
+                              )
+                            }
+                            variant="outlined"
+                            color={
+                              data.status === "approved" ? "error" : "success"
+                            }>
+                            {data.status === "approved" ? "Cancel" : "Accept"}
+                          </Button>
+                        )}
                       </Stack>
                     </TableCell>
                   </TableRow>

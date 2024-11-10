@@ -63,4 +63,27 @@ const parseTimeString = (dateString, timeString) => {
   return date;
 };
 
-export { formatDate, totalHour, timeOverlapping, parseTimeString };
+const parseTimeToDate = (time) => {
+  const [timePart, modifier] = time.split(" ");
+  let [hours, minutes] = timePart.split(":");
+
+  // Convert the hours to 24-hour format
+  if (modifier.toLowerCase() === "pm" && hours !== "12") {
+    hours = parseInt(hours, 10) + 12; // Add 12 to convert to 24-hour time
+  } else if (modifier.toLowerCase() === "am" && hours === "12") {
+    hours = 0; // Midnight case
+  }
+
+  // Create a new Date object with today's date and the parsed time
+  const date = new Date();
+  date.setHours(hours, minutes, 0, 0);
+  return date;
+};
+
+export {
+  formatDate,
+  totalHour,
+  timeOverlapping,
+  parseTimeString,
+  parseTimeToDate,
+};

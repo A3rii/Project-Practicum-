@@ -1,7 +1,5 @@
-import axios from "axios";
 import GeoSpatial from "../../../components/map/GeoSpatial";
 import useCurrentLessor from "../../../utils/useCurrentLessor";
-import authToken from "./../../../utils/authToken";
 import {
   Box,
   TextField,
@@ -16,27 +14,8 @@ import { useState, useCallback } from "react";
 import { notify, errorAlert } from "./../../../utils/toastAlert";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { locationAPI } from "../../../api/admin";
 
-const setLocation = async (coordinates) => {
-  const token = authToken();
-  try {
-    const { data } = await axios.put(
-      `${import.meta.env.VITE_API_URL}/location/update/coordinate`,
-      coordinates,
-      {
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    return data.message;
-  } catch (err) {
-    throw new Error(err);
-  }
-};
 export default function Location() {
   const lessor = useCurrentLessor();
   const queryClient = useQueryClient();
@@ -56,7 +35,7 @@ export default function Location() {
   );
 
   const updateLocation = useMutation({
-    mutationFn: (updateData) => setLocation(updateData),
+    mutationFn: (updateData) => locationAPI.setLocation(updateData),
     onSuccess: () => {
       notify("Location update successfully");
       queryClient.invalidateQueries({ queryKey: ["location"] });

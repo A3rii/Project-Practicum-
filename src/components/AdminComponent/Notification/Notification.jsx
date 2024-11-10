@@ -8,11 +8,13 @@ import {
   Badge,
   Divider,
 } from "@mui/material";
+import { formatDate } from "./../../../utils/timeCalculation";
 import {
   NotificationsActive as NotificationsActiveIcon,
   CalendarToday as CalendarTodayIcon,
   Upcoming as UpcomingIcon,
 } from "@mui/icons-material";
+import dayjs from "dayjs";
 import { io } from "socket.io-client";
 import { useQuery } from "@tanstack/react-query";
 import Loader from "./../../Loader";
@@ -58,7 +60,11 @@ export default function Notification() {
     queryKey: ["upComingMatch"],
     queryFn: async () => {
       const bookings = await fetchBookings();
-      const match = bookings.filter((booking) => booking.status === "approved");
+      const match = bookings.filter(
+        (booking) =>
+          booking.status === "approved" &&
+          formatDate(booking.date) === dayjs(new Date()).format("MMMM DD, YYYY")
+      );
       return match;
     },
   });

@@ -17,72 +17,42 @@ import {
   FormControl,
   Select,
   MenuItem,
+  TextField,
   InputLabel,
+  Stack,
+  Box,
 } from "@mui/material";
 import useCurrentLessor from "./../../../utils/useCurrentLessor";
 import { useQuery } from "@tanstack/react-query";
 import { formatDate, totalHour } from "./../../../utils/timeCalculation";
-import FilterAltIcon from "@mui/icons-material/FilterAlt";
+import {
+  Replay as ReplayIcon,
+  FilterList as FilterListIcon,
+} from "@mui/icons-material";
 import authToken from "./../../../utils/authToken";
-import axios from "axios";
 import Loader from "./../../../components/Loader";
-
-// Api request for list of bookings
-const fetchBookings = async (token) => {
-  try {
-    const response = await axios.get(
-      `${import.meta.env.VITE_API_URL}/books/sport-center`,
-      {
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    return response.data.bookings || [];
-  } catch (error) {
-    console.error("Error fetching bookings:", error);
-    return []; // Return an empty array if there's an error
-  }
-};
-
-// Fetching sport center information
-const fetchSportCenter = async (sportCenterId) => {
-  try {
-    const { data } = await axios.get(
-      `${
-        import.meta.env.VITE_API_URL
-      }/lessor/auth/informations/${sportCenterId}`
-    );
-    return data.lessor.facilities;
-  } catch (err) {
-    console.error("Error fetching sport center:", err.message);
-    throw err;
-  }
-};
-
-// Fetch court by the facility
-const fetchCourt = async (facilityId) => {
-  const token = authToken();
-  const { data } = await axios.get(
-    `${import.meta.env.VITE_API_URL}/lessor/facility/${facilityId}/courts`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-  return data.facility.courts;
-};
+import { incomingBookingAPI } from "./../../../api/admin/index";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 export default function IncomingMatch() {
   const token = authToken();
   const lessor = useCurrentLessor();
   const [facility, setFacility] = useState("");
   const [court, setCourt] = useState("");
+  const [userName, setUserName] = useState("");
+  const [date, setDate] = useState(null);
 
   const [selectedFilter, setSelectedFilter] = useState("approved");
   const [anchorEl, setAnchorEl] = useState(null);
+
+  const resetFilter = () => {
+    setFacility("");
+    setCourt("");
+    setUserName("");
+    setDate(null);
+  };
 
   const handleChangeFacility = (event) => {
     setFacility(event.target.value);
@@ -94,7 +64,7 @@ export default function IncomingMatch() {
   // Fetch facilities
   const { data: facilities = [] } = useQuery({
     queryKey: ["facilities", lessor?._id],
-    queryFn: () => fetchSportCenter(lessor?._id),
+    queryFn: () => incomingBookingAPI.fetchSportCenter(lessor?._id),
     keepPreviousData: true,
   });
 
@@ -105,7 +75,7 @@ export default function IncomingMatch() {
     error,
   } = useQuery({
     queryKey: ["allBookings"],
-    queryFn: () => fetchBookings(token),
+    queryFn: () => incomingBookingAPI.fetchBookings(token),
   });
 
   const handleClick = (event) => {
@@ -128,7 +98,9 @@ export default function IncomingMatch() {
     queryKey: ["court", facility],
     queryFn: () => {
       const selectedFacility = facilities.find((fac) => fac.name === facility);
-      return selectedFacility ? fetchCourt(selectedFacility._id) : [];
+      return selectedFacility
+        ? incomingBookingAPI.fetchCourt(selectedFacility._id)
+        : [];
     },
     enabled: !!facility,
   });
@@ -138,10 +110,23 @@ export default function IncomingMatch() {
     return allBookings.filter((booking) => {
       const matchesFacility = facility ? booking.facility === facility : true;
       const matchesCourt = court ? booking.court === court : true;
+      const user = booking.user || booking.outside_user;
+      const filterUserName =
+        user.name.toLowerCase().includes(userName.toLowerCase()) ||
+        user.phone_number.toLowerCase().includes(userName.toLowerCase());
       const matchesStatus = booking.status === selectedFilter;
-      return matchesCourt && matchesFacility && matchesStatus;
+      const filterDate = date
+        ? formatDate(booking.date) === formatDate(date)
+        : true;
+      return (
+        matchesCourt &&
+        matchesFacility &&
+        matchesStatus &&
+        filterUserName &&
+        filterDate
+      );
     });
-  }, [allBookings, facility, selectedFilter, court]);
+  }, [allBookings, facility, selectedFilter, court, userName, date]);
 
   // Generate the list of bookings
   const listBookings = useMemo(() => {
@@ -210,57 +195,40 @@ export default function IncomingMatch() {
           justifyContent: "space-between",
           alignItems: "center",
         }}>
-        <Typography
-          display="flex"
-          alignItems="center"
-          gutterBottom
-          component="div"
-          sx={{ padding: "14px", fontWeight: "bold" }}>
-          Match Acception
-        </Typography>
-
         <div
           style={{
             display: "flex",
             justifyContent: "center",
-            alignContent: "center",
+            alignItems: "center",
             gap: "1rem",
+            padding: "1rem",
           }}>
-          <FormControl sx={{ minWidth: 120 }} size="small">
-            <InputLabel>Facility</InputLabel>
-            <Select
-              label="facility"
-              value={facility}
-              onChange={handleChangeFacility}>
-              <MenuItem value="">All</MenuItem>
-              {facilities.map((facility, key) => (
-                <MenuItem value={facility.name} key={key}>
-                  {facility.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <FormControl sx={{ minWidth: 120 }} size="small">
-            <InputLabel>Court</InputLabel>
-            <Select label="court" value={court} onChange={handleChangeCourt}>
-              <MenuItem value="">All</MenuItem>
-              {courts.map((court, key) => (
-                <MenuItem value={court.name} key={key}>
-                  {court.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <FilterAltIcon
-            aria-describedby={id}
-            variant="contained"
-            onClick={handleClick}
-            style={{
-              fontSize: "2rem",
-              marginRight: "20px",
-              cursor: "pointer",
-            }}
+          <ReplayIcon sx={{ cursor: "pointer" }} onClick={resetFilter} />
+
+          <TextField
+            size="small"
+            value={userName}
+            label="Search"
+            onChange={(e) => setUserName(e.target.value)}
           />
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DatePicker
+              label="Date"
+              value={date}
+              onChange={(newValue) => setDate(newValue)}
+              sx={{ width: 150 }}
+              slotProps={{ textField: { size: "small" } }}
+            />
+          </LocalizationProvider>
+          <Stack
+            direction="row"
+            gap={1}
+            alignItems="center"
+            sx={{ cursor: "pointer", fontWeight: "bold" }}
+            onClick={handleClick}>
+            <FilterListIcon />
+            <Typography>Filter</Typography>
+          </Stack>
           <Popover
             id={id}
             open={open}
@@ -270,14 +238,51 @@ export default function IncomingMatch() {
               vertical: "bottom",
               horizontal: "left",
             }}>
+            <Box
+              sx={{
+                padding: "1rem",
+                maxWidth: "100%",
+                width: "15rem",
+                display: "flex",
+                flexDirection: "column",
+                gap: "1rem",
+              }}>
+              <FormControl sx={{ minWidth: 120 }} size="small">
+                <InputLabel>Facility</InputLabel>
+                <Select
+                  label="facility"
+                  value={facility}
+                  onChange={handleChangeFacility}>
+                  <MenuItem value="">All</MenuItem>
+                  {facilities.map((facility, key) => (
+                    <MenuItem value={facility.name} key={key}>
+                      {facility.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <FormControl sx={{ minWidth: 120 }} size="small">
+                <InputLabel>Court</InputLabel>
+                <Select
+                  label="court"
+                  value={court}
+                  onChange={handleChangeCourt}>
+                  <MenuItem value="">All</MenuItem>
+                  {courts.map((court, key) => (
+                    <MenuItem value={court.name} key={key}>
+                      {court.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Box>
             <FormControl
               onChange={handleFilterChange}
               sx={{
-                width: "9rem",
-                height: "9rem",
                 display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
+                justifyContent: "start",
+                alignItems: "start",
+                padding: "1rem",
               }}>
               <RadioGroup name="radio-buttons-group" value={selectedFilter}>
                 <FormControlLabel

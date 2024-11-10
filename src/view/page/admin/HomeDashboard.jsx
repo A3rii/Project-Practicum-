@@ -14,10 +14,12 @@ import {
 } from "@mui/material";
 import CountUp from "react-countup";
 import { useState, useMemo } from "react";
-import { formatDate, totalHour } from "../../../utils/timeCalculation";
+import {
+  formatDate,
+  totalHour,
+  parseTimeToDate,
+} from "../../../utils/timeCalculation";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import authToken from "../../../utils/authToken";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import AccessAlarmsIcon from "@mui/icons-material/AccessAlarms";
 import BookIcon from "@mui/icons-material/Book";
@@ -26,22 +28,13 @@ import Loader from "../../../components/Loader";
 import BookingChart from "../../../components/AdminComponent/Chart/BookingChart";
 import RatingChart from "../../../components/AdminComponent/Chart/RatingChart";
 
-// Utility for centralized fetching
-const fetchBookings = async () => {
-  const token = authToken();
-  const headers = { Authorization: `Bearer ${token}` };
-  const { data } = await axios.get(
-    `${import.meta.env.VITE_API_URL}/books/sport-center`,
-    { headers }
-  );
-  return data.bookings || [];
-};
+import { dashboardAPI } from "../../../api/admin/index";
 
 // Custom hook for data fetching
 const useBookingsData = (queryKey, selectFn) =>
   useQuery({
     queryKey: [queryKey],
-    queryFn: fetchBookings,
+    queryFn: dashboardAPI.fetchBookings,
     select: selectFn,
     refetchOnWindowFocus: true,
   });
@@ -240,19 +233,46 @@ function CustomerTable() {
 }
 
 // Upcoming Match component
-function UpcomingMatch() {
+const UpcomingMatch = () => {
+  // Cambodian TimeZone formatation
+  const cambodianTimeZone = () => {
+    const date = new Date();
+    const cambodianHourMinute = date.toLocaleTimeString("en-US", {
+      timeZone: "Asia/Phnom_Penh",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+
+    return cambodianHourMinute;
+  };
+  console.log(cambodianTimeZone());
+
   const {
     data: matches,
     isLoading,
     isError,
-  } = useBookingsData("upcomingMatch", (bookings) =>
-    // If the match has been accepted and on the actual date
-    bookings.filter(
-      (b) =>
-        formatDate(b.date) === dayjs(new Date()).format("MMMM DD, YYYY") &&
-        b.status === "approved"
-    )
-  );
+  } = useBookingsData("upcomingMatch", (bookings) => {
+    // Get the current time in Cambodian timezone formatted as "HH:mm"
+    const currentCambodianTime = cambodianTimeZone(); // Ensure this returns the time in "HH:mm" format
+    const formattedCurrentTime = parseTimeToDate(currentCambodianTime); // Parse it to a comparable format
+
+    return bookings.filter((b) => {
+      const formattedDate =
+        formatDate(b.date) === dayjs(new Date()).format("MMMM DD, YYYY");
+      const isApproved = b.status === "approved";
+
+      // Compare endTime with the current time
+      const endTimeInFormatted = parseTimeToDate(b.endTime); // Parse endTime to "HH:mm" format
+
+      // Return the filtering condition based on time comparison
+      return (
+        formattedDate &&
+        isApproved &&
+        endTimeInFormatted >= formattedCurrentTime
+      );
+    });
+  });
 
   if (isLoading) return <Loader />;
   if (isError) return <p>Error fetching data</p>;
@@ -283,6 +303,7 @@ function UpcomingMatch() {
               <TableCell>Facility</TableCell>
               <TableCell>Court</TableCell>
               <TableCell>Hour</TableCell>
+              <TableCell>Time</TableCell>
               <TableCell>Date</TableCell>
             </TableRow>
           </TableHead>
@@ -302,6 +323,9 @@ function UpcomingMatch() {
                   <TableCell>
                     {totalHour(match.startTime, match.endTime)}
                   </TableCell>
+                  <TableCell>
+                    {match.startTime}-{match.endTime}
+                  </TableCell>
                   <TableCell>{formatDate(match.date)}</TableCell>
                 </TableRow>
               ))
@@ -317,7 +341,7 @@ function UpcomingMatch() {
       </TableContainer>
     </Paper>
   );
-}
+};
 
 export default function AdminDashboard() {
   return (

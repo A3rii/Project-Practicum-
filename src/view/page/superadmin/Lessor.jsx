@@ -1,4 +1,3 @@
-import axios from "axios";
 import authToken from "./../../../utils/authToken";
 import Loader from "./../../../components/Loader";
 import { useState } from "react";
@@ -20,37 +19,21 @@ import {
   Button,
 } from "@mui/material";
 import { Delete as DeleteIcon, Info as InfoIcon } from "@mui/icons-material";
-const fetchLessors = async () => {
-  const token = authToken();
-  try {
-    const getLessors = await axios.get(
-      `${import.meta.env.VITE_API_URL}/moderator/find/lessors/ratings`,
-      {
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    return getLessors.data.lessor;
-  } catch (err) {
-    throw new Error(err.message);
-  }
-};
-
+import { resetPasswordAPI } from "./../../../api/superadmin/index";
 export default function Lessor() {
   const [openDelete, setOpenDelete] = useState(false);
   const [openDetails, setOpenDetails] = useState(false);
   const [sportCenterId, setSportCenterId] = useState(null);
   const [sportCenterName, setSportCenterName] = useState(null);
   const [sportCenterDetails, setSportCenterDetails] = useState(null);
+  const token = authToken();
   const {
     data: lessors,
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["lessors"],
-    queryFn: fetchLessors,
+    queryKey: ["lessors", token],
+    queryFn: () => resetPasswordAPI.fetchLessors(token),
   });
 
   //* delete facility

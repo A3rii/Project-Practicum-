@@ -17,20 +17,16 @@ import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import { v4 } from "uuid";
 import Loader from "./../../../components/Loader";
-import axios from "axios";
 import {
   PhotoCamera as PhotoCameraIcon,
   Settings as SettingsIcon,
 } from "@mui/icons-material";
-import authToken from "../../../utils/authToken";
 import { storage } from "./../../../firebase/firebase"; // make sure you have firebase initialized
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { notify, errorAlert } from "./../../../utils/toastAlert";
-
-
-
+import { profileAPI } from "./../../../api/superadmin/index";
 // Styling Input type of MUI component
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -44,44 +40,12 @@ const VisuallyHiddenInput = styled("input")({
   width: 1,
 });
 
-const headers = {
-  Accept: "application/json",
-  Authorization: `Bearer ${authToken()}`,
-  "Content-Type": "application/json",
-};
-
-const moderatorProfile = async () => {
-  try {
-    const { data } = await axios.get(
-      `${import.meta.env.VITE_API_URL}/auth/moderator/profile`,
-      { headers }
-    );
-    return data.moderator;
-  } catch (err) {
-    throw new Error(err.message);
-  }
-};
-
-const updateModerator = async (updateInformation) => {
-  try {
-    const { data } = await axios.put(
-      `${import.meta.env.VITE_API_URL}/auth/moderator/update`,
-      updateInformation,
-      { headers }
-    );
-    return data;
-  } catch (err) {
-    throw new Error(err.message);
-  }
-};
-
 export default function Profile() {
   const queryClient = useQueryClient();
 
   const [centerImage, setCenterImage] = useState(null);
   const [photoURL, setPhotoURL] = useState(null);
   const [file, setFile] = useState(null);
-  console.log(file);
 
   const {
     data: moderator,
@@ -89,7 +53,7 @@ export default function Profile() {
     isError,
   } = useQuery({
     queryKey: ["moderator"],
-    queryFn: moderatorProfile,
+    queryFn: profileAPI.moderatorProfile,
     refetchOnWindowFocus: true,
   });
 
@@ -101,7 +65,8 @@ export default function Profile() {
   });
 
   const updateModeratorProfile = useMutation({
-    mutationFn: (updateData, token) => updateModerator(updateData, token),
+    mutationFn: (updateData, token) =>
+      profileAPI.updateModerator(updateData, token),
     onSuccess: () => {
       notify("Update Successfully");
       queryClient.invalidateQueries({ queryKey: ["moderator"] });

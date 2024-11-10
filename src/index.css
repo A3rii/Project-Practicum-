@@ -90,13 +90,15 @@ a {
    padding: 1rem 3rem 1rem;
    background-color: var(--dark-blue);
    color: var(--white);
+   position: sticky;
+   top: 0;
+   z-index: 1000;
 }
 
 .header-title {
    font-size: 1rem;
    font-weight: 900;
    font-family: "Roboto", sans-serif;
-
 }
 
 .header-container i {

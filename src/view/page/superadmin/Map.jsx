@@ -1,20 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { MapContainer, TileLayer, Marker, Popup, Circle } from "react-leaflet";
-import axios from "axios";
 import Loader from "./../../../components/Loader";
 import "leaflet/dist/leaflet.css";
-
+import { mapAPI } from "./../../../api/superadmin/index";
 // Fetch sport centers location
-const fetchSportCentersLocation = async () => {
-  try {
-    const { data } = await axios.get(
-      `${import.meta.env.VITE_API_URL}/location/sportcenters/destination`
-    );
-    return data.coordinates;
-  } catch (err) {
-    throw new Error(err);
-  }
-};
+
 export default function Map() {
   const {
     data: locations,
@@ -22,7 +12,7 @@ export default function Map() {
     error,
   } = useQuery({
     queryKey: ["locations"],
-    queryFn: fetchSportCentersLocation,
+    queryFn: mapAPI.fetchSportCentersLocation,
     refetchOnWindowFocus: true,
   });
 

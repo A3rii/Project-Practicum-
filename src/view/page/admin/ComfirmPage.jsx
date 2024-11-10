@@ -1,3 +1,4 @@
+import "react-toastify/dist/ReactToastify.css";
 import {
   Paper,
   Typography,
@@ -43,20 +44,11 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ToastContainer } from "react-toastify";
 import { notify, errorAlert } from "./../../../utils/toastAlert";
 import { formatDate, totalHour } from "./../../../utils/timeCalculation";
-import useCurrentLessor from "./../../../utils/useCurrentLessor";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import "react-toastify/dist/ReactToastify.css";
-
-import {
-  fetchBookings,
-  fetchAndProcessExpiredBookings,
-  updateBookingStatus,
-  fetchSportCenter,
-  fetchCourt,
-  updateMultipleBookingStatus,
-} from "./../../../utils/bookingUtil";
+import { bookingAPI } from "./../../../api/admin/index";
+import useCurrentLessor from "./../../../utils/useCurrentLessor";
 
 const ConfirmPage = () => {
   const queryClient = useQueryClient();
@@ -98,7 +90,7 @@ const ConfirmPage = () => {
   };
 
   const bulkMutation = useMutation({
-    mutationFn: updateMultipleBookingStatus,
+    mutationFn: bookingAPI.updateMultipleBookingStatus,
     onSuccess: () => {
       notify("Bulk booking statuses updated");
       queryClient.invalidateQueries("bookings");
@@ -125,7 +117,7 @@ const ConfirmPage = () => {
 
   const { data: facilities } = useQuery({
     queryKey: ["facilities", lessor?._id],
-    queryFn: () => fetchSportCenter(lessor?._id),
+    queryFn: () => bookingAPI.fetchSportCenter(lessor?._id),
     keepPreviousData: true,
   });
 
@@ -133,20 +125,22 @@ const ConfirmPage = () => {
     queryKey: ["court", facility],
     queryFn: () => {
       const selectedFacility = facilities.find((fac) => fac.name === facility);
-      return selectedFacility ? fetchCourt(selectedFacility._id) : [];
+      return selectedFacility
+        ? bookingAPI.fetchCourt(selectedFacility._id)
+        : [];
     },
     enabled: !!facility,
   });
 
   const { data: pendingBookings, error } = useQuery({
     queryKey: ["bookings", pageTotal, facility, court, date],
-    queryFn: () => fetchBookings(pageTotal, facility, court, date),
+    queryFn: () => bookingAPI.fetchBookings(pageTotal, facility, court, date),
     keepPreviousData: true,
   });
 
   const expiredBookingsQuery = useQuery({
     queryKey: ["expiredBookings"],
-    queryFn: fetchAndProcessExpiredBookings,
+    queryFn: bookingAPI.fetchAndProcessExpiredBookings,
     refetchOnWindowFocus: false,
   });
 
@@ -157,7 +151,7 @@ const ConfirmPage = () => {
   }, [expiredBookingsQuery]);
 
   const mutation = useMutation({
-    mutationFn: updateBookingStatus,
+    mutationFn: bookingAPI.updateBookingStatus,
     onSuccess: () => {
       notify("Booking status updated");
       queryClient.invalidateQueries("bookings");

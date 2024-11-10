@@ -1205,11 +1205,11 @@
 
 
 /*Schedule*/
+
 .rbc-header {
    color: var(--white);
    background: var(--blue);
 }
-
 
 .rbc-header.rbc-today {
    background-color: var(--primary);
@@ -1240,8 +1240,6 @@
 /*Schedule*/
 
 /** Admins Page */
-
-
 
 
 /** Incoming Match */

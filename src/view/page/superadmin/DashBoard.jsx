@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import {
   Box,
@@ -19,36 +18,7 @@ import UserChart from "../../../components/Superadmin/UserChart";
 import SportsIcon from "@mui/icons-material/Sports";
 import PendingActionsIcon from "@mui/icons-material/PendingActions";
 import PersonIcon from "@mui/icons-material/Person";
-import authToken from "../../../utils/authToken";
-
-// API fetcher functions
-const fetchLessors = async () => {
-  const token = authToken();
-  const { data } = await axios.get(
-    `${import.meta.env.VITE_API_URL}/moderator/find/lessors`,
-    {
-      headers: {
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-  return data.lessors;
-};
-
-const fetchUsers = async () => {
-  const token = authToken();
-  const { data } = await axios.get(
-    `${import.meta.env.VITE_API_URL}/moderator/list/users`,
-    {
-      headers: {
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-  return data;
-};
+import { dashboardAPI } from "./../../../api/superadmin/index";
 
 // Reusable MetricCard component
 function MetricCard({ title, value, icon: Icon, color }) {
@@ -97,7 +67,7 @@ function MetricCard({ title, value, icon: Icon, color }) {
 function TotalApprovedLessor() {
   const { data: lessors = [] } = useQuery({
     queryKey: ["lessors"],
-    queryFn: fetchLessors,
+    queryFn: dashboardAPI.fetchLessors,
   });
   const approvedCount = lessors.filter(
     (center) => center.status === "approved"
@@ -116,7 +86,7 @@ function TotalApprovedLessor() {
 function TotalPendingLessor() {
   const { data: lessors = [] } = useQuery({
     queryKey: ["lessors"],
-    queryFn: fetchLessors,
+    queryFn: dashboardAPI.fetchLessors,
   });
   const pendingCount = lessors.filter(
     (center) => center.status === "pending"
@@ -133,7 +103,10 @@ function TotalPendingLessor() {
 }
 
 function TotalUsers() {
-  const { data } = useQuery({ queryKey: ["users"], queryFn: fetchUsers });
+  const { data } = useQuery({
+    queryKey: ["users"],
+    queryFn: dashboardAPI.fetchUsers,
+  });
   return (
     <MetricCard
       title="Users"
@@ -147,7 +120,7 @@ function TotalUsers() {
 function ListOpenSportCenter() {
   const { data: lessors = [] } = useQuery({
     queryKey: ["lessors"],
-    queryFn: fetchLessors,
+    queryFn: dashboardAPI.fetchLessors,
   });
   const openCount = lessors.filter((l) => l.time_availability).length;
 
@@ -163,7 +136,10 @@ function ListOpenSportCenter() {
 
 // List of Users Component
 function ListUsers() {
-  const { data } = useQuery({ queryKey: ["users"], queryFn: fetchUsers });
+  const { data } = useQuery({
+    queryKey: ["users"],
+    queryFn: dashboardAPI.fetchUsers,
+  });
 
   return (
     <Paper

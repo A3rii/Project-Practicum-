@@ -14,9 +14,11 @@ import { useState } from "react";
 import { v4 } from "uuid";
 import { notify, errorAlert } from "./../../../utils/toastAlert";
 import axios from "axios";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import SportsBasketballIcon from "@mui/icons-material/SportsBasketball";
+import {
+  CloudUpload as CloudUploadIcon,
+  AttachMoney as AttachMoneyIcon,
+  SportsBasketball as SportsBasketballIcon,
+} from "@mui/icons-material/";
 import authToken from "../../../utils/authToken";
 
 const VisuallyHiddenInput = styled("input")({

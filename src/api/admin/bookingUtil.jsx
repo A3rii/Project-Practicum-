@@ -1,6 +1,7 @@
 import axios from "axios";
-import authToken from "./../utils/authToken";
-import { formatDate } from "./../utils/timeCalculation";
+import authToken from "../../utils/authToken";
+import { formatDate } from "../../utils/timeCalculation";
+
 //* Fetch all pending bookings with optional facility and court filters
 export const fetchBookings = async (page, facility, court, date) => {
   const token = authToken();
