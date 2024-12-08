@@ -6,7 +6,7 @@ import { registerUser } from "./../../../../app/slice";
 export default function SignUp() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, error } = useSelector((state) => state.user);
+  const { loading } = useSelector((state) => state.user);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -145,7 +145,7 @@ export default function SignUp() {
               Your login does not match requirement
             </p>
           )}
-          {error && <div className="">{error}</div>}
+
           <div className="signUp-return">
             <Link to="/Login">
               <span className="signUp-toGuest"> Sign In page</span>

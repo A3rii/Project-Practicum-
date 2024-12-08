@@ -6,12 +6,12 @@ import { getStorage } from "firebase/storage";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyD9B9Dap940QV0iW1Tza7SzC4xqOD6dyaw",
-  authDomain: "sport-lessor.firebaseapp.com",
-  projectId: "sport-lessor",
-  storageBucket: "sport-lessor.appspot.com",
-  messagingSenderId: "260870240777",
-  appId: "1:260870240777:web:3ddd81982d5c7dd61696d8",
+  apiKey: import.meta.env.VITE_APP_API_FIREBASE_KEY,
+  authDomain: import.meta.env.VITE_APP_AUTH_FIREBASE_DOMAIN,
+  projectId: import.meta.env.VITE_APP_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_APP_FIREBASE_APP_ID,
 };
 
 // Initialize Firebase

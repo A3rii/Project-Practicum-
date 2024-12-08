@@ -96,7 +96,7 @@ export default function AdminCenter() {
                   gap: ".8rem",
                 }}>
                 <Typography sx={{ fontSize: ".9rem", fontWeight: "bold" }}>
-                  Open / Close
+                  Close / Open
                 </Typography>
                 <GreenSwitch
                   timeAvailability={currentLessor?.time_availability}

@@ -21,6 +21,8 @@ import {
   InputLabel,
   Stack,
   Box,
+  Tooltip,
+  Button,
 } from "@mui/material";
 import useCurrentLessor from "./../../../utils/useCurrentLessor";
 import { useQuery } from "@tanstack/react-query";
@@ -28,9 +30,11 @@ import { formatDate, totalHour } from "./../../../utils/timeCalculation";
 import {
   Replay as ReplayIcon,
   FilterList as FilterListIcon,
+  IosShare as IosShareIcon,
 } from "@mui/icons-material";
 import authToken from "./../../../utils/authToken";
 import Loader from "./../../../components/Loader";
+import { exportToExcel } from "./../../../utils/excel";
 import { incomingBookingAPI } from "./../../../api/admin/index";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -140,8 +144,9 @@ export default function IncomingMatch() {
       );
     }
 
-    return filteredBookings.map((data, key) => (
-      <TableRow key={key}>
+    return filteredBookings.map((data, index) => (
+      <TableRow key={data._id}>
+        <TableCell>{index + 1} </TableCell>
         <TableCell align="left">
           {data?.user?.name || data?.outside_user?.name || "N/A"}
         </TableCell>
@@ -170,6 +175,14 @@ export default function IncomingMatch() {
       </TableRow>
     ));
   }, [filteredBookings]);
+
+  // Download The Report
+  const downloadDataReport = (listBookings) => {
+    if (listBookings.length === 0) {
+      return;
+    }
+    exportToExcel(listBookings);
+  };
 
   // If it is still fetching data
   if (isLoading) return <Loader />;
@@ -229,6 +242,7 @@ export default function IncomingMatch() {
             <FilterListIcon />
             <Typography>Filter</Typography>
           </Stack>
+
           <Popover
             id={id}
             open={open}
@@ -261,6 +275,7 @@ export default function IncomingMatch() {
                   ))}
                 </Select>
               </FormControl>
+
               <FormControl sx={{ minWidth: 120 }} size="small">
                 <InputLabel>Court</InputLabel>
                 <Select
@@ -299,6 +314,14 @@ export default function IncomingMatch() {
             </FormControl>
           </Popover>
         </div>
+        <Tooltip title={"Export report"}>
+          <Button
+            variant="contained"
+            onClick={() => downloadDataReport(filteredBookings)}
+            startIcon={<IosShareIcon />}>
+            Export
+          </Button>
+        </Tooltip>
       </div>
 
       <Divider />
@@ -307,6 +330,7 @@ export default function IncomingMatch() {
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
+              <TableCell>ID</TableCell>
               <TableCell>User</TableCell>
               <TableCell align="left">Phone Number</TableCell>
               <TableCell align="center">Facility</TableCell>

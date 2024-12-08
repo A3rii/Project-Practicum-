@@ -20,24 +20,26 @@ export default function Location() {
   const lessor = useCurrentLessor();
   const queryClient = useQueryClient();
 
+  // State for latitude and longitude
   const [coordinatesData, setCoordinatesData] = useState({
     latitude: lessor?.location?.coordinates[1] || "",
     longitude: lessor?.location?.coordinates[0] || "",
   });
 
-  // get the text field input
+  // Update state when text fields are changed
   const handleChange = useCallback(
     (e) => {
       const { name, value } = e.target;
-      setCoordinatesData({ ...coordinatesData, [name]: value });
+      setCoordinatesData({ ...coordinatesData, [name]: parseFloat(value) });
     },
     [coordinatesData]
   );
 
+  // Mutation for updating location
   const updateLocation = useMutation({
     mutationFn: (updateData) => locationAPI.setLocation(updateData),
     onSuccess: () => {
-      notify("Location update successfully");
+      notify("Location updated successfully");
       queryClient.invalidateQueries({ queryKey: ["location"] });
     },
     onError: () => {
@@ -45,7 +47,7 @@ export default function Location() {
     },
   });
 
-  // Handle submitting the coordinates of your current location
+  // Submit coordinates to the server
   const handleSubmitCoordinate = () => {
     const coordinates = {
       latitude: coordinatesData.latitude,
@@ -53,6 +55,11 @@ export default function Location() {
     };
 
     updateLocation.mutate(coordinates);
+  };
+
+  // Update coordinates when a location is selected on the map
+  const handleMapLocationChange = (lat, lng) => {
+    setCoordinatesData({ latitude: lat, longitude: lng });
   };
 
   return (
@@ -97,7 +104,7 @@ export default function Location() {
               textAlign: "center",
               fontWeight: "bold",
             }}>
-            Your Currrent Location
+            Your Current Location
           </Typography>
           <Divider sx={{ width: "100%" }}>
             <Chip label="Address" size="small" />
@@ -125,13 +132,13 @@ export default function Location() {
             <TextField
               label="Latitude"
               onChange={handleChange}
-              value={coordinatesData.latitude}
+              value={coordinatesData.latitude || ""}
               variant="outlined"
               name="latitude"
               type="number"
             />
             <TextField
-              value={coordinatesData.longitude}
+              value={coordinatesData.longitude || ""}
               onChange={handleChange}
               label="Longitude"
               name="longitude"
@@ -147,6 +154,7 @@ export default function Location() {
           latitude={coordinatesData.latitude}
           longitude={coordinatesData.longitude}
           name={lessor?.sportcenter_name || ""}
+          onLocationChange={handleMapLocationChange} 
         />
       </Box>
     </>

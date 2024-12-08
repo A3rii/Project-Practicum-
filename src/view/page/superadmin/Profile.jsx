@@ -24,7 +24,7 @@ import {
 import { storage } from "./../../../firebase/firebase"; // make sure you have firebase initialized
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { notify, errorAlert } from "./../../../utils/toastAlert";
 import { profileAPI } from "./../../../api/superadmin/index";
 // Styling Input type of MUI component
@@ -54,7 +54,6 @@ export default function Profile() {
   } = useQuery({
     queryKey: ["moderator"],
     queryFn: profileAPI.moderatorProfile,
-    refetchOnWindowFocus: true,
   });
 
   const [formData, setFormData] = useState({
@@ -63,6 +62,16 @@ export default function Profile() {
     phoneNumber: moderator?.phone_number || "",
     avatar: moderator?.avatar || "",
   });
+  useEffect(() => {
+    if (moderator) {
+      setFormData({
+        name: moderator.name || "",
+        email: moderator.email || "",
+        phoneNumber: moderator.phone_number || "",
+        avatar: moderator.avatar || "",
+      });
+    }
+  }, [moderator]);
 
   const updateModeratorProfile = useMutation({
     mutationFn: (updateData, token) =>

@@ -244,10 +244,10 @@ const FilterSideBar = ({ data, setData }) => {
   return (
     <Paper
       sx={{
-        width: { xs: "90%", sm: "80%", md: "50%", lg: "25%" }, // Responsive widths
+        width: { xs: "90%", sm: "80%", md: "50%", lg: "25%" },
         maxWidth: "100%",
         height: "100%",
-        padding: { xs: "1rem", sm: "1.5rem", md: "2rem" }, // Responsive padding
+        padding: { xs: "1rem", sm: "1.5rem", md: "2rem" },
         margin: "1rem",
         display: "flex",
         flexDirection: "column",

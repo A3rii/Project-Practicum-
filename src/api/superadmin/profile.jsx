@@ -1,17 +1,17 @@
 import authToken from "./../../utils/authToken";
 import axios from "axios";
 
-const headers = {
-  Accept: "application/json",
-  Authorization: `Bearer ${authToken()}`,
-  "Content-Type": "application/json",
-};
-
 const moderatorProfile = async () => {
+  const token = authToken();
   try {
     const { data } = await axios.get(
       `${import.meta.env.VITE_API_URL}/auth/moderator/profile`,
-      { headers }
+      {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
     return data.moderator;
   } catch (err) {
@@ -20,11 +20,17 @@ const moderatorProfile = async () => {
 };
 
 const updateModerator = async (updateInformation) => {
+  const token = authToken();
   try {
     const { data } = await axios.put(
       `${import.meta.env.VITE_API_URL}/auth/moderator/update`,
       updateInformation,
-      { headers }
+      {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
     return data;
   } catch (err) {

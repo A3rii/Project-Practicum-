@@ -1,8 +1,10 @@
 import axios from "axios";
+import authToken from "./../../utils/authToken";
 
 // Fetch lessor for moderators
 const fetchLessors = async (token, lessorId) => {
   try {
+    const token = authToken();
     const getLessors = await axios.get(
       `${import.meta.env.VITE_API_URL}/moderator/find/lessors`,
       {

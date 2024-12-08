@@ -20,9 +20,13 @@ import {
   parseTimeToDate,
 } from "../../../utils/timeCalculation";
 import { useQuery } from "@tanstack/react-query";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import AccessAlarmsIcon from "@mui/icons-material/AccessAlarms";
-import BookIcon from "@mui/icons-material/Book";
+import {
+  Book as BookIcon,
+  AccessAlarms as AccessAlarmsIcon,
+  AccountCircle as AccountCircleIcon,
+  EventBusy as EventBusyIcon,
+} from "@mui/icons-material";
+
 import dayjs from "dayjs";
 import Loader from "../../../components/Loader";
 import BookingChart from "../../../components/AdminComponent/Chart/BookingChart";
@@ -89,7 +93,7 @@ function TotalCustomer() {
   );
 }
 
-function MatchAcception() {
+const MatchAcception = () => {
   const {
     data: totalBooking,
     isLoading,
@@ -109,7 +113,30 @@ function MatchAcception() {
       color="#50C878"
     />
   );
-}
+};
+
+const RejectionBooking = () => {
+  const {
+    data: rejectionBookings,
+    isLoading,
+    isError,
+  } = useBookingsData(
+    "rejectionBookings",
+    (bookings) =>
+      bookings.filter((booking) => booking.status === "rejected").length
+  );
+
+  if (isLoading) return <Loader />;
+  if (isError) return <p>Error fetching data</p>;
+  return (
+    <InfoCard
+      title="Rejected Bookings"
+      value={rejectionBookings}
+      icon={EventBusyIcon}
+      color="#EF5350"
+    />
+  );
+};
 
 function TotalBooking() {
   const {
@@ -246,7 +273,6 @@ const UpcomingMatch = () => {
 
     return cambodianHourMinute;
   };
-  console.log(cambodianTimeZone());
 
   const {
     data: matches,
@@ -346,14 +372,17 @@ const UpcomingMatch = () => {
 export default function AdminDashboard() {
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} sm={12} md={4} lg={4}>
+      <Grid item xs={12} sm={12} md={4} lg={3}>
         <TotalBooking />
       </Grid>
-      <Grid item xs={12} sm={12} md={4} lg={4}>
+      <Grid item xs={12} sm={12} md={4} lg={3}>
         <TotalCustomer />
       </Grid>
-      <Grid item xs={12} sm={12} md={4} lg={4}>
+      <Grid item xs={12} sm={12} md={4} lg={3}>
         <MatchAcception />
+      </Grid>
+      <Grid item xs={12} sm={12} md={4} lg={3}>
+        <RejectionBooking />
       </Grid>
       <Grid item xs={12} sm={12} md={12} lg={8}>
         <BookingChart />

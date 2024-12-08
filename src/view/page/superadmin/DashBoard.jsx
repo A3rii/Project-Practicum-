@@ -1,4 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
+import CountUp from "react-countup";
+
 import {
   Box,
   Typography,
@@ -46,7 +48,7 @@ function MetricCard({ title, value, icon: Icon, color }) {
         </Typography>
         <Typography
           sx={{ fontSize: { xs: "1.6rem", sm: "2rem" }, fontWeight: "bold" }}>
-          {value}
+          <CountUp start={0} end={parseInt(value)} duration={2.5} />
         </Typography>
       </Box>
       <Icon

@@ -6,7 +6,7 @@ import { useState } from "react";
 export default function Login() {
   const [credential, setCredential] = useState("");
   const [password, setPassword] = useState("");
-  const { loading, error } = useSelector((state) => state.user);
+  const { loading } = useSelector((state) => state.user);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -15,11 +15,7 @@ export default function Login() {
     window.location.href = `${import.meta.env.VITE_API_URL}/auth/google`;
   };
 
-  /**
-   *
-   *  wheater user login with email or phone number
-   *
-   * **/
+  //wheater user login with email or phone number
   const handleOnLogin = (e) => {
     e.preventDefault();
     let userCredentials = {
@@ -46,11 +42,6 @@ export default function Login() {
     <>
       <div className="login-container">
         <h2> Welcome to Sport Rental </h2>
-        <Link to="/signup">
-          <button type="button" className="login-Signup">
-            SIGN UP NOW
-          </button>
-        </Link>
 
         <Link to="/signin-admin">
           <button type="button" className="login-Lessor">
@@ -105,10 +96,11 @@ export default function Login() {
             className="login-SignIn">
             {loading ? "Loading..." : "Sign In"}
           </button>
-          {error && <div className="">{error}</div>}
 
           <div className="login-return">
-            <span> Forget Password</span>
+            <Link to="/signup">
+              <span className="login-toGuest"> Sign Up</span>
+            </Link>
             <Link to="/">
               <span className="login-toGuest">Continue as a guest </span>
             </Link>

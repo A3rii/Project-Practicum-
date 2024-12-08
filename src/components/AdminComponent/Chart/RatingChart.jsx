@@ -1,5 +1,5 @@
 import { Doughnut } from "react-chartjs-2";
-import { Paper, Typography, Box, Stack } from "@mui/material";
+import { Paper, Typography, Box } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import useCurrentLessor from "./../../../utils/useCurrentLessor";
@@ -98,34 +98,6 @@ export default function RatingChart() {
         gutterBottom>
         Ratings Overview
       </Typography>
-
-      <Stack
-        sx={{
-          display: { lg: "flex", xs: "none" },
-          justifyContent: "center",
-          alignItems: "center",
-        }}>
-        <Box
-          sx={{
-            width: "2.5rem",
-            height: "2.5rem",
-            background: "#ffa500",
-            borderRadius: "50%",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}>
-          <Typography
-            sx={{
-              fontSize: "1.2rem",
-              fontWeight: "bold",
-              color: "#fff",
-              textAlign: "center",
-            }}>
-            {averageStars?.averageStars}
-          </Typography>
-        </Box>
-      </Stack>
 
       <Box
         sx={{

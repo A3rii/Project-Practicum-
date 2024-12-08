@@ -24,9 +24,9 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { confirmLessorAPI } from "./../../../api/superadmin/index";
 
 //* Information modal for specific lessor
-const InformationModal = ({ token, lessorId }) => {
+const InformationModal = (lessorId) => {
   const { data: lessorById } = useQuery({
-    queryKey: ["lessorsById", token, lessorId],
+    queryKey: ["lessorsById", lessorId],
     queryFn: () => confirmLessorAPI.fetchLessors(lessorId),
     enable: !!lessorId,
   });
@@ -191,7 +191,7 @@ export default function ConfirmLessor() {
                   {/* Email */}
                   <TableCell align="center">{data.phone_number}</TableCell>
                   <TableCell align="center">
-                    {<InformationModal token={token} lessorId={data._id} />}
+                    {<InformationModal lessorId={data._id} />}
                   </TableCell>
                   <TableCell align="center">
                     {dayjs(data.created_at).format("MMMM DD, YYYY")}

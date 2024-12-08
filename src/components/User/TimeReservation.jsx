@@ -103,8 +103,7 @@ export default function TimeAvailability({ sportCenterId, facility, court }) {
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <Paper
             sx={{
-              border: "1px solid #000",
-              width: "100%",
+              width: "50%",
               maxWidth: { xs: "100%", md: "40%" },
             }}>
             <DateCalendar

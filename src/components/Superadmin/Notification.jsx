@@ -144,7 +144,7 @@ export default function Notification() {
                 variant="outlined"
                 sx={{ width: "100%" }}
                 severity="success">
-                No Bookings
+                No notification
               </Alert>
             )}
           </Box>
