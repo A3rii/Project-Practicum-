@@ -1,4 +1,3 @@
-import "react-toastify/dist/ReactToastify.css";
 import ContactInfo from "../../../components/ContactInfo";
 import CardSwiper from "../../../components/CardSwiper";
 import axios from "axios";
@@ -72,7 +71,10 @@ export default function SportField() {
 
         {/** Date and Time */}
         <div className="sport-reserve">
-          <ReservationDate court={facilityInformation.court} />
+          <ReservationDate
+            court={facilityInformation.court}
+            price={facilityInformation.price}
+          />
         </div>
       </div>
 
@@ -84,7 +86,7 @@ export default function SportField() {
         />
       </div>
 
-      <div className="sportField-Slider">
+      {/* <div className="sportField-Slider">
         <Typography
           variant="h2"
           sx={{
@@ -108,7 +110,7 @@ export default function SportField() {
           }}>
           <CardSwiper court={facilityInformation.court} />
         </Box>
-      </div>
+      </div> */}
 
       <div className="center-contact">
         <ContactInfo />

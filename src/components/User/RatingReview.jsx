@@ -13,60 +13,10 @@ import CommentsSection from "./../../components/User/Comment";
 import { useState, useCallback } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { notify, errorAlert } from "./../../utils/toastAlert";
-import authToken from "./../../utils/authToken";
-import axios from "axios";
+import { ratingAPI } from "./../../api/user/index";
 import currentUser from "./../../utils/currentUser";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
-
-const postComment = async (userId, sportCenterId, comment, ratingValue) => {
-  const token = authToken();
-
-  const information = {
-    postBy: userId,
-    postTo: sportCenterId,
-    comment: comment,
-    ratingValue: ratingValue,
-  };
-
-  try {
-    await axios.post(
-      `${import.meta.env.VITE_API_URL}/user/posts/comments`,
-      information,
-      {
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-  } catch (err) {
-    console.error("Error posting comment:", err);
-    throw new Error("Failed to post comment. Please try again later.");
-  }
-};
-
-const averageRating = async (sportCenterId) => {
-  try {
-    const rating = await axios.get(
-      `${import.meta.env.VITE_API_URL}/rating/average/reviews/${sportCenterId}`
-    );
-    return rating.data || [];
-  } catch (err) {
-    throw new Error(err);
-  }
-};
-
-const ratingOverview = async (sportCenterId) => {
-  try {
-    const rating = await axios.get(
-      `${import.meta.env.VITE_API_URL}/rating/overviews/${sportCenterId}`
-    );
-    return rating.data.count;
-  } catch (err) {
-    throw new Error(err);
-  }
-};
 
 export default function RatingReview({ sportCenterId }) {
   const user = currentUser();
@@ -76,7 +26,7 @@ export default function RatingReview({ sportCenterId }) {
 
   const mutation = useMutation({
     mutationFn: () =>
-      postComment(user?._id, sportCenterId, comment, ratingValue),
+      ratingAPI.postComment(user?._id, sportCenterId, comment, ratingValue),
     onSuccess: () => {
       queryClient.invalidateQueries(["userComments", sportCenterId]);
       notify("Comment posted successfully");
@@ -90,13 +40,13 @@ export default function RatingReview({ sportCenterId }) {
 
   const { data: rating } = useQuery({
     queryKey: ["rating", sportCenterId],
-    queryFn: () => averageRating(sportCenterId),
+    queryFn: () => ratingAPI.averageRating(sportCenterId),
     enable: !!sportCenterId,
   });
 
   const { data: overviewRating } = useQuery({
     queryKey: ["overviewRating", sportCenterId],
-    queryFn: () => ratingOverview(sportCenterId),
+    queryFn: () => ratingAPI.ratingOverview(sportCenterId),
     enable: !!sportCenterId,
   });
 

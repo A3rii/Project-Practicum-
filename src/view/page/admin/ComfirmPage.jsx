@@ -185,7 +185,6 @@ const ConfirmPage = () => {
           onChange={() => handleSelect(data)}
         />
       </TableCell>
-      <TableCell> {key + 1} </TableCell>
       <TableCell align="left">
         {data?.user?.name || data?.outside_user?.name}
       </TableCell>

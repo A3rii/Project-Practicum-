@@ -26,6 +26,8 @@ import Error from "./components/Error";
 import LoginSuperAdmin from "./view/page/superadmin/auth/Login";
 import SuperAdmin from "./view/page/superadmin/Sidebar";
 import Credentials from "./view/page/superadmin/Credentials";
+import BakongQr from "./components/Payment/BakongQr";
+import UserPayment from "./view/page/admin/UserPayment";
 
 const Map = lazy(() => import("./view/page/superadmin/Map"));
 const Location = lazy(() => import("./view/page/admin/Location"));
@@ -45,7 +47,6 @@ const Lessor = lazy(() => import("./view/page/superadmin/Lessor"));
 const BookingHistory = lazy(() => import("./view/page/user/BookingHistory"));
 const CenterDetail = lazy(() => import("./view/page/user/CenterDetail"));
 const SportField = lazy(() => import("./view/page/user/SportField"));
-const Payment = lazy(() => import("./view/page/user/Payment"));
 
 const HomeDashboard = lazy(() => import("./view/page/admin/HomeDashboard"));
 const IncomingMatch = lazy(() => import("./view/page/admin/IncomingMatch"));
@@ -116,7 +117,6 @@ export default function App() {
                 element={<SportField />}
               />
             </Route>
-            <Route path="/payment" element={<Payment />} />
             <Route path="/contact" element={<Contact />} />
             <Route element={<UserProtectedRoute />}>
               <Route path="/incoming-match" element={<UserIncomingMatch />} />
@@ -128,6 +128,7 @@ export default function App() {
               </Route>
             </Route>
             <Route path="/signup-admin" element={<SignUpLessor />} />
+            <Route path="/bakong-qr" element={<BakongQr />} />
           </Route>
 
           {/* Map */}
@@ -153,6 +154,7 @@ export default function App() {
                 />
               </Route>
               <Route path="/admin/schedule" element={<Schedule />} />
+              <Route path="/admin/payment" element={<UserPayment />} />
               <Route path="/admin/lessor-profile" element={<Profile />} />
               <Route path="/admin/facility" element={<Facility />} />
               <Route

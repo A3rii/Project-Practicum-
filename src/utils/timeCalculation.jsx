@@ -7,6 +7,11 @@ const formatDate = (date) => {
   return dayjs(date).format("MMMM DD, YYYY");
 };
 
+// Time formatter
+const formatTime = (time) => {
+  return dayjs(time).format("hh:mm a");
+};
+
 // Calculate the total hours
 const totalHour = (start, end) => {
   const startTime = moment(start, ["h:mm a", "hh:mm a"]);
@@ -15,7 +20,6 @@ const totalHour = (start, end) => {
   const duration = moment.duration(endTime.diff(startTime));
   const hours = duration.hours();
   const minutes = duration.minutes();
-
   return `${hours}h ${minutes}m`;
 };
 
@@ -82,6 +86,7 @@ const parseTimeToDate = (time) => {
 
 export {
   formatDate,
+  formatTime,
   totalHour,
   timeOverlapping,
   parseTimeString,

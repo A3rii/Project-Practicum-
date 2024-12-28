@@ -2,10 +2,6 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import "react-toastify/dist/ReactToastify.css";
 import { Calendar, dateFnsLocalizer, Views } from "react-big-calendar";
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { TimePicker, DatePicker } from "@mui/x-date-pickers";
-import dayjs from "dayjs";
 import format from "date-fns/format";
 import getDay from "date-fns/getDay";
 import parse from "date-fns/parse";
@@ -13,32 +9,25 @@ import startOfWeek from "date-fns/startOfWeek";
 import authToken from "./../../../utils/authToken";
 import useCurrentLessor from "../../../utils/useCurrentLessor";
 import { ToastContainer } from "react-toastify";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { scheduleAPI } from "./../../../api/admin/index";
 import {
   Paper,
   Button,
-  TextField,
-  Modal,
-  Divider,
   Box,
-  Typography,
   InputLabel,
   Select,
   FormControl,
   MenuItem,
 } from "@mui/material";
 import {
-  AccountBox as AccountBoxIcon,
   Add as AddIcon,
+  Upcoming as UpcomingIcon,
+  Today as TodayIcon,
 } from "@mui/icons-material";
-import ObjectID from "bson-objectid";
-import { notify, errorAlert } from "./../../../utils/toastAlert";
-import {
-  timeOverlapping,
-  parseTimeString,
-} from "./../../../utils/timeCalculation";
+import { parseTimeString } from "./../../../utils/timeCalculation";
+import { ScheduleModal } from "../../../components/AdminComponent/Schedule/ScheduleModal";
+import { MatchBox } from "../../../components/AdminComponent/Schedule/MatchBox";
+import { UpcomingMatch } from "../../../components/AdminComponent/Schedule/UpcomingMatch";
 const locales = {
   "en-US": import("date-fns/locale/en-US"),
 };
@@ -57,19 +46,11 @@ const localizer = dateFnsLocalizer({
 });
 
 export default function Schedule() {
-  const queryClient = useQueryClient();
   const token = authToken();
   const currentLessor = useCurrentLessor();
 
   // States for booking requirements
   const [events, setEvents] = useState([]);
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [facility, setFacility] = useState("");
-  const [date, setDate] = useState(dayjs());
-  const [selectedCourt, setSelectedCourt] = useState("");
-  const [startTime, setStartTime] = useState(dayjs());
-  const [endTime, setEndTime] = useState(dayjs());
   const [open, setOpen] = useState(false);
   const [filterFacility, setFiltertFacility] = useState("");
 
@@ -78,29 +59,6 @@ export default function Schedule() {
     () => currentLessor?.facilities || [],
     [currentLessor]
   );
-
-  // Fetching court details
-  const { data: court = [] } = useQuery({
-    queryKey: ["court", facility],
-    queryFn: () => {
-      const selectedFacility = getFacilities.find(
-        (fac) => fac.name === facility
-      );
-      return selectedFacility
-        ? scheduleAPI.fetchCourt(selectedFacility._id)
-        : [];
-    },
-    enabled: !!facility,
-  });
-
-  // Fetching available time slots
-  const { data: timeSlots = [] } = useQuery({
-    queryKey: ["timeSlots", currentLessor?._id, date, facility, selectedCourt],
-    queryFn: () =>
-      scheduleAPI.fetchTime(currentLessor?._id, date, facility, selectedCourt),
-    enabled: !!(currentLessor && date && facility && selectedCourt),
-    staleTime: 1000 * 60 * 5,
-  });
 
   // Fetching bookings
   const fetchBooking = useCallback(async () => {
@@ -140,84 +98,10 @@ export default function Schedule() {
     }
   }, [currentLessor, fetchBooking]);
 
-  // Booking mutation
-  const bookingMutation = useMutation({
-    mutationFn: (bookingRequirement) =>
-      axios.post(
-        `${import.meta.env.VITE_API_URL}/books/sport-center`,
-        bookingRequirement,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      ),
-    onSuccess: () => {
-      queryClient.invalidateQueries("timeSlots");
-      resetBookingForm();
-      notify("Booking Successfully");
-    },
-    onError: () => {
-      errorAlert("Booking Failed");
-    },
-  });
-
-  // Reset booking form
-  const resetBookingForm = () => {
-    setName("");
-    setPhone("");
-    setFacility("");
-    setDate(dayjs());
-    setSelectedCourt("");
-    setStartTime(dayjs());
-    setEndTime(dayjs());
-    setOpen(false);
-  };
-
-  // Handle add booking event
-  const handleAddEvent = (e) => {
-    e.preventDefault();
-
-    const start = startTime.format("HH:mm");
-    const end = endTime.format("HH:mm");
-
-    // Check for overlapping bookings
-    const isTimeSlotBooked = timeSlots?.some(
-      (slot) =>
-        (slot.court === selectedCourt &&
-          timeOverlapping(start, end, slot.start, slot.end)) ||
-        ["approved"].includes(slot.status)
-    );
-
-    if (isTimeSlotBooked) {
-      errorAlert("Time slots has already booked");
-      resetBookingForm();
-      return;
-    }
-    if (dayjs(date).isBefore(dayjs(), "day")) {
-      errorAlert("The date is not available");
-      resetBookingForm();
-      return;
-    }
-
-    const bookingRequirement = {
-      user: new ObjectID().toString(),
-      outside_user: { name, phone_number: phone },
-      lessor: currentLessor._id,
-      facility,
-      court: selectedCourt,
-      date: date.toISOString(),
-      startTime: startTime.format("hh:mm a"),
-      endTime: endTime.format("hh:mm a"),
-    };
-
-    bookingMutation.mutate(bookingRequirement);
-  };
-
   return (
     <>
       <ToastContainer position="top-right" autoClose={5000} theme="colored" />
-      <Box
+      {/* <Box
         sx={{
           display: "flex",
           justifyContent: "space-between",
@@ -245,167 +129,50 @@ export default function Schedule() {
             </Select>
           </FormControl>
         </Paper>
-      </Box>
-      <Modal
-        keepMounted
-        open={open}
-        aria-labelledby="keep-mounted-modal-title"
-        aria-describedby="keep-mounted-modal-description">
+      </Box> */}
+      {open && (
+        <ScheduleModal openModal={open} onCloseModal={() => setOpen(false)} />
+      )}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          gap: "2rem",
+          alignItems: "start",
+          marginTop: "1rem",
+        }}>
+        <Calendar
+          defaultView={Views.MONTH}
+          events={events}
+          localizer={localizer}
+          startAccessor="start"
+          endAccessor="end"
+          dayLayoutAlgorithm="no-overlap"
+          style={{ height: 500, width: "60%" }}
+        />
         <Box
           sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: 600,
-            bgcolor: "background.paper",
-            boxShadow: 24,
-            p: 4,
-            borderRadius: "5px",
+            display: "flex",
+            justifyContent: "start",
+            alignItems: "start",
+            gap: "1rem",
+            flexDirection: "column",
           }}>
-          <Typography
-            gutterBottom
-            sx={{ fontWeight: "bold", marginBottom: "1rem" }}>
-            Create An Event
-          </Typography>
-          <Divider />
-
-          {/* Date Picker */}
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              gap: "1.5rem",
-              marginTop: ".5rem",
-            }}>
-            <TextField
-              sx={{ flex: 1 }}
-              InputProps={{
-                endAdornment: <AccountBoxIcon style={{ color: "#888" }} />,
-              }}
-              label="Enter Name"
-              variant="outlined"
-              onChange={(e) => setName(e.target.value)}
-              value={name}
-            />
-            <TextField
-              sx={{ flex: 1 }}
-              InputProps={{
-                endAdornment: <AccountBoxIcon style={{ color: "#888" }} />,
-              }}
-              label="Phone"
-              variant="outlined"
-              onChange={(e) => setPhone(e.target.value)}
-              value={phone}
-            />
-          </Box>
-          <Box sx={{ marginTop: "1rem" }}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                label="Select Date"
-                value={date}
-                onChange={setDate}
-                sx={{ width: "100%" }}
-              />
-            </LocalizationProvider>
-          </Box>
-
-          {/* Court and Facility Picker */}
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              gap: "1rem",
-              marginTop: "1rem",
-            }}>
-            <FormControl sx={{ flex: 1 }}>
-              <InputLabel>Facility</InputLabel>
-              <Select
-                value={facility}
-                onChange={(e) => setFacility(e.target.value)}>
-                {getFacilities.map((fac, key) => (
-                  <MenuItem key={key} value={fac.name}>
-                    {fac.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-
-            <FormControl sx={{ flex: 1 }}>
-              <InputLabel>Court</InputLabel>
-              <Select
-                value={selectedCourt}
-                onChange={(e) => setSelectedCourt(e.target.value)}>
-                {court.map((data, key) => (
-                  <MenuItem key={key} value={data.name}>
-                    {data.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Box>
-
-          {/* Time Picker */}
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              gap: "1rem",
-              marginTop: "1rem",
-            }}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <TimePicker
-                value={startTime}
-                onChange={setStartTime}
-                label="Start Time"
-                sx={{ flex: 1 }}
-              />
-              <TimePicker
-                value={endTime}
-                onChange={setEndTime}
-                label="End Time"
-                sx={{ flex: 1 }}
-              />
-            </LocalizationProvider>
-          </Box>
-
-          <Divider sx={{ margin: "1rem 0" }} />
-
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "flex-end",
-              alignItems: "center",
-              gap: "1rem",
-            }}>
-            <Button
-              variant="outlined"
-              color="error"
-              onClick={() => {
-                resetBookingForm();
-                setOpen(false);
-              }}>
-              Cancel
-            </Button>
-            <Button variant="outlined" onClick={handleAddEvent}>
-              Confirm
-            </Button>
-          </Box>
+          <MatchBox
+            name={"Upcoming Match"}
+            icon={UpcomingIcon}
+            color="#FFB74D"
+            number={2}
+          />
+          <MatchBox
+            name={"Today Match"}
+            icon={TodayIcon}
+            color="#42A5F5"
+            number={2}
+          />
+          <UpcomingMatch />
         </Box>
-      </Modal>
-
-      <Calendar
-        defaultView={Views.DAY}
-        events={events}
-        localizer={localizer}
-        startAccessor="start"
-        endAccessor="end"
-        dayLayoutAlgorithm="no-overlap"
-        style={{ height: 500, margin: "50px" }}
-      />
+      </Box>
     </>
   );
 }

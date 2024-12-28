@@ -31,6 +31,7 @@ import {
   Logout as LogoutIcon,
   AccountCircle as AccountCircleIcon,
   Map as MapIcon,
+  Payment as PaymentIcon,
 } from "@mui/icons-material";
 import Notification from "../../../components/AdminComponent/Notification/Notification.jsx";
 import useCurrentLessor from "../../../utils/useCurrentLessor.jsx";
@@ -146,6 +147,16 @@ export default function AdminCenter() {
                   </Link>
                 </div>
                 <div className="admin-icon">
+                  <Link to="/admin/schedule">
+                    <CalendarMonthIcon sx={{ color: "#444444" }} />
+                  </Link>
+
+                  <Link to="/admin/schedule">
+                    <li>Set Schedule</li>
+                  </Link>
+                </div>
+
+                <div className="admin-icon">
                   <Link to="/admin/confirm_match">
                     <PersonAddAlt1Icon sx={{ color: "#444444" }} />
                   </Link>
@@ -154,12 +165,11 @@ export default function AdminCenter() {
                   </Link>
                 </div>
                 <div className="admin-icon">
-                  <Link to="/admin/schedule">
-                    <CalendarMonthIcon sx={{ color: "#444444" }} />
+                  <Link to="/admin/payment">
+                    <PaymentIcon sx={{ color: "#444444" }} />
                   </Link>
-
-                  <Link to="/admin/schedule">
-                    <li>Set Schedule</li>
+                  <Link to="/admin/payment">
+                    <li>Payment</li>
                   </Link>
                 </div>
 

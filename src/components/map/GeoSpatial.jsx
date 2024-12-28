@@ -12,7 +12,7 @@ export default function GeoSpatial({
   latitude,
   longitude,
   name,
-  onLocationChange,
+  onLocationChange, 
 }) {
   // Handling null values if map is null
   const defaultCenter = [11.598824446578117, 104.9272459050655];

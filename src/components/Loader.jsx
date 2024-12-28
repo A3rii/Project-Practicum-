@@ -9,7 +9,7 @@ export default function Loader() {
         size="40"
         stroke="5"
         speed="0.9"
-        color="#00D062"></l-tailspin>
+        color="#FF4B44"></l-tailspin>
     </div>
   );
 }

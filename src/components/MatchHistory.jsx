@@ -1,4 +1,3 @@
-import axios from "axios";
 import Loader from "./../components/Loader";
 import { Navigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -13,40 +12,7 @@ import {
   CardMedia,
 } from "@mui/material";
 import EventBusyIcon from "@mui/icons-material/EventBusy";
-
-const fetchBookings = async (token, filter) => {
-  try {
-    const bookings = await axios.get(
-      `${import.meta.env.VITE_API_URL}/user/booking`,
-      {
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    const incoming = bookings.data.booking;
-
-    if (filter === "all") {
-      const filteredMatches = incoming.filter(
-        (booking) =>
-          booking.status === "approved" || booking.status === "rejected"
-      );
-      return filteredMatches;
-    }
-
-    if (filter) {
-      const bookingMatch = incoming.filter(
-        (booking) => booking.status === filter
-      );
-      return bookingMatch;
-    }
-
-    return incoming;
-  } catch (err) {
-    throw new Error(err.message);
-  }
-};
+import { historyAPI } from "./../api/user/index";
 
 const MatchHistory = ({ token, filter }) => {
   const {
@@ -55,7 +21,7 @@ const MatchHistory = ({ token, filter }) => {
     error,
   } = useQuery({
     queryKey: ["incomingMatch", token, filter],
-    queryFn: () => fetchBookings(token, filter),
+    queryFn: () => historyAPI.fetchBookings(token, filter),
     refetchOnWindowFocus: true,
   });
 

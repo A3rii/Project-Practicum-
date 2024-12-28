@@ -1,5 +1,4 @@
 import dayjs from "dayjs";
-import axios from "axios";
 import { Navigate } from "react-router-dom";
 import { Typography } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
@@ -22,26 +21,7 @@ import { useState, useMemo, useCallback } from "react";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-
-//* Fetching time availablility API
-const fetchTime = async (sportCenterId, date, facility, court) => {
-  try {
-    const { data } = await axios.get(
-      `${
-        import.meta.env.VITE_API_URL
-      }/books/lessors/${sportCenterId}/time-slots/availability`,
-      {
-        params: { date, facility, court },
-      }
-    );
-    return data.bookings.filter((booking) =>
-      ["approved"].includes(booking.status)
-    );
-  } catch (err) {
-    console.log(err.message);
-    throw new Error("Failed to fetch time slots");
-  }
-};
+import { timeslotAPI } from "./../../api/user/index";
 
 //* Time available section */
 export default function TimeAvailability({ sportCenterId, facility, court }) {
@@ -77,7 +57,12 @@ export default function TimeAvailability({ sportCenterId, facility, court }) {
       selectedCourt,
     ],
     queryFn: () =>
-      fetchTime(sportCenterId, formattedDate, facility, selectedCourt),
+      timeslotAPI.fetchTime(
+        sportCenterId,
+        formattedDate,
+        facility,
+        selectedCourt
+      ),
     refetchOnWindowFocus: true,
   });
 

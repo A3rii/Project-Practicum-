@@ -1,12 +1,10 @@
 import dayjs from "dayjs";
-import axios from "axios";
 import currentUser from "../../utils/currentUser";
-import authToken from "../../utils/authToken";
 import Loader from "../Loader";
 import ModalForSocialUser from "./ModalForSocialUser";
 import { useNavigate } from "react-router-dom";
 import { Typography } from "@mui/material";
-import { notify, errorAlert } from "../../utils/toastAlert";
+import { errorAlert } from "../../utils/toastAlert";
 import { timeOverlapping, parseTimeString } from "../../utils/timeCalculation";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -28,72 +26,19 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import StarIcon from "@mui/icons-material/Star";
 import userBooking from "../../utils/userBooking";
-
-//* fetching user booking API
-const fetchUserBookings = async () => {
-  try {
-    const { data } = await axios.get(
-      `${import.meta.env.VITE_API_URL}/user/booking`,
-      {
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${authToken()}`,
-        },
-      }
-    );
-
-    return data.booking;
-  } catch (err) {
-    throw new Error(err);
-  }
-};
-
-//* Fetching sport center informations API
-const fetchSportCenter = async (sportCenterId) => {
-  try {
-    const { data } = await axios.get(
-      `${
-        import.meta.env.VITE_API_URL
-      }/lessor/auth/informations/${sportCenterId}`
-    );
-    return data.lessor.facilities;
-  } catch (err) {
-    console.error("Error fetching sport center:", err.message);
-    throw err;
-  }
-};
+import { formatTime, totalHour } from "./../../utils/timeCalculation";
+import { reservationAPI } from "./../../api/user/index";
 
 //* Fetching all facility from lessor API
 const fetchFacility = async (sportCenterId, facilityId) => {
-  const facilities = await fetchSportCenter(sportCenterId);
+  const facilities = await reservationAPI.fetchSportCenter(sportCenterId);
   return facilities.find((facility) => facility._id === facilityId)?.name;
 };
 
-//* Fetching time availablility API
-const fetchTime = async (sportCenterId, date, facility, court) => {
-  try {
-    const { data } = await axios.get(
-      `${
-        import.meta.env.VITE_API_URL
-      }/books/lessors/${sportCenterId}/time-slots/availability`,
-      {
-        params: { date, facility, court },
-      }
-    );
-    return data.bookings.filter((booking) =>
-      ["approved"].includes(booking.status)
-    );
-  } catch (err) {
-    console.log(err.message);
-    throw new Error("Failed to fetch time slots");
-  }
-};
-
 //* Reservation section
-export default function ReservationDate({ court }) {
+export default function ReservationDate({ court, price }) {
   const user = currentUser();
   const navigate = useNavigate();
-  const token = authToken();
   const { facilityId, sportCenterId } = useParams();
   const [date, setDate] = useState(dayjs(new Date()));
   const [openDetails, setOpenDetails] = useState(false);
@@ -109,7 +54,7 @@ export default function ReservationDate({ court }) {
 
   const { data: userBookings } = useQuery({
     queryKey: ["userBookings"],
-    queryFn: fetchUserBookings,
+    queryFn: reservationAPI.fetchUserBookings,
   });
 
   // Handling popover
@@ -152,7 +97,12 @@ export default function ReservationDate({ court }) {
       selectedCourt,
     ],
     queryFn: () =>
-      fetchTime(sportCenterId, formattedDate, facility, selectedCourt),
+      reservationAPI.fetchTime(
+        sportCenterId,
+        formattedDate,
+        facility,
+        selectedCourt
+      ),
     refetchOnWindowFocus: true,
   });
 
@@ -198,37 +148,17 @@ export default function ReservationDate({ court }) {
       return;
     }
 
-    // only the user has their phone number
-    if (user && user.phone_number) {
-      const bookingRequirement = {
-        user: user._id,
-        lessor: sportCenterId,
-        facility: facility,
-        court: selectedCourt,
-        date: formattedDate,
-        startTime: dayjs(startTime).format("hh:mm a"),
-        endTime: dayjs(endTime).format("hh:mm a"),
-      };
-
-      try {
-        const response = await axios.post(
-          `${import.meta.env.VITE_API_URL}/books/sport-center`,
-          bookingRequirement,
-          {
-            headers: {
-              Accept: "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        notify("You have successfully booked");
-        resetFields();
-        console.log(response.data.message);
-      } catch (err) {
-        errorAlert("There is a problem with the system.");
-        console.error(err.message);
-      }
-    }
+    // If all the conditions are all filled , route to payment page which contains booking infos
+    navigate(
+      `/bakong-qr?bookingDate=${date}&timeStart=${formatTime(
+        startTime
+      )}&timeEnd=${formatTime(endTime)}&userPhonenumber=${
+        user.phone_number
+      }&facility=${facility}&court=${selectedCourt}&price=${price}&sportCenterId=${sportCenterId}&duration=${totalHour(
+        formatTime(startTime),
+        formatTime(endTime)
+      )}`
+    );
   };
 
   const resetFields = () => {
