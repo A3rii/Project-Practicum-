@@ -26,7 +26,7 @@ import dayjs from "dayjs";
 import currentUser from "../../utils/currentUser";
 import axios from "axios";
 import authToken from "../../utils/authToken";
-
+import { currencyChange, totalHourPrice } from "./../../utils/currency";
 const useApiMutation = (mutationFn, onSuccessCallback) => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -54,16 +54,18 @@ const BakongQr = () => {
   const [paymentToken, setPaymentToken] = useState(null);
 
   const changingCurrency = (e) => {
-    setCurrency(e.target.value);
+    const newCurrency = e.target.value;
+    setCurrency(newCurrency);
   };
 
+  console.log(paymentToken);
   const bookingDetails = {
     bookingDate: dayjs(queryParams.get("bookingDate")).format("YYYY-MM-DD"),
     timeStart: queryParams.get("timeStart"),
     timeEnd: queryParams.get("timeEnd"),
     userPhonenumber: queryParams.get("userPhonenumber"),
     court: queryParams.get("court"),
-    price: queryParams.get("price"),
+    price: parseFloat(queryParams.get("price")),
     duration: queryParams.get("duration"),
     facility: queryParams.get("facility"),
     sportCenterId: queryParams.get("sportCenterId"),
@@ -73,6 +75,24 @@ const BakongQr = () => {
     setQrCode(data?.qr);
     setMD5(data?.md5);
   });
+
+  //TODO : Changing Information Later
+  useEffect(() => {
+    if (bookingDetails.price) {
+      generateQrMutation.mutate({
+        price: totalHourPrice(
+          bookingDetails.timeStart,
+          bookingDetails.timeEnd,
+          currencyChange(currency, bookingDetails.price)
+        ),
+        currency: currency,
+        sportcCenterName: "Example Sport Center",
+        mobileNumber: "10253374",
+        bakongAccount: "nam_kimly@aclb",
+        bakongAccountName: "Kimly Nam",
+      });
+    }
+  }, [currency]);
 
   const fetchTokenMutation = useApiMutation(
     paymentAPI.getRenewTokeFromBakong,
@@ -121,7 +141,6 @@ const BakongQr = () => {
             config
           );
 
-          console.log(bookingResponse);
           if (!bookingResponse?.data?.booking?._id) {
             throw new Error("Booking creation failed - no booking ID received");
           }
@@ -131,14 +150,13 @@ const BakongQr = () => {
             user: user._id,
             lessor: bookingDetails.sportCenterId,
             currency: currency,
-            amount: bookingDetails.price,
+            amount: totalHourPrice(
+              bookingDetails.timeStart,
+              bookingDetails.timeEnd,
+              currencyChange(currency, bookingDetails.price)
+            ),
             status: "paid",
             booking: bookingResponse?.data?.booking?._id,
-            paymentMethod: "bakong",
-            transactionDetails: {
-              md5: md5,
-              qrCode: qrCode,
-            },
           };
 
           const paymentResponse = await axios.post(
@@ -181,20 +199,6 @@ const BakongQr = () => {
       }
     };
   }, []);
-
-  //TODO : Changing Information Later
-  useEffect(() => {
-    if (bookingDetails.price) {
-      generateQrMutation.mutate({
-        price: bookingDetails.price,
-        currency: currency,
-        sportcCenterName: "Example Sport Center",
-        mobileNumber: "10253374",
-        bakongAccount: "nam_kimly@aclb",
-        bakongAccountName: "Kimly Nam",
-      });
-    }
-  }, [currency]);
 
   //TODO : Using Lessor email
   useEffect(() => {
@@ -249,7 +253,11 @@ const BakongQr = () => {
               Price:
             </Typography>
             <Typography sx={{ fontSize: ".8rem", fontWeight: "bold" }}>
-              {bookingDetails.price}
+              {totalHourPrice(
+                bookingDetails.timeStart,
+                bookingDetails.timeEnd,
+                currencyChange(currency, bookingDetails.price)
+              )}
             </Typography>
 
             {/* Checking the current currency*/}
@@ -323,6 +331,9 @@ const BakongQr = () => {
               Facility: {bookingDetails.facility} {""} Court:
               {bookingDetails.court}
             </Typography>
+            <Typography variant="h6" sx={{ fontSize: ".8rem" }}>
+              Duration: {bookingDetails.duration}
+            </Typography>
           </Box>
 
           <Chip
@@ -364,7 +375,7 @@ const BakongQr = () => {
                   src={DollarIcon}
                   alt="dollar_icon"
                   loading="lazy"
-                  style={{ width: "16px", height: "16px" }} // Consistent dimensions
+                  style={{ width: "16px", height: "16px" }}
                 />
                 <Typography sx={{ fontSize: ".8rem" }}>USD</Typography>
               </MenuItem>

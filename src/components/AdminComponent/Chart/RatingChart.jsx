@@ -89,7 +89,7 @@ export default function RatingChart() {
         padding: "1.5rem",
         textAlign: "center",
         marginTop: "1rem",
-        borderRadius: "1rem",
+        borderRadius: "5px",
         width: { xs: "100%", md: "75%", lg: "100%" },
         height: { xs: "250px", md: "350px", lg: "450px" },
       }}>

@@ -1,11 +1,5 @@
-import { Suspense, lazy, useEffect } from "react";
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-  useLocation,
-  useNavigate,
-} from "react-router-dom";
+import { Suspense, lazy } from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import "./App.css";
 import Loader from "./components/Loader";
 import Applayout from "./view/applayout/Applayout";
@@ -25,10 +19,10 @@ import ProtectedPage from "./components/ProtectedPage";
 import Error from "./components/Error";
 import LoginSuperAdmin from "./view/page/superadmin/auth/Login";
 import SuperAdmin from "./view/page/superadmin/Sidebar";
-import Credentials from "./view/page/superadmin/Credentials";
-import BakongQr from "./components/Payment/BakongQr";
-import UserPayment from "./view/page/admin/UserPayment";
-
+const RedirectHandler = lazy(() => import("./components/RedirectHandler"));
+const Credentials = lazy(() => import("./view/page/superadmin/Credentials"));
+const BakongQr = lazy(() => import("./components/Payment/BakongQr"));
+const UserPayment = lazy(() => import("./view/page/admin/UserPayment"));
 const Map = lazy(() => import("./view/page/superadmin/Map"));
 const Location = lazy(() => import("./view/page/admin/Location"));
 const AllSportCenter = lazy(() => import("./components/map/AllSportCenter"));
@@ -60,20 +54,6 @@ const UserIncomingMatch = lazy(() => import("./view/page/user/IncomingMatch"));
 const AllMatch = lazy(() => import("./view/page/user/AllMatch"));
 const RejectedMatch = lazy(() => import("./view/page/user/RejectedMatch"));
 const AcceptedMatch = lazy(() => import("./view/page/user/AcceptedMatch"));
-
-// Accessing super admin routes
-function RedirectHandler() {
-  const location = useLocation();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (location.pathname === "/super-admin") {
-      navigate("/signin-moderator");
-    }
-  }, [location, navigate]);
-
-  return null;
-}
 
 export default function App() {
   return (

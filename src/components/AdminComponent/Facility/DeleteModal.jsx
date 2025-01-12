@@ -18,10 +18,11 @@ export default function DeleteModal({ open, closeModal, id, updateModal }) {
           },
         }
       );
-      console.log(request.data);
+
       closeModal();
       updateModal();
       notify("Facility delete successfully.");
+      return request;
     } catch (err) {
       console.log(err.message);
       errorAlert("Fail To Delete");

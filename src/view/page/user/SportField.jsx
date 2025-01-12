@@ -1,7 +1,6 @@
 import ContactInfo from "../../../components/ContactInfo";
 import CardSwiper from "../../../components/CardSwiper";
 import axios from "axios";
-import Loader from "./../../../components/Loader";
 import TimeAvailability from "./../../../components/User/TimeReservation";
 import ReservationDate from "./../../../components/User/Reservation";
 import { Navigate } from "react-router-dom";
@@ -28,17 +27,12 @@ const fetchSportCenter = async (sportCenterId) => {
 export default function SportField() {
   const { facilityId, sportCenterId } = useParams();
 
-  const {
-    data: facility = [],
-    isLoading,
-    error,
-  } = useQuery({
+  const { data: facility = [], error } = useQuery({
     queryKey: ["facility", sportCenterId],
     queryFn: () => fetchSportCenter(sportCenterId),
     refetchOnWindowFocus: true,
   });
 
-  if (isLoading) return <Loader />;
   if (error) return <Navigate to="/error" />;
 
   const facilityInformation = facility?.find(
@@ -86,7 +80,7 @@ export default function SportField() {
         />
       </div>
 
-      {/* <div className="sportField-Slider">
+      <div className="sportField-Slider">
         <Typography
           variant="h2"
           sx={{
@@ -110,7 +104,7 @@ export default function SportField() {
           }}>
           <CardSwiper court={facilityInformation.court} />
         </Box>
-      </div> */}
+      </div>
 
       <div className="center-contact">
         <ContactInfo />

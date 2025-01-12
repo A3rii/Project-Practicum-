@@ -1,11 +1,12 @@
 import { Paper, Typography, Box } from "@mui/material";
+import CountUp from "react-countup";
 
 export const MatchBox = ({ name, icon: Icon, color, number }) => {
   return (
     <>
       <Paper
         sx={{
-          width: "15rem",
+          width: "100%",
           display: "flex",
           justifyContent: "start",
           alignItems: "center",
@@ -22,9 +23,12 @@ export const MatchBox = ({ name, icon: Icon, color, number }) => {
             flexDirection: "column",
             alignItems: "start",
           }}>
-          <Typography sx={{ fontSize: ".9rem" }}> {name} </Typography>
-          <Typography sx={{ fontSize: ".8rem", fontWeight: "bold" }}>
-            {number || 0}
+          <Typography sx={{ fontSize: ".9rem", color: "#374151" }}>
+            {name}
+          </Typography>
+          <Typography
+            sx={{ fontSize: ".8rem", color: "#374151", fontWeight: "bold" }}>
+            <CountUp start={0} end={parseInt(number)} duration={2.5} />
           </Typography>
         </Box>
       </Paper>

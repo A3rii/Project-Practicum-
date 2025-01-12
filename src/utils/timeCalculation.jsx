@@ -84,6 +84,20 @@ const parseTimeToDate = (time) => {
   return date;
 };
 
+// Cambodian timezone
+
+// Cambodian TimeZone formatation
+const cambodianTimeZone = () => {
+  const date = new Date();
+  const cambodianHourMinute = date.toLocaleTimeString("en-US", {
+    timeZone: "Asia/Phnom_Penh",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  });
+
+  return cambodianHourMinute;
+};
 export {
   formatDate,
   formatTime,
@@ -91,4 +105,5 @@ export {
   timeOverlapping,
   parseTimeString,
   parseTimeToDate,
+  cambodianTimeZone,
 };

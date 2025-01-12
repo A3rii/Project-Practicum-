@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import Loader from "../../../components/Loader";
 import ContactInfo from "../../../components/ContactInfo";
 import UserCurrentLocation from "./../../../components/map/UserCurrentLocation";
 import { Box, Typography } from "@mui/material";
@@ -12,7 +11,7 @@ export default function CenterDetail() {
 
   const {
     data: sportCenter,
-    isLoading,
+
     error,
   } = useQuery({
     queryKey: ["sportCenter", sportCenterId],
@@ -25,10 +24,6 @@ export default function CenterDetail() {
       return response.data.lessor;
     },
   });
-
-  if (isLoading) {
-    return <Loader />;
-  }
 
   if (error) return <Navigate to="/error" />;
 
@@ -62,7 +57,7 @@ export default function CenterDetail() {
                 image={data.image}
                 type={data.name}
                 time={`Available: ${sportCenter?.operating_hours.open}-${sportCenter?.operating_hours.close}`}
-                price={`$${data.price} per 90 minutes`}
+                price={`$${data.price} per 60 minutes`}
                 facilityId={data._id}
                 sportCenterId={sportCenter?._id}
               />

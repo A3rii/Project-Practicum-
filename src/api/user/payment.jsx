@@ -21,7 +21,7 @@ const getBakongQr = async ({
         bakongAccountName,
       }
     );
-    return data.individual_qr?.data;
+    return data?.individual_qr?.data;
   } catch (err) {
     throw new Error(err.message);
   }
@@ -38,6 +38,7 @@ const getRenewTokeFromBakong = async ({ email }) => {
       {
         headers: {
           "Content-Type": "application/json",
+          Accept: "application/json",
         },
       }
     );
@@ -58,7 +59,8 @@ const checkPayment = async ({ md5, paymentToken }) => {
       },
       {
         headers: {
-          Accept: "application/json ",
+          Accept: "application/json",
+          "Content-Type": "application/json",
           Authorization: `Bearer ${paymentToken}`,
         },
       }

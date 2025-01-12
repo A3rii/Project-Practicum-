@@ -1,6 +1,5 @@
 import dayjs from "dayjs";
 import currentUser from "../../utils/currentUser";
-import Loader from "../Loader";
 import ModalForSocialUser from "./ModalForSocialUser";
 import { useNavigate } from "react-router-dom";
 import { Typography } from "@mui/material";
@@ -78,11 +77,7 @@ export default function ReservationDate({ court, price }) {
   );
 
   // Caching facility data using React Query
-  const {
-    data: facility,
-    isLoading,
-    error,
-  } = useQuery({
+  const { data: facility, error } = useQuery({
     queryKey: ["facility", facilityId, sportCenterId],
     queryFn: () => fetchFacility(sportCenterId, facilityId),
   });
@@ -168,8 +163,6 @@ export default function ReservationDate({ court, price }) {
   };
 
   const courts = useMemo(() => court.map((c) => c.name), [court]);
-
-  if (isLoading) return <Loader />;
   if (error) return <div>Error loading facility information</div>;
 
   return (

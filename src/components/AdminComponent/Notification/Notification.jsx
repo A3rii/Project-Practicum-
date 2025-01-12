@@ -48,7 +48,6 @@ export default function Notification() {
     const savedNotifications = localStorage.getItem("bookingNotifications");
     return savedNotifications ? JSON.parse(savedNotifications) : [];
   });
-
   const [unreadCount, setUnreadCount] = useState(bookingNotification.length);
 
   // Filter upcoming macth
@@ -192,7 +191,7 @@ export default function Notification() {
                   sx={{ width: "100%" }}
                   severity="success">
                   New bookings from
-                  {" " + match?.user?.name || match?.outside_user.name}
+                  {" " + match?.user?.name || match?.outside_user?.name}
                 </Alert>
               ))
             ) : (

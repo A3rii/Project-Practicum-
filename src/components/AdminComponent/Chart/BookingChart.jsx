@@ -93,7 +93,7 @@ export default function BookingChart() {
         alignItems: "center",
         width: "100%",
         height: { xs: "300px", md: "350px", lg: "450px" },
-        borderRadius: "1rem",
+        borderRadius: "5px",
         padding: "3rem",
         gap: "1rem",
         marginTop: "1rem",

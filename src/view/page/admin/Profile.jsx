@@ -25,7 +25,6 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import { storage } from "./../../../firebase/firebase"; // make sure you have firebase initialized
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { ToastContainer } from "react-toastify";
-import Loader from "../../../components/Loader.jsx";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -54,7 +53,6 @@ export default function Profile() {
   // Query the data from server
   const {
     data: currentLessor, // Variable that store all the lessor profile
-    isLoading,
     isError,
   } = useQuery({
     queryKey: ["currentLessor"],
@@ -184,7 +182,6 @@ export default function Profile() {
     setFile(URL.createObjectURL(file));
   };
 
-  if (isLoading) return <Loader />;
   if (isError) return <p>Error loading lessor information</p>;
 
   return (

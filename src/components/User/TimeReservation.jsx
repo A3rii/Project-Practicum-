@@ -11,6 +11,7 @@ import {
   Table,
   TableHead,
   TableRow,
+  Chip,
   TableCell,
   TableBody,
   Paper,
@@ -194,22 +195,18 @@ export default function TimeAvailability({ sportCenterId, facility, court }) {
                         {convertTo12HourFormat(time.end)}
                       </TableCell>
                       <TableCell align="center" sx={{ fontSize: "1rem" }}>
-                        <Box
+                        <Chip
+                          label={time.status}
+                          size="small"
                           sx={{
-                            display: "inline-block",
-                            padding: "5px 10px",
-                            fontSize: ".8rem",
-                            fontWeight: "bold",
                             backgroundColor:
                               time.status === "approved"
-                                ? "#00FF00"
+                                ? "#e0f7fa"
                                 : "#FF0000",
-                            color: "white",
-                            borderRadius: "10px",
-                            textAlign: "center",
-                          }}>
-                          {time.status}
-                        </Box>
+                            color: "#00796b",
+                            fontWeight: "500",
+                          }}
+                        />
                       </TableCell>
                     </TableRow>
                   ))

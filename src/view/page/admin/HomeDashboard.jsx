@@ -12,27 +12,26 @@ import {
   Box,
   TextField,
 } from "@mui/material";
-import CountUp from "react-countup";
 import { useState, useMemo } from "react";
 import {
   formatDate,
   totalHour,
   parseTimeToDate,
+  cambodianTimeZone,
 } from "../../../utils/timeCalculation";
 import { useQuery } from "@tanstack/react-query";
 import {
-  Book as BookIcon,
-  AccessAlarms as AccessAlarmsIcon,
   AccountCircle as AccountCircleIcon,
-  EventBusy as EventBusyIcon,
+  CalendarMonth as CalendarMonthIcon,
+  MonetizationOn as MonetizationOnIcon,
+  PendingActions as PendingActionsIcon,
 } from "@mui/icons-material";
-
 import dayjs from "dayjs";
 import Loader from "../../../components/Loader";
 import BookingChart from "../../../components/AdminComponent/Chart/BookingChart";
 import RatingChart from "../../../components/AdminComponent/Chart/RatingChart";
-
-import { dashboardAPI } from "../../../api/admin/index";
+import { InfoCard } from "./../../../components/AdminComponent/Card/InfoCard";
+import { dashboardAPI, paymentAPI } from "../../../api/admin/index";
 
 // Custom hook for data fetching
 const useBookingsData = (queryKey, selectFn) =>
@@ -43,31 +42,7 @@ const useBookingsData = (queryKey, selectFn) =>
     refetchOnWindowFocus: true,
   });
 
-// InfoCard component for reusable card structure
-const InfoCard = ({ title, value, icon: Icon, color }) => (
-  <Paper
-    sx={{
-      width: "100%",
-      height: "100%",
-      overflow: "hidden",
-      padding: "15px",
-      backgroundColor: color,
-      color: "#fff",
-      borderRadius: "1rem",
-    }}
-    elevation={5}>
-    <Typography variant="h5" sx={{ fontWeight: "bold", padding: "14px" }}>
-      {title}
-    </Typography>
-    <Box sx={{ display: "flex", alignItems: "center", paddingLeft: ".8rem" }}>
-      <Icon sx={{ fontSize: "2rem" }} />
-      <Typography
-        sx={{ padding: "14px", fontSize: "2rem", fontWeight: "bold" }}>
-        <CountUp start={0} end={parseInt(value)} duration={2.5} />
-      </Typography>
-    </Box>
-  </Paper>
-);
+// Info Card component for reusable card structure
 
 // Dashboard components
 function TotalCustomer() {
@@ -86,57 +61,13 @@ function TotalCustomer() {
   return (
     <InfoCard
       title="Total Customer"
-      value={totalUsers}
+      value={totalUsers || 0}
       icon={AccountCircleIcon}
       color="#2E8BC0"
+      currency={false}
     />
   );
 }
-
-const MatchAcception = () => {
-  const {
-    data: totalBooking,
-    isLoading,
-    isError,
-  } = useBookingsData(
-    "totalBooking",
-    (bookings) => bookings.filter((b) => b.status === "approved").length
-  );
-  if (isLoading) return <Loader />;
-  if (isError) return <p>Error fetching data</p>;
-
-  return (
-    <InfoCard
-      title="Match Acception"
-      value={totalBooking}
-      icon={AccessAlarmsIcon}
-      color="#50C878"
-    />
-  );
-};
-
-const RejectionBooking = () => {
-  const {
-    data: rejectionBookings,
-    isLoading,
-    isError,
-  } = useBookingsData(
-    "rejectionBookings",
-    (bookings) =>
-      bookings.filter((booking) => booking.status === "rejected").length
-  );
-
-  if (isLoading) return <Loader />;
-  if (isError) return <p>Error fetching data</p>;
-  return (
-    <InfoCard
-      title="Rejected Bookings"
-      value={rejectionBookings}
-      icon={EventBusyIcon}
-      color="#EF5350"
-    />
-  );
-};
 
 function TotalBooking() {
   const {
@@ -150,9 +81,57 @@ function TotalBooking() {
   return (
     <InfoCard
       title="Total Booking"
-      value={totalBookings}
-      icon={BookIcon}
+      value={totalBookings || 0}
+      icon={CalendarMonthIcon}
+      currency={false}
       color="#A98EC0"
+    />
+  );
+}
+
+function TotalPendingBookings() {
+  const {
+    data: totalPendings,
+    isLoading,
+    isError,
+  } = useBookingsData(
+    "totalPendings",
+    (bookings) =>
+      bookings.filter((booking) => booking.status === "pending").length
+  );
+  if (isLoading) return <Loader />;
+  if (isError) return <p>Error fetching data</p>;
+
+  return (
+    <InfoCard
+      title="Total Pending"
+      value={totalPendings || 0}
+      icon={PendingActionsIcon}
+      currency={false}
+      color="#A98EC0"
+    />
+  );
+}
+
+function BookingIncome() {
+  const {
+    data: totalBookings,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["totalIncome"],
+    queryFn: paymentAPI.totalIncome,
+  });
+  console.log(totalBookings);
+  if (isLoading) return <Loader />;
+  if (isError) return <p>Error fetching data</p>;
+  return (
+    <InfoCard
+      title="Total Income"
+      value={totalBookings.totalAmountUSD}
+      icon={MonetizationOnIcon}
+      color="#66BB6A"
+      currency={true}
     />
   );
 }
@@ -213,7 +192,7 @@ function CustomerTable() {
         overflow: "hidden",
         padding: "15px",
         marginTop: "1rem",
-        borderRadius: "1rem",
+        borderRadius: "5px",
       }}
       elevation={5}>
       <Box
@@ -260,20 +239,7 @@ function CustomerTable() {
 }
 
 // Upcoming Match component
-const UpcomingMatch = () => {
-  // Cambodian TimeZone formatation
-  const cambodianTimeZone = () => {
-    const date = new Date();
-    const cambodianHourMinute = date.toLocaleTimeString("en-US", {
-      timeZone: "Asia/Phnom_Penh",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    });
-
-    return cambodianHourMinute;
-  };
-
+const TodayMatch = () => {
   const {
     data: matches,
     isLoading,
@@ -311,7 +277,7 @@ const UpcomingMatch = () => {
         overflow: "hidden",
         padding: "15px",
         marginTop: "1rem",
-        borderRadius: "1rem",
+        borderRadius: "5px",
       }}
       elevation={5}>
       <Typography
@@ -357,7 +323,7 @@ const UpcomingMatch = () => {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={6} align="center">
+                <TableCell colSpan={7} align="center">
                   No Match for today
                 </TableCell>
               </TableRow>
@@ -379,11 +345,13 @@ export default function AdminDashboard() {
         <TotalCustomer />
       </Grid>
       <Grid item xs={12} sm={12} md={4} lg={3}>
-        <MatchAcception />
+        <BookingIncome />
       </Grid>
+
       <Grid item xs={12} sm={12} md={4} lg={3}>
-        <RejectionBooking />
+        <TotalPendingBookings />
       </Grid>
+
       <Grid item xs={12} sm={12} md={12} lg={8}>
         <BookingChart />
       </Grid>
@@ -394,7 +362,7 @@ export default function AdminDashboard() {
         <CustomerTable />
       </Grid>
       <Grid item xs={12} sm={12} md={12} lg={6}>
-        <UpcomingMatch />
+        <TodayMatch />
       </Grid>
     </Grid>
   );

@@ -8,7 +8,7 @@ const useCurrentUser = () => {
 
   useEffect(() => {
     dispatch(getCurrentUser());
-  }, [dispatch]);
+  }, []);
 
   return currentUser;
 };

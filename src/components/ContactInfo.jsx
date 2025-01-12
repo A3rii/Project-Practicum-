@@ -1,6 +1,5 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import Loader from "./../components/Loader";
 import axios from "axios";
 
 const fetchSportCenter = async (sportCenterId) => {
@@ -22,14 +21,13 @@ export default function ContactInfo() {
 
   const {
     data: contactLessor = [],
-    isLoading,
+
     error,
   } = useQuery({
     queryKey: ["contactLessor", sportCenterId],
     queryFn: () => fetchSportCenter(sportCenterId),
   });
 
-  if (isLoading) return <Loader />;
   if (error) return <p>Error Fetching</p>;
 
   return (

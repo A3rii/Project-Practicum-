@@ -8,7 +8,7 @@ const useCurrentLessor = () => {
 
   useEffect(() => {
     dispatch(getCurrentLessor());
-  }, [dispatch]);
+  }, []);
 
   return currentLessor;
 };

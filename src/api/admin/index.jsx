@@ -4,6 +4,7 @@ import * as dashboardAPI from "./dashboard";
 import * as locationAPI from "./location";
 import * as scheduleAPI from "./schedule";
 import * as profileAPI from "./profile";
+import * as paymentAPI from "./payment";
 
 export {
   bookingAPI,
@@ -12,4 +13,5 @@ export {
   locationAPI,
   scheduleAPI,
   profileAPI,
+  paymentAPI,
 };

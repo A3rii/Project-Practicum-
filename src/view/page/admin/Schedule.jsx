@@ -19,15 +19,11 @@ import {
   FormControl,
   MenuItem,
 } from "@mui/material";
-import {
-  Add as AddIcon,
-  Upcoming as UpcomingIcon,
-  Today as TodayIcon,
-} from "@mui/icons-material";
+import { Add as AddIcon } from "@mui/icons-material";
 import { parseTimeString } from "./../../../utils/timeCalculation";
 import { ScheduleModal } from "../../../components/AdminComponent/Schedule/ScheduleModal";
-import { MatchBox } from "../../../components/AdminComponent/Schedule/MatchBox";
 import { UpcomingMatch } from "../../../components/AdminComponent/Schedule/UpcomingMatch";
+import { ScheduleBox } from "../../../components/AdminComponent/Schedule/ScheduleBox";
 const locales = {
   "en-US": import("date-fns/locale/en-US"),
 };
@@ -101,35 +97,7 @@ export default function Schedule() {
   return (
     <>
       <ToastContainer position="top-right" autoClose={5000} theme="colored" />
-      {/* <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          mx: "3rem",
-        }}>
-        <Button
-          startIcon={<AddIcon />}
-          variant="contained"
-          onClick={() => setOpen(true)}>
-          Add Events
-        </Button>
-        <Paper sx={{ width: "25%" }}>
-          <FormControl sx={{ width: "100%" }}>
-            <InputLabel>Facility</InputLabel>
-            <Select
-              value={filterFacility}
-              onChange={(e) => setFiltertFacility(e.target.value)}>
-              <MenuItem value="">All</MenuItem>
-              {getFacilities.map((fac, key) => (
-                <MenuItem key={key} value={fac.name}>
-                  {fac.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </Paper>
-      </Box> */}
+
       {open && (
         <ScheduleModal openModal={open} onCloseModal={() => setOpen(false)} />
       )}
@@ -141,15 +109,51 @@ export default function Schedule() {
           alignItems: "start",
           marginTop: "1rem",
         }}>
-        <Calendar
-          defaultView={Views.MONTH}
-          events={events}
-          localizer={localizer}
-          startAccessor="start"
-          endAccessor="end"
-          dayLayoutAlgorithm="no-overlap"
-          style={{ height: 500, width: "60%" }}
-        />
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            width: "100%",
+          }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}>
+            <Button
+              startIcon={<AddIcon />}
+              variant="contained"
+              onClick={() => setOpen(true)}>
+              Add Events
+            </Button>
+            <Paper sx={{ width: "25%" }}>
+              <FormControl sx={{ width: "100%" }}>
+                <InputLabel>Facility</InputLabel>
+                <Select
+                  value={filterFacility}
+                  onChange={(e) => setFiltertFacility(e.target.value)}>
+                  <MenuItem value="">All</MenuItem>
+                  {getFacilities.map((fac, key) => (
+                    <MenuItem key={key} value={fac.name}>
+                      {fac.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Paper>
+          </Box>
+          <Calendar
+            defaultView={Views.MONTH}
+            events={events}
+            localizer={localizer}
+            startAccessor="start"
+            endAccessor="end"
+            dayLayoutAlgorithm="no-overlap"
+            style={{ height: 500, width: "100%", marginTop: "1rem" }}
+          />
+        </Box>
+
         <Box
           sx={{
             display: "flex",
@@ -158,18 +162,7 @@ export default function Schedule() {
             gap: "1rem",
             flexDirection: "column",
           }}>
-          <MatchBox
-            name={"Upcoming Match"}
-            icon={UpcomingIcon}
-            color="#FFB74D"
-            number={2}
-          />
-          <MatchBox
-            name={"Today Match"}
-            icon={TodayIcon}
-            color="#42A5F5"
-            number={2}
-          />
+          <ScheduleBox />
           <UpcomingMatch />
         </Box>
       </Box>

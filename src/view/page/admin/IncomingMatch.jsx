@@ -33,7 +33,6 @@ import {
   IosShare as IosShareIcon,
 } from "@mui/icons-material";
 import authToken from "./../../../utils/authToken";
-import Loader from "./../../../components/Loader";
 import { exportToExcel } from "./../../../utils/excel";
 import { incomingBookingAPI } from "./../../../api/admin/index";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -75,7 +74,7 @@ export default function IncomingMatch() {
   // Fetch all bookings
   const {
     data: allBookings = [],
-    isLoading,
+
     error,
   } = useQuery({
     queryKey: ["allBookings"],
@@ -183,9 +182,6 @@ export default function IncomingMatch() {
     }
     exportToExcel(listBookings);
   };
-
-  // If it is still fetching data
-  if (isLoading) return <Loader />;
 
   // If there was an error while fetching data
   if (error) return <div>Error loading bookings</div>;

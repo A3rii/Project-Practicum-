@@ -45,6 +45,7 @@ const fetchUserBookings = async (token) => {
     const bookings = response.data.booking;
     const todayMatch = bookings.filter(
       (booking) =>
+        booking.status === "approved" &&
         formatDate(booking.date) === dayjs(new Date()).format("MMMM DD, YYYY")
     );
     return todayMatch;
@@ -126,7 +127,7 @@ export default function Header() {
     return () => {
       document.removeEventListener("mousedown", handler);
     };
-  }, [open]);
+  }, []);
 
   //* Log out from the account
   const handleLogOut = () => {

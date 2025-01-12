@@ -28,7 +28,6 @@ import authToken from "./../../../utils/authToken";
 import { ToastContainer } from "react-toastify";
 import CourtView from "../../../components/AdminComponent/Court/CourtView";
 import { useQuery } from "@tanstack/react-query";
-import Loader from "../../../components/Loader";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function Facility() {
@@ -57,8 +56,7 @@ export default function Facility() {
 
   // Fetch data from server using useQuery
   const {
-    data: facilities,
-    isLoading,
+    data: facilities = [],
     isError,
     refetch,
   } = useQuery({
@@ -159,7 +157,6 @@ export default function Facility() {
     ));
   }, [facilities]);
 
-  if (isLoading) return <Loader />;
   if (isError) return <p>Error fetching data</p>;
 
   return (

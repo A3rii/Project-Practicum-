@@ -1157,20 +1157,6 @@
    font-weight: bold;
 }
 
-.card-incoming-match::before {
-   position: absolute;
-   content: 'Incoming Match';
-   top: 5px;
-   right: -14px;
-   padding: 0.5rem;
-   width: 10rem;
-   background: #20B2AA;
-   color: white;
-   text-align: center;
-   font-family: 'Roboto', sans-serif;
-   box-shadow: 4px 4px 15px rgba(26, 35, 126, 0.2);
-}
-
 
 
 /** Incoming Match */
