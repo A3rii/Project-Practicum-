@@ -92,7 +92,7 @@ export default function CenterDetail() {
             flexDirection: "column",
             gap: "1rem",
           }}
-          elevation={3}>
+          elevation={1}>
           <Typography
             sx={{
               fontSize: "1.8rem",

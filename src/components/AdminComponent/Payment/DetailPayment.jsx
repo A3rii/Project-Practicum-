@@ -15,7 +15,7 @@ export default function DetailPayment({ open, closeModal, payment }) {
           left: "50%",
           transform: "translate(-50%, -50%)",
           width: 600,
-          height: 450,
+          height: 500,
           bgcolor: "background.paper",
           boxShadow: 24,
           p: 4,
@@ -60,6 +60,10 @@ export default function DetailPayment({ open, closeModal, payment }) {
             </Typography>{" "}
             <Typography variant="h6" sx={{ fontSize: ".8rem" }}>
               Phone: {payment?.user?.phone_number}
+            </Typography>
+            <Typography variant="h6" sx={{ fontSize: ".8rem" }}>
+              amount: {payment?.amount}{" "}
+              {payment?.currency === "khr" ? "៛" : "$"}
             </Typography>
             <Typography variant="h6" sx={{ fontSize: ".8rem" }}>
               Status: {payment?.status}

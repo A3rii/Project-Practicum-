@@ -14,6 +14,7 @@ export default function HistoryCard({ data }) {
   return (
     <Box
       sx={{
+        width: "100%",
         display: "flex",
         justifyContent: { lg: "start", xs: "center" },
         alignItems: "center",
@@ -63,8 +64,7 @@ export default function HistoryCard({ data }) {
         <Box
           sx={{
             width: "100%",
-            mx: "10rem",
-            border: "1px solid #000",
+            border: "1px solid #aeaeae",
             borderRadius: "5px",
             padding: "1rem",
             display: "flex",

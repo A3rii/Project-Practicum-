@@ -54,11 +54,11 @@ export const UpcomingMatch = () => {
   return (
     <Paper
       sx={{
-        maxWidth: "100%",
+        width: "100%",
         overflow: "hidden",
         padding: "15px",
       }}
-      elevation={0}>
+      elevation={1}>
       <Typography
         variant="h6"
         sx={{ fontWeight: "bold", marginBottom: "1rem" }}>
@@ -173,7 +173,7 @@ export const TodayMatch = () => {
 
   if (isError) return 0; // Return 0 if there is an error
 
-  return matches.length > 0 ? matches.length : 0; // Return the count of matches
+  return matches; // Return the count of matches
 };
 
 export const CountUpComingMatches = () => {
@@ -206,3 +206,5 @@ export const CountUpComingMatches = () => {
 
   return matches.length > 0 ? matches.length : 0;
 };
+
+//  Today Matches

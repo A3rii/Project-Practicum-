@@ -21,7 +21,7 @@ const fetchMonthBookings = async () => {
         },
       }
     );
-    return bookingByMonth.data.month_booking;
+    return bookingByMonth?.data?.month_booking;
   } catch (err) {
     throw new Error(err);
   }
@@ -32,7 +32,11 @@ export default function BookingChart() {
   const [year, setYear] = useState(null);
   const currentYear = new Date();
 
-  const { data, isLoading, error } = useQuery({
+  const {
+    data = [],
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ["monthBookings"],
     queryFn: fetchMonthBookings,
   });
@@ -59,8 +63,8 @@ export default function BookingChart() {
 
       // Update the booking counts based on the fetched data
       data.forEach((booking) => {
-        bookingCounts[booking._id.month - 1] = booking.count;
-        bookingYear = booking._id.year;
+        bookingCounts[booking?._id.month - 1] = booking?.count;
+        bookingYear = booking?._id?.year;
       });
       setChartData({
         labels: months,

@@ -26,7 +26,7 @@ const ratingOverview = async (sportCenterId) => {
     const rating = await axios.get(
       `${import.meta.env.VITE_API_URL}/rating/overviews/${sportCenterId}`
     );
-    return rating.data.count;
+    return rating?.data?.count || 0;
   } catch (err) {
     throw new Error(err);
   }
@@ -48,12 +48,14 @@ export default function RatingChart() {
     queryFn: () => averageRating(lessor?._id),
   });
 
+  console.log(averageStars);
+
   if (isLoading) return <Loader />;
   if (error) return <p>Error loading data.</p>;
 
   // Prepare data for the Pie chart
   const chartData = {
-    labels: ["1 Star", "2 Stars", "3 Stars", "4 Stars", "5 Stars"],
+    labels: ["1★", "2★", "3★", "4★", "5★"],
     datasets: [
       {
         label: "Ratings Distribution",
@@ -93,12 +95,6 @@ export default function RatingChart() {
         width: { xs: "100%", md: "75%", lg: "100%" },
         height: { xs: "250px", md: "350px", lg: "450px" },
       }}>
-      <Typography
-        sx={{ fontSize: "1.2rem", fontWeight: "bold", display: { xs: "none" } }}
-        gutterBottom>
-        Ratings Overview
-      </Typography>
-
       <Box
         sx={{
           display: "flex",
@@ -117,9 +113,17 @@ export default function RatingChart() {
               justifyContent: "center",
               alignItems: "center",
               padding: "2rem",
+              flexDirection: "column",
               width: "100%",
               height: { xs: "250px", md: "300px", lg: "350px" },
             }}>
+            <Typography
+              sx={{
+                fontWeight: "600",
+                marginBottom: "1rem",
+              }}>
+              Rating Overview : {parseInt(averageStars?.averageStars) || "0.0"}
+            </Typography>
             <Doughnut data={chartData} />
           </Box>
         )}

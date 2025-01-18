@@ -27,6 +27,7 @@ import StarIcon from "@mui/icons-material/Star";
 import userBooking from "../../utils/userBooking";
 import { formatTime, totalHour } from "./../../utils/timeCalculation";
 import { reservationAPI } from "./../../api/user/index";
+import { Replay as ReplayIcon } from "@mui/icons-material";
 
 //* Fetching all facility from lessor API
 const fetchFacility = async (sportCenterId, facilityId) => {
@@ -114,7 +115,7 @@ export default function ReservationDate({ court, price }) {
     }
 
     // If it the social user and they dont have phone number
-    if (user?.provider && !user.phone_number) {
+    if (user?.provider && !user?.phone_number) {
       handleOpenDetails();
       return;
     }
@@ -144,6 +145,10 @@ export default function ReservationDate({ court, price }) {
     }
 
     // If all the conditions are all filled , route to payment page which contains booking infos
+
+    /**
+     * @   Need to be protected
+     */
     navigate(
       `/bakong-qr?bookingDate=${date}&timeStart=${formatTime(
         startTime
@@ -156,6 +161,7 @@ export default function ReservationDate({ court, price }) {
     );
   };
 
+  // Reset the bookig reservation
   const resetFields = () => {
     setSelectedCourt("");
     setStartTime(null);
@@ -186,6 +192,7 @@ export default function ReservationDate({ court, price }) {
             <DatePicker
               label="Select Date"
               value={date}
+              disablePast
               onChange={handleDateChange}
             />
           </div>
@@ -237,6 +244,8 @@ export default function ReservationDate({ court, price }) {
         <button onClick={handleBooking} className="sportField-reserver">
           Reserve
         </button>
+
+        <ReplayIcon sx={{ cursor: "pointer" }} onClick={resetFields} />
 
         {user && bookings && bookings.length > 0 && (
           <>

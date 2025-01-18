@@ -25,13 +25,13 @@ import {
   Menu as MenuIcon,
   ChevronLeft as ChevronLeftIcon,
   ChevronRight as ChevronRightIcon,
-  Home as HomeIcon,
   CalendarMonth as CalendarMonthIcon,
   PersonAddAlt1 as PersonAddAlt1Icon,
   Logout as LogoutIcon,
   AccountCircle as AccountCircleIcon,
   Map as MapIcon,
   Payment as PaymentIcon,
+  Timeline as TimelineIcon,
 } from "@mui/icons-material";
 import Notification from "../../../components/AdminComponent/Notification/Notification.jsx";
 import useCurrentLessor from "../../../utils/useCurrentLessor.jsx";
@@ -140,7 +140,7 @@ export default function AdminCenter() {
               <ul>
                 <div className="admin-icon">
                   <Link to="/admin/dashboard">
-                    <HomeIcon sx={{ color: "#444444" }} />
+                    <TimelineIcon sx={{ color: "#444444" }} />
                   </Link>
                   <Link to="/admin/dashboard">
                     <li>Home</li>

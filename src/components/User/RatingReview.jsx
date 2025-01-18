@@ -99,7 +99,7 @@ export default function RatingReview({ sportCenterId }) {
             width: "75%",
             flexDirection: "column",
           }}
-          elevation={3}>
+          elevation={1}>
           <Typography
             sx={{
               padding: "2rem",
@@ -127,8 +127,7 @@ export default function RatingReview({ sportCenterId }) {
                 gap: ".8rem",
                 outline: "1px solid var(--primary)",
                 borderRadius: ".9rem",
-              }}
-              tabIndex={0}>
+              }}>
               <Box
                 sx={{
                   display: "flex",
@@ -148,7 +147,7 @@ export default function RatingReview({ sportCenterId }) {
                 </Typography>
               </Box>
 
-              <FormControl fullWidth sx={{ m: 1 }} variant="standard">
+              <FormControl fullWidth sx={{ m: 1 }}>
                 <Input
                   placeholder="Write your thought here!"
                   value={comment}
@@ -223,11 +222,13 @@ export default function RatingReview({ sportCenterId }) {
                   flexDirection: "column",
                   zIndex: 2,
                 }}>
-                <BarRatings star={5} userRate={overviewRating?.countRating_5} />
-                <BarRatings star={4} userRate={overviewRating?.countRating_4} />
-                <BarRatings star={3} userRate={overviewRating?.countRating_3} />
-                <BarRatings star={2} userRate={overviewRating?.countRating_2} />
-                <BarRatings star={1} userRate={overviewRating?.countRating_1} />
+                {[5, 4, 3, 2, 1].map((star) => (
+                  <BarRatings
+                    key={star}
+                    star={star}
+                    userRate={overviewRating?.[`countRating_${star}`] || 0}
+                  />
+                ))}
               </Box>
             </Box>
           </Box>

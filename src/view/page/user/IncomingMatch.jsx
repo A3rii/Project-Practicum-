@@ -46,7 +46,10 @@ export default function IncomingMatch() {
   return (
     <Box
       sx={{
+        maxWidth: "100%",
         margin: "5rem",
+        display: "flex",
+        flexDirection: "column",
       }}>
       <Typography
         variant="h5"

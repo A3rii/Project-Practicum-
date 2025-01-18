@@ -1100,6 +1100,9 @@
 
 
 /*Schedule*/
+.rbc-month-view {
+   background-color: var(--white);
+}
 
 .rbc-header {
    color: var(--white);

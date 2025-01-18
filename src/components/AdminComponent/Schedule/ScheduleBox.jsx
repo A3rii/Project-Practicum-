@@ -35,7 +35,7 @@ const ScheduleBox = () => {
           name: "Today Match",
           icon: TodayIcon,
           color: "#42A5F5",
-          number: todayMatches,
+          number: todayMatches.length || 0,
         },
         {
           name: "Approved Match",

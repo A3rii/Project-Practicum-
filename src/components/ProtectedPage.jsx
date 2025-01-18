@@ -13,7 +13,7 @@ export default function ProtectedPage() {
           justifyContent: "center",
           flexDirection: "column",
           alignItems: "center",
-          backgroundImage: `url(${ProtectImage})`,
+          backgroundImage: `url(${ProtectImage})`,  
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover",
           gap: ".6rem",

@@ -24,7 +24,7 @@ import {
 import { formatDate } from "../../../utils/timeCalculation";
 import { paymentAPI } from "../../../api/admin";
 import DetailPayment from "../../../components/AdminComponent/Payment/DetailPayment";
-
+import { exportToExcel } from "./../../../utils/excel";
 const PaymentTableRow = ({ data, onOpenDetail }) => (
   <TableRow>
     <TableCell>
@@ -87,6 +87,13 @@ export default function UserPayment() {
     setModalState({ open: true, selectedPayment: payment });
   };
 
+  const downloadDataReport = (listPayment) => {
+    if (listPayment.length === 0) {
+      return;
+    }
+    exportToExcel(listPayment, "payments");
+  };
+
   if (isError) return <p>Error fetching data</p>;
 
   return (
@@ -146,7 +153,10 @@ export default function UserPayment() {
             </LocalizationProvider>
           </div>
           <Tooltip title="Export report">
-            <Button variant="contained" startIcon={<IosShareIcon />}>
+            <Button
+              variant="contained"
+              onClick={() => downloadDataReport(filteredPayments)}
+              startIcon={<IosShareIcon />}>
               Export
             </Button>
           </Tooltip>

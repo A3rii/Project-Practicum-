@@ -59,6 +59,8 @@ const BakongQr = () => {
   };
 
   console.log(paymentToken);
+
+  //TODO: This URL must be protected
   const bookingDetails = {
     bookingDate: dayjs(queryParams.get("bookingDate")).format("YYYY-MM-DD"),
     timeStart: queryParams.get("timeStart"),
@@ -76,7 +78,10 @@ const BakongQr = () => {
     setMD5(data?.md5);
   });
 
-  //TODO : Changing Information Later
+  //TODO : Changing Information Later base bakong verified email
+  /*
+   * @ mobileNumber , bakongAccount , bakongAccountName has to be changed according to each lessor
+   */
   useEffect(() => {
     if (bookingDetails.price) {
       generateQrMutation.mutate({

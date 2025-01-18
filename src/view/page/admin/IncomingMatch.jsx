@@ -180,7 +180,7 @@ export default function IncomingMatch() {
     if (listBookings.length === 0) {
       return;
     }
-    exportToExcel(listBookings);
+    exportToExcel(listBookings, "bookings");
   };
 
   // If there was an error while fetching data

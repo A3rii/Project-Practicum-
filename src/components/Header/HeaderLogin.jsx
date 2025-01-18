@@ -42,11 +42,11 @@ const fetchUserBookings = async (token) => {
         },
       }
     );
-    const bookings = response.data.booking;
+    const bookings = response.data?.booking ?? [];
     const todayMatch = bookings.filter(
       (booking) =>
-        booking.status === "approved" &&
-        formatDate(booking.date) === dayjs(new Date()).format("MMMM DD, YYYY")
+        booking?.status === "approved" &&
+        formatDate(booking?.date) === dayjs(new Date()).format("MMMM DD, YYYY")
     );
     return todayMatch;
   } catch (err) {
@@ -66,10 +66,11 @@ const fetchIncomingBookings = async (token) => {
         },
       }
     );
-    const bookings = response.data.booking;
+    const bookings = response.data?.booking ?? [];
     const pendingMatch = bookings.filter(
       (booking) =>
-        booking.status === "approved" && dayjs(new Date()).isSame(booking.date)
+        booking?.status === "approved" &&
+        dayjs(new Date()).isSame(booking?.date)
     );
     return pendingMatch.length;
   } catch (err) {

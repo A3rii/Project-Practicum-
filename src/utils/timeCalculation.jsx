@@ -84,8 +84,6 @@ const parseTimeToDate = (time) => {
   return date;
 };
 
-// Cambodian timezone
-
 // Cambodian TimeZone formatation
 const cambodianTimeZone = () => {
   const date = new Date();
@@ -98,12 +96,42 @@ const cambodianTimeZone = () => {
 
   return cambodianHourMinute;
 };
+
+// In range time
+const inRangeTime = (startTime, endTime) => {
+  const currentTime = new Date();
+
+  // Convert start and end times to Date objects for today
+  const [startHours, startMinutes] = startTime.split(":").map(Number);
+  const [endHours, endMinutes] = endTime.split(":").map(Number);
+
+  const start = new Date(currentTime);
+  start.setHours(startHours, startMinutes, 0, 0);
+
+  const end = new Date(currentTime);
+  end.setHours(endHours, endMinutes, 0, 0);
+
+  // Check if the current time is within the range
+  return currentTime >= start && currentTime <= end;
+};
+
+const convertTo24Hour = (time) => {
+  const [hour, minute, period] = time.match(/(\d+):(\d+)\s*(AM|PM)/i).slice(1);
+  let hours = parseInt(hour, 10);
+  const minutes = parseInt(minute, 10);
+  if (period.toUpperCase() === "PM" && hours !== 12) hours += 12;
+  if (period.toUpperCase() === "AM" && hours === 12) hours = 0;
+  return `${hours}:${minutes}`;
+};
+
 export {
   formatDate,
   formatTime,
+  inRangeTime,
   totalHour,
   timeOverlapping,
   parseTimeString,
   parseTimeToDate,
   cambodianTimeZone,
+  convertTo24Hour,
 };

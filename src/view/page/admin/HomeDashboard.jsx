@@ -56,7 +56,7 @@ function TotalCustomer() {
       new Set(bookings.map((b) => b.user?._id || b.outside_user)).size
   );
   if (isLoading) return <Loader />;
-  if (isError) return <p>Error fetching data</p>;
+  if (isError) return <p>{isError.message || "Error fetching data"}</p>;
 
   return (
     <InfoCard
@@ -76,7 +76,7 @@ function TotalBooking() {
     isError,
   } = useBookingsData("totalBookings", (bookings) => bookings.length);
   if (isLoading) return <Loader />;
-  if (isError) return <p>Error fetching data</p>;
+  if (isError) return <p>{isError.message || "Error fetching data"}</p>;
 
   return (
     <InfoCard
@@ -100,7 +100,7 @@ function TotalPendingBookings() {
       bookings.filter((booking) => booking.status === "pending").length
   );
   if (isLoading) return <Loader />;
-  if (isError) return <p>Error fetching data</p>;
+  if (isError) return <p>{isError.message || "Error fetching data"}</p>;
 
   return (
     <InfoCard
@@ -108,7 +108,7 @@ function TotalPendingBookings() {
       value={totalPendings || 0}
       icon={PendingActionsIcon}
       currency={false}
-      color="#A98EC0"
+      color="#FFB74D"
     />
   );
 }
@@ -122,9 +122,8 @@ function BookingIncome() {
     queryKey: ["totalIncome"],
     queryFn: paymentAPI.totalIncome,
   });
-  console.log(totalBookings);
   if (isLoading) return <Loader />;
-  if (isError) return <p>Error fetching data</p>;
+  if (isError) return <p>{isError.message || "Error fetching data"}</p>;
   return (
     <InfoCard
       title="Total Income"
@@ -140,16 +139,16 @@ function BookingIncome() {
 function CustomerTable() {
   const [userName, setUserName] = useState("");
   const {
-    data: customers,
+    data: customers = [],
     isLoading,
     isError,
   } = useBookingsData("customers", (bookings) => {
     const userBookingCounts = {};
     bookings.forEach((booking) => {
       const userId = booking.user
-        ? booking.user._id
-        : booking.outside_user.name;
-      const userInfo = booking.user ? booking.user : booking.outside_user;
+        ? booking?.user?._id
+        : booking?.outside_user?.name;
+      const userInfo = booking?.user ? booking.user : booking.outside_user;
 
       if (!userBookingCounts[userId]) {
         userBookingCounts[userId] = {
@@ -175,14 +174,14 @@ function CustomerTable() {
     () =>
       userName
         ? customers.filter((user) =>
-            user.name.toLowerCase().includes(userName.toLowerCase())
+            user?.name.toLowerCase().includes(userName.toLowerCase())
           )
         : customers,
     [userName, customers]
   );
 
   if (isLoading) return <Loader />;
-  if (isError) return <p>Error fetching data</p>;
+  if (isError) return <p>{isError.message || "Error fetching data"}</p>;
 
   return (
     <Paper
@@ -194,7 +193,7 @@ function CustomerTable() {
         marginTop: "1rem",
         borderRadius: "5px",
       }}
-      elevation={5}>
+      elevation={1}>
       <Box
         sx={{
           display: "flex",
@@ -223,14 +222,15 @@ function CustomerTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredUsers.map((row, i) => (
-              <TableRow key={i}>
-                <TableCell>{row.name || row.outside_user}</TableCell>
-                <TableCell>{row.email || "N/A"}</TableCell>
-                <TableCell>{row.phone_number || "N/A"}</TableCell>
-                <TableCell>{row.count || "N/A"}</TableCell>
-              </TableRow>
-            ))}
+            {filteredUsers.length > 0 &&
+              filteredUsers.map((row, i) => (
+                <TableRow key={i}>
+                  <TableCell>{row?.name || row?.outside_user}</TableCell>
+                  <TableCell>{row?.email || "N/A"}</TableCell>
+                  <TableCell>{row?.phone_number || "N/A"}</TableCell>
+                  <TableCell>{row?.count || "N/A"}</TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </TableContainer>
@@ -241,7 +241,7 @@ function CustomerTable() {
 // Upcoming Match component
 const TodayMatch = () => {
   const {
-    data: matches,
+    data: matches = [],
     isLoading,
     isError,
   } = useBookingsData("upcomingMatch", (bookings) => {
@@ -251,11 +251,11 @@ const TodayMatch = () => {
 
     return bookings.filter((b) => {
       const formattedDate =
-        formatDate(b.date) === dayjs(new Date()).format("MMMM DD, YYYY");
-      const isApproved = b.status === "approved";
+        formatDate(b?.date) === dayjs(new Date()).format("MMMM DD, YYYY");
+      const isApproved = b?.status === "approved";
 
       // Compare endTime with the current time
-      const endTimeInFormatted = parseTimeToDate(b.endTime); // Parse endTime to "HH:mm" format
+      const endTimeInFormatted = parseTimeToDate(b?.endTime); // Parse endTime to "HH:mm" format
 
       // Return the filtering condition based on time comparison
       return (
@@ -267,7 +267,7 @@ const TodayMatch = () => {
   });
 
   if (isLoading) return <Loader />;
-  if (isError) return <p>Error fetching data</p>;
+  if (isError) return <p>{isError.message || "Error fetching data"}</p>;
 
   return (
     <Paper
@@ -279,7 +279,7 @@ const TodayMatch = () => {
         marginTop: "1rem",
         borderRadius: "5px",
       }}
-      elevation={5}>
+      elevation={1}>
       <Typography
         variant="h6"
         sx={{ fontWeight: "bold", marginBottom: "1rem" }}>
@@ -300,25 +300,25 @@ const TodayMatch = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {matches.length ? (
+            {matches.length > 0 ? (
               matches.map((match, i) => (
                 <TableRow key={i}>
                   <TableCell>
-                    {match.user?.name || match.outside_user?.name}
+                    {match.user?.name || match?.outside_user?.name}
                   </TableCell>
                   <TableCell>
-                    {match.user?.phone_number ||
-                      match.outside_user?.phone_number}
+                    {match?.user?.phone_number ||
+                      match?.outside_user?.phone_number}
                   </TableCell>
-                  <TableCell>{match.facility}</TableCell>
-                  <TableCell>{match.court}</TableCell>
+                  <TableCell>{match?.facility}</TableCell>
+                  <TableCell>{match?.court}</TableCell>
                   <TableCell>
-                    {totalHour(match.startTime, match.endTime)}
+                    {totalHour(match?.startTime, match?.endTime)}
                   </TableCell>
                   <TableCell>
-                    {match.startTime}-{match.endTime}
+                    {match?.startTime}-{match?.endTime}
                   </TableCell>
-                  <TableCell>{formatDate(match.date)}</TableCell>
+                  <TableCell>{formatDate(match?.date)}</TableCell>
                 </TableRow>
               ))
             ) : (
@@ -352,17 +352,18 @@ export default function AdminDashboard() {
         <TotalPendingBookings />
       </Grid>
 
+      <Grid item xs={12} sm={12} md={12} lg={4}>
+        <CustomerTable />
+      </Grid>
+      <Grid item xs={12} sm={12} md={12} lg={8}>
+        <TodayMatch />
+      </Grid>
+
       <Grid item xs={12} sm={12} md={12} lg={8}>
         <BookingChart />
       </Grid>
       <Grid item xs={12} sm={12} md={12} lg={4}>
         <RatingChart />
-      </Grid>
-      <Grid item xs={12} sm={12} md={12} lg={6}>
-        <CustomerTable />
-      </Grid>
-      <Grid item xs={12} sm={12} md={12} lg={6}>
-        <TodayMatch />
       </Grid>
     </Grid>
   );

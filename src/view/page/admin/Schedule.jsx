@@ -16,6 +16,7 @@ import {
   Box,
   InputLabel,
   Select,
+  Typography,
   FormControl,
   MenuItem,
 } from "@mui/material";
@@ -24,6 +25,7 @@ import { parseTimeString } from "./../../../utils/timeCalculation";
 import { ScheduleModal } from "../../../components/AdminComponent/Schedule/ScheduleModal";
 import { UpcomingMatch } from "../../../components/AdminComponent/Schedule/UpcomingMatch";
 import { ScheduleBox } from "../../../components/AdminComponent/Schedule/ScheduleBox";
+import TimeLine from "./../../../components/AdminComponent/Timeline/TimeLine";
 const locales = {
   "en-US": import("date-fns/locale/en-US"),
 };
@@ -113,7 +115,9 @@ export default function Schedule() {
           sx={{
             display: "flex",
             flexDirection: "column",
-            width: "100%",
+            width: "55rem",
+            gap: "1rem",
+            maxWidth: "100%",
           }}>
           <Box
             sx={{
@@ -152,18 +156,40 @@ export default function Schedule() {
             dayLayoutAlgorithm="no-overlap"
             style={{ height: 500, width: "100%", marginTop: "1rem" }}
           />
+          <UpcomingMatch />
         </Box>
 
         <Box
           sx={{
             display: "flex",
             justifyContent: "start",
+            width: "40%",
+            maxWidth: "100%",
             alignItems: "start",
             gap: "1rem",
             flexDirection: "column",
           }}>
           <ScheduleBox />
-          <UpcomingMatch />
+          <Box
+            sx={{
+              width: "75%",
+              margin: "2rem auto",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: "1.5rem",
+            }}>
+            <Typography
+              variant="h5"
+              sx={{
+                fontWeight: "bold",
+                textAlign: "center",
+                color: "#333333",
+              }}>
+              Match In Progress
+            </Typography>
+            <TimeLine />
+          </Box>
         </Box>
       </Box>
     </>
