@@ -1,0 +1,1173 @@
+/** Login Page */
+.login-container {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   flex-direction: column;
+   margin: 5rem auto;
+   row-gap: 1rem;
+}
+
+.login-container h2 {
+   font-family: "Roboto", sans-serif;
+   font-size: 1.5em;
+   font-weight: bold;
+}
+
+.login-withSocial {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   flex-direction: column;
+   row-gap: 1.5rem;
+   margin-top: 1rem;
+}
+
+.login-Signup {
+   outline: none;
+   border: none;
+   background-color: var(--primary);
+   color: var(--white);
+   max-width: 100%;
+   width: 25rem;
+   height: 3rem;
+   border-radius: 3px;
+   font-size: 1rem;
+
+}
+
+.login-Lessor {
+   outline: none;
+   border: none;
+   background-color: var(--solid-red);
+   color: var(--white);
+   max-width: 100%;
+   width: 25rem;
+   height: 3rem;
+   border-radius: 3px;
+   font-size: 1rem;
+}
+
+.login-FaceBook {
+   outline: none;
+   border: none;
+   background-color: var(--blue);
+   color: var(--white);
+   max-width: 100%;
+   width: 25rem;
+   height: 3rem;
+   border-radius: 3px;
+   font-size: 1rem;
+
+}
+
+.login-Gmail {
+   outline: none;
+   border: none;
+   background-color: none;
+   color: var(--dark);
+   background-color: var(--white);
+   border: 2px solid var(--soft-grey);
+   max-width: 100%;
+   width: 25rem;
+   height: 3rem;
+   font-size: 1rem;
+}
+
+.login-Username,
+.login-Password {
+   outline: none;
+   border: none;
+   background-color: none;
+   color: var(--dark);
+   background-color: var(--white);
+   border: 2px solid var(--soft-grey);
+   max-width: 100%;
+   width: 25rem;
+   height: 3rem;
+   font-size: 1rem;
+   display: flex;
+   align-items: center;
+   justify-content: baseline;
+   column-gap: .5rem;
+   padding: 1rem;
+}
+
+.input-container {
+   position: relative;
+}
+
+
+
+.input-container span {
+   position: absolute;
+   top: 50%;
+   right: 10px;
+   transform: translateY(-50%);
+   color: var(--soft-grey);
+}
+
+
+
+.login-SignIn {
+   outline: none;
+   border: none;
+   background-color: var(--white);
+   border: 1.5px solid var(--primary);
+   color: var(--primary);
+   max-width: 100%;
+   width: 25rem;
+   height: 3rem;
+   border-radius: 3px;
+   font-size: 1rem;
+}
+
+.login-return {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   font-weight: bold;
+   font-size: .8rem;
+   color: var(--primary);
+
+   column-gap: 3rem;
+}
+
+.login-toGuest {
+   color: var(--primary);
+}
+
+
+/** Login Page */
+
+
+/** SignUp Page */
+.signUp-container {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   flex-direction: column;
+   margin: 5rem auto;
+   row-gap: 1rem;
+}
+
+.signUp-container h2 {
+   font-family: "Roboto", sans-serif;
+   font-size: 1.5em;
+   font-weight: bold;
+}
+
+.signUp-withSocial {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   flex-direction: column;
+   row-gap: 1.5rem;
+   margin-top: 1rem;
+}
+
+.signUp-Signup {
+   outline: none;
+   border: none;
+   background-color: var(--primary);
+   color: var(--white);
+   max-width: 100%;
+   width: 25rem;
+   height: 3rem;
+   border-radius: 3px;
+   font-size: 1rem;
+
+}
+
+.signUp-FaceBook {
+   outline: none;
+   border: none;
+   background-color: var(--blue);
+   color: var(--white);
+   max-width: 100%;
+   width: 25rem;
+   height: 3rem;
+   border-radius: 3px;
+   font-size: 1rem;
+
+}
+
+.signUp-Gmail {
+   outline: none;
+   border: none;
+   background-color: none;
+   color: var(--primary);
+   background-color: var(--white);
+   border: 2px solid var(--primary);
+   max-width: 100%;
+   width: 25rem;
+   height: 3rem;
+   border-radius: 3px;
+
+   font-size: 1rem;
+}
+
+
+
+.signUp-Username,
+.signUp-Password {
+   outline: none;
+   border: none;
+   background-color: none;
+   color: var(--dark);
+   background-color: var(--white);
+   border: 2px solid var(--soft-grey);
+   max-width: 100%;
+   width: 25rem;
+   height: 3rem;
+   font-size: 1rem;
+   display: flex;
+   align-items: center;
+   justify-content: baseline;
+   column-gap: .5rem;
+   padding: 1rem;
+}
+
+.input-container {
+   position: relative;
+}
+
+
+
+.input-container span {
+   position: absolute;
+   top: 50%;
+   right: 10px;
+   transform: translateY(-50%);
+   color: var(--soft-grey);
+}
+
+
+
+.signUp-SignIn {
+   outline: none;
+   border: none;
+   background-color: var(--primary);
+   color: var(--white);
+   max-width: 100%;
+   width: 25rem;
+   height: 3rem;
+   border-radius: 3px;
+   font-size: 1rem;
+}
+
+.signUp-return {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   font-weight: bold;
+   font-size: .8rem;
+   color: var(--primary);
+   column-gap: 5rem;
+}
+
+.signUp-toGuest {
+   color: var(--primary);
+}
+
+/** SignUp Page */
+
+
+
+
+/**Home Page*/
+.home-header {
+   background: rgba(0, 0, 0, 0.6) url('./assets/HomeImages/pic1.jpg') center/cover;
+   background-blend-mode: darken;
+   max-width: 100%;
+   min-height: 28rem;
+   height: auto;
+   object-fit: cover;
+   background-repeat: no-repeat;
+}
+
+
+.home-banner {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   flex-direction: column;
+   row-gap: 1.5rem;
+   padding-top: 6rem;
+
+}
+
+.home-banner h2 {
+   max-width: 50%;
+   text-align: center;
+   font-size: 2rem;
+   font-weight: 800;
+   font-family: "Roboto", sans-serif;
+   color: var(--white);
+}
+
+.home-banner span {
+   max-width: 25%;
+   font-size: 1rem;
+   font-weight: lighter;
+   font-family: "Montserrat", sans-serif;
+   color: var(--white);
+   text-align: center;
+}
+
+.home-bookBtn {
+   border: none;
+   outline: none;
+   background-color: var(--primary);
+   color: white;
+   font-family: "Roboto", sans-serif;
+   font-size: 1.2rem;
+   font-weight: bolder;
+   width: 9rem;
+   padding: .7rem;
+   border-radius: 4px;
+}
+
+
+.home-searchCenter {
+   background: rgba(0, 0, 0, 0.5) url('./assets/HomeImages/pic2.jpg') center/cover;
+   background-blend-mode: darken;
+   max-width: 100%;
+   display: flex;
+   align-items: center;
+   flex-direction: column;
+   min-height: 25rem;
+   height: auto;
+   color: var(--white);
+   font-family: "Montserrat", sans-serif;
+   text-align: center;
+}
+
+.home-searchCenter h1 {
+   font-family: "Roboto", sans-serif;
+   color: var(--white);
+   font-weight: bold;
+   margin-top: 5rem;
+
+}
+
+.home-searchCenter span {
+   max-width: 35%;
+}
+
+.home-searchLocation {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   flex-wrap: wrap;
+   margin-top: 3rem;
+   max-width: 50%;
+   width: 40%;
+   background-color: var(--white);
+   color: var(--dark);
+   min-height: 5rem;
+   height: auto;
+   border-radius: .7rem;
+   column-gap: 1.6rem;
+}
+
+.home-searchCatogory h2,
+.home-searchPlace h2 {
+   text-align: start;
+   font-family: "Roboto", sans-serif;
+   font-weight: bold;
+   font-size: .8rem;
+}
+
+
+.home-inputType {
+   border: none;
+   max-width: 100%;
+   width: 100%;
+}
+
+.home-inputType::placeholder {
+   font-size: 0.8rem;
+}
+
+.btn-search {
+   margin-top: 1rem;
+
+}
+
+.home-map {
+   background: rgba(0, 0, 0, 0.4) url('./assets/BookingImags/pic11.png') center/cover;
+   background-blend-mode: darken;
+   max-width: 100%;
+   min-height: 35rem;
+   height: auto;
+   background-repeat: no-repeat;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+}
+
+.home-googleMap {
+   max-width: 100%;
+   height: 25rem;
+   width: 25%;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   flex-direction: column;
+   background-color: var(--white);
+   text-align: center;
+   row-gap: 3rem;
+   border-radius: 10px;
+}
+
+.home-googleMap h2 {
+   font-size: 1.3rem;
+   font-family: "Roboto", sans-serif;
+   font-weight: 600;
+   text-align: center;
+}
+
+.home-viewmap {
+   background-color: var(--primary);
+   outline: none;
+   border: none;
+   width: 9rem;
+   padding: .6rem;
+   color: var(--white);
+   border-radius: 3px;
+   margin-top: .7rem;
+}
+
+.home-viewmap a:hover {
+   color: var(--white);
+}
+
+
+.home-processing {
+   max-width: 100%;
+   min-height: 100%;
+   height: 40rem;
+   background-color: var(--blue-burry);
+   color: var(--white);
+   display: flex;
+   justify-content: center;
+   align-items: center;
+}
+
+.home-process {
+   max-width: 100%;
+   min-height: 50%;
+   height: 75%;
+   background-color: var(--dark-blue);
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+   border-radius: .5rem;
+}
+
+.home-process h2 {
+   font-family: "Roboto", sans-serif;
+   font-size: 2rem;
+   font-weight: bold;
+}
+
+.home-processes {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   flex-wrap: wrap;
+   column-gap: 7rem;
+   margin: 3rem;
+}
+
+.home-mapping,
+.home-schedule,
+.home-booking {
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+   row-gap: 2rem;
+   column-gap: 2rem;
+   max-width: 100%;
+
+}
+
+.home-mapping i,
+.home-schedule i,
+.home-booking i {
+   font-size: 5rem;
+}
+
+.home-mapping span,
+.home-schedule span,
+.home-booking span {
+   font-size: 1rem;
+   max-width: 73%;
+   text-align: center;
+}
+
+
+.home-rental {
+   background: rgba(0, 0, 0, 0.2) url('./assets/HomeImages/pic3.jpg');
+   background-blend-mode: darken;
+   background-size: cover;
+   max-width: 100%;
+   min-height: 38rem;
+   height: auto;
+   background-repeat: no-repeat;
+   color: var(--white);
+   font-family: "Montserrat", sans-serif;
+   display: flex;
+   justify-items: center;
+   align-items: baseline;
+   flex-direction: column;
+   padding: 5rem 0 0 10rem;
+   row-gap: 2rem;
+}
+
+.home-rental h1 {
+   font-family: 'Roboto', sans-serif;
+   font-size: 4rem;
+   font-weight: 800;
+   text-align: center;
+}
+
+.home-rental span {
+   max-width: 30%;
+   text-align: center;
+   font-size: 1.2rem;
+}
+
+.home-rental a {
+   color: var(--white);
+}
+
+.home-lessorBtn {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   column-gap: 2rem;
+}
+
+.home-rentalButton {
+   background-color: var(--primary);
+   outline: none;
+   border: none;
+   width: 10rem;
+   padding: .6rem;
+   color: var(--white);
+   border-radius: 3px;
+}
+
+.home-verify {
+   display: flex;
+   justify-content: center;
+   align-items: baseline;
+   flex-direction: column;
+   row-gap: 1.2rem;
+   max-width: 100%;
+   width: 100%;
+
+
+}
+
+.home-checked,
+.home-popularity,
+.home-offer {
+   width: 100%;
+   display: flex;
+   justify-content: baseline;
+   align-items: center;
+   column-gap: 1rem;
+}
+
+.home-checked i,
+.home-popularity i,
+.home-offer i {
+   color: var(--green);
+   font-size: 1.5rem;
+}
+
+.home-service {
+   background-color: var(--blue-burry);
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   flex-direction: column;
+   flex-wrap: wrap;
+   row-gap: 2.5rem;
+   min-height: 40rem;
+   padding-top: 2rem;
+   color: var(--white)
+}
+
+.home-service h2 {
+   font-family: "Roboto", sans-serif;
+   font-size: 2rem;
+   font-weight: bold;
+}
+
+.home-redSpan {
+   color: var(--primary)
+}
+
+.swiper {
+   width: 75%;
+   height: 36rem;
+   margin-left: auto;
+   margin-right: auto;
+}
+
+.swiper-slide {
+   text-align: center;
+   font-size: 18px;
+   background: #fff;
+}
+
+.swiper-slide img {
+   display: block;
+   width: 100%;
+   height: 100%;
+   object-fit: cover;
+}
+
+
+/**Home Page*/
+
+
+
+/** Center Detail */
+.center-header {
+   background: rgba(0, 0, 0, 0.8) url('./assets//BookingImags/pic2.jpg') center/cover;
+   background-blend-mode: darken;
+   max-width: 100%;
+   min-height: 28rem;
+   height: auto;
+   background-repeat: no-repeat;
+}
+
+
+.center-banner {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   flex-direction: column;
+   row-gap: 1.5rem;
+   padding-top: 5rem;
+}
+
+.center-banner h2 {
+   max-width: 50%;
+   text-align: center;
+   font-size: 2rem;
+   font-weight: 800;
+   font-family: "Roboto", sans-serif;
+   color: var(--white);
+}
+
+.center-banner span {
+   max-width: 25%;
+   font-size: 1rem;
+   font-weight: lighter;
+   font-family: "Montserrat", sans-serif;
+   color: var(--white);
+   text-align: center;
+}
+
+.center-location {
+   width: 100%;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   color: var(--white);
+   margin-top: 3rem;
+   gap: .5rem
+}
+
+
+
+.center-sport {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   flex-direction: column;
+   background: var(--soft-grey);
+   padding: 1.5rem;
+}
+
+.center-card {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   flex-wrap: wrap;
+   gap: 4rem;
+   margin-top: 2rem;
+}
+
+
+.center-contact {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   margin-top: 1rem;
+   height: 7rem;
+}
+
+.center-contactInfo {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   column-gap: 2.5rem;
+}
+
+.center-contactDetails {
+   display: flex;
+   justify-content: center;
+   align-items: baseline;
+   flex-direction: column;
+}
+
+.center-socialMedia {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   column-gap: 1rem;
+   font-size: 2.5rem;
+   padding-right: 1rem;
+}
+
+.center-buttonContact {
+   background-color: var(--green);
+   outline: none;
+   border: none;
+   width: 8rem;
+   padding: .5rem;
+   color: var(--white);
+   border-radius: 3px;
+}
+
+
+
+/** Center Detail */
+
+
+/** Sport Field */
+.sportField-header {
+   background: rgba(0, 0, 0, 0.7) url('./assets/BookingImags/pic1.jpg') center/cover;
+   background-blend-mode: darken;
+   aspect-ratio: 16;
+   max-width: 100%;
+   min-height: 30rem;
+   height: auto;
+   background-repeat: no-repeat;
+}
+
+.sportField-banner {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   flex-direction: column;
+   row-gap: 1.5rem;
+   padding-top: 5rem;
+}
+
+.sportField-banner h2 {
+   max-width: 50%;
+   text-align: center;
+   font-size: 2rem;
+   font-weight: 800;
+   font-family: "Roboto", sans-serif;
+   color: var(--white);
+}
+
+.sportField-banner span {
+   max-width: 25%;
+   font-size: 1rem;
+   font-weight: lighter;
+   font-family: "Montserrat", sans-serif;
+   color: var(--white);
+   text-align: justify;
+}
+
+
+.date-time {
+   display: flex;
+   width: 75%;
+   min-height: 5rem;
+   justify-content: baseline;
+   align-items: center;
+   margin-top: 1.5rem;
+   border-radius: .2rem;
+   gap: 1rem;
+   padding: 1.2rem 2rem 1rem;
+   background-color: var(--white);
+
+}
+
+.sport-calendar {
+   display: none;
+}
+
+.selected-date {
+   display: none;
+}
+
+.sport-time {
+   width: 50%;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   gap: 1rem;
+}
+
+.sport-search {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   width: 25%;
+   max-width: 100%;
+   height: 75%;
+}
+
+.sport-date {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+}
+
+.sportField-reserver {
+   background-color: var(--primary);
+   outline: none;
+   border: none;
+   width: 7rem;
+   height: 3.5rem;
+   color: var(--white);
+   border-radius: 3px;
+}
+
+.court-type {
+   width: 25%;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+}
+
+.sport-reserve {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   margin-top: 2rem;
+}
+
+.sport-schedule {
+   background: rgba(0, 0, 0, 0.6) url('./assets/BookingImags/pic15.jpg') center/cover;
+   background-blend-mode: darken;
+   max-width: 100%;
+   min-height: 35rem;
+   height: auto;
+   background-repeat: no-repeat;
+   color: var(--white);
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   flex-direction: column;
+   gap: 1rem;
+}
+
+
+
+.sportField-Slider {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   flex-direction: column;
+   gap: 2rem;
+   margin-top: 2rem;
+}
+
+.sportField-Slider h2 {
+   font-weight: 600;
+   font-family: "Roboto", sans-serif;
+}
+
+.swiper {
+   height: 25rem
+}
+
+.mySwiper img {
+   width: 25rem;
+   height: 25rem;
+   border-radius: 5px;
+   object-fit: fill;
+}
+
+/** Sport Field */
+
+
+
+
+/** Contact Page */
+.contact-header {
+   background: rgba(0, 0, 0, 0.6) url('./assets/HomeImages/pic2.jpg') center/cover;
+   background-blend-mode: darken;
+   max-width: 100%;
+   min-height: 38rem;
+   background-repeat: no-repeat;
+}
+
+.contact-header h1 {
+   text-align: center;
+   font-family: "Roboto", sans-serif;
+   color: var(--white);
+   font-weight: bolder;
+   padding-top: 6rem;
+}
+
+.contact-banner {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   color: var(--white);
+   margin: 5rem auto;
+   column-gap: 10rem;
+   font-size: 1.2rem;
+   flex-wrap: wrap;
+   row-gap: 1.5rem;
+}
+
+
+
+.contact-email,
+.contact-phone,
+.contact-socialMedia {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   flex-direction: column;
+   row-gap: 1rem;
+}
+
+.contact-email i,
+.contact-phone i,
+.contact-socialMedia i {
+   font-size: 2.5rem;
+}
+
+.contact-icon {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   column-gap: 1rem;
+}
+
+/** Contact Page */
+
+
+
+
+
+/** Admins Page */
+.admin-sidebar ul {
+   display: flex;
+   flex-direction: column;
+   row-gap: 1rem;
+}
+
+
+.admin-icon {
+   display: flex;
+   justify-content: flex-start;
+   align-items: center;
+   column-gap: 1.5rem;
+   margin-top: .5rem;
+}
+
+.admin-icon li,
+.admin-logout li {
+   color: var(--dark);
+}
+
+
+.admin-logout {
+   display: flex;
+   align-items: center;
+   column-gap: 1.5rem;
+   margin-top: .5rem;
+}
+
+
+.set-openingTime {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   margin: 1.5rem 15rem 1rem;
+}
+
+.setTime-container {
+   display: flex;
+   justify-content: center;
+   flex-direction: column;
+   align-items: center;
+}
+
+
+.day-label {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+}
+
+.setTime-control {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   column-gap: 1rem;
+}
+
+.setTime-btn-action {
+   margin-top: 2rem;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   gap: 2rem;
+}
+
+.setTime-reset {
+   background-color: var(--primary);
+   outline: none;
+   border: none;
+   width: 6rem;
+   padding: .6rem;
+   color: var(--white);
+   border-radius: 3px;
+}
+
+.setTime-save {
+   background-color: var(--blue);
+   outline: none;
+   border: none;
+   width: 6rem;
+   padding: .6rem;
+   color: var(--white);
+   border-radius: 3px;
+}
+
+
+.setTime-reset:hover {
+   background-color: #800000;
+}
+
+.setTime-save:hover {
+   background-color: #338705;
+}
+
+.setTime-title {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   margin: 1rem 15rem 1rem;
+}
+
+.setTime-title h4 {
+   font-family: 'Roboto', sans-serif;
+   font-weight: bold;
+   font-size: 1.2rem;
+}
+
+.setTime-switchBtn {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   gap: 1rem;
+}
+
+/*Home Dash*/
+
+
+.admin-totalCustomer,
+.admin-totalBooking,
+.admin-totalAcception {
+   display: flex;
+   justify-content: baseline;
+   align-items: center;
+   margin-left: 1rem;
+}
+
+
+
+
+/*Schedule*/
+.rbc-month-view {
+   background-color: var(--white);
+}
+
+.rbc-header {
+   color: var(--white);
+   background: var(--blue);
+}
+
+
+.rbc-toolbar .rbc-btn-group {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   gap: .5rem;
+}
+
+
+.rbc-time-slot {
+   background-color: var(--white);
+}
+
+.rbc-time-view {
+   border: 2px solid var(--dark);
+}
+
+/*Schedule*/
+
+/** Admins Page */
+
+
+/** Incoming Match */
+.card__container {
+   display: flex;
+   flex-direction: column;
+   gap: .8rem;
+   padding: 1.5rem;
+   width: 100%;
+   border-radius: 1rem;
+   color: var(--white)
+}
+
+.card__container .card__header {
+   font-size: 1.3rem;
+   font-family: bold;
+}
+
+.incoming-detail {
+   display: flex;
+   justify-content: start;
+   align-items: start;
+   flex-direction: column;
+}
+
+.incoming-detail span {
+   font-family: 'Roboto', sans-serif;
+   font-size: .9rem;
+   font-weight: bold;
+}
+
+
+
+/** Incoming Match */
+
+
+
+/* Root selector of mui in super admin comment */
+.css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.MuiSelect-select {
+   display: flex;
+   gap: .5rem
+}
