@@ -35,16 +35,19 @@ export const UpcomingMatch = () => {
     isError,
   } = useBookingsData("upcomingMatch", (bookings) => {
     return bookings.filter((b) => {
-      // If the booking is far a head of the current date, which means it is an upcoming
-      const formattedDate =
-        formatDate(b.date) > dayjs(new Date()).format("MMMM DD, YYYY");
+      // Convert b.date to a valid Date format
+      const bookingDate = dayjs(b.date);
+
+      // Get today's date without time
+      const today = dayjs().startOf("day");
+
+      // Check if the booking is in the future
+      const isUpcoming = bookingDate.isAfter(today);
+
+      // Check if the booking is approved
       const isApproved = b.status === "approved";
 
-      // Compare endTime with the current time
-      // const endTimeInFormatted = parseTimeToDate(b.endTime); // Parse endTime to "HH:mm" format
-
-      // Return the filtering condition based on time comparison
-      return formattedDate && isApproved;
+      return isUpcoming && isApproved;
     });
   });
 
@@ -180,24 +183,20 @@ export const CountUpComingMatches = () => {
   const { data: matches = [], isError } = useBookingsData(
     "upcomingMatch",
     (bookings) => {
-      // Get the current time in Cambodian timezone formatted as "HH:mm"
-      // const currentCambodianTime = cambodianTimeZone(); // Ensure this returns the time in "HH:mm" format
-      // const formattedCurrentTime = parseTimeToDate(currentCambodianTime); // Parse it to a comparable format
-
       return bookings.filter((b) => {
-        // If the booking is far a head of the current date, which means it is an upcoming
-        const formattedDate =
-          formatDate(b.date) > dayjs(new Date()).format("MMMM DD, YYYY");
+        // Convert b.date to a valid Date format
+        const bookingDate = dayjs(b.date);
+
+        // Get today's date without time
+        const today = dayjs().startOf("day");
+
+        // Check if the booking is in the future
+        const isUpcoming = bookingDate.isAfter(today);
+
+        // Check if the booking is approved
         const isApproved = b.status === "approved";
 
-        // Compare endTime with the current time
-        // const endTimeInFormatted = parseTimeToDate(b.endTime); // Parse endTime to "HH:mm" format
-
-        // Return the filtering condition based on time comparison
-        return (
-          formattedDate && isApproved
-          // endTimeInFormatted >= formattedCurrentTime
-        );
+        return isUpcoming && isApproved;
       });
     }
   );

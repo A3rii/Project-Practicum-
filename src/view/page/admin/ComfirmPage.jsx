@@ -286,7 +286,7 @@ const ConfirmPage = () => {
     enabled: !!filters.facility,
   });
 
-  const { data: pendingBookings, error } = useQuery({
+  const { data: pendingBookings = [], error } = useQuery({
     queryKey: [
       "bookings",
       filters.pageTotal,

@@ -14,12 +14,16 @@ import {
   TableCell,
   TextField,
   Tooltip,
+  Pagination,
+  PaginationItem,
   Button,
   Chip,
 } from "@mui/material";
 import {
   Replay as ReplayIcon,
   IosShare as IosShareIcon,
+  ArrowForward as ArrowForwardIcon,
+  ArrowBack as ArrowBackIcon,
 } from "@mui/icons-material";
 import { formatDate } from "../../../utils/timeCalculation";
 import { paymentAPI } from "../../../api/admin";
@@ -58,30 +62,39 @@ const PaymentTableRow = ({ data, onOpenDetail }) => (
 );
 
 export default function UserPayment() {
-  const [filters, setFilters] = useState({ date: null, userName: "" });
+  const [filters, setFilters] = useState({
+    date: null,
+    userName: "",
+    pageTotal: 1,
+  });
   const [modalState, setModalState] = useState({
     open: false,
     selectedPayment: null,
   });
 
-  const { data: payments = [], isError } = useQuery({
-    queryKey: ["payments"],
-    queryFn: paymentAPI.getPayments,
+  const { data: paymentsUser = [], isError } = useQuery({
+    queryKey: ["payments", filters.pageTotal],
+    queryFn: () => paymentAPI.getPayments(filters.pageTotal),
+    keepPreviousData: true,
   });
 
   const filteredPayments = useMemo(() => {
-    if (!payments?.length) return [];
+    // Ensure paymentsUser exists and has a payments array
+    if (!paymentsUser || !paymentsUser.payments?.length) {
+      return [];
+    }
 
-    return payments.filter((data) => {
+    // Apply the filters
+    return paymentsUser.payments.filter((data) => {
       const nameMatch = data?.user?.name
         ?.toLowerCase()
-        .includes(filters?.userName.toLowerCase());
+        ?.includes(filters?.userName.toLowerCase() || ""); // Safely handle null/undefined
       const dateMatch = filters.date
         ? formatDate(data?.booking?.date) === formatDate(filters.date)
         : true;
       return dateMatch && nameMatch;
     });
-  }, [payments, filters]);
+  }, [paymentsUser, filters]);
 
   const handleOpenDetail = (payment) => {
     setModalState({ open: true, selectedPayment: payment });
@@ -200,6 +213,26 @@ export default function UserPayment() {
             </TableBody>
           </Table>
         </TableContainer>
+
+        <Pagination
+          count={paymentsUser.totalPages}
+          page={filters.pageTotal}
+          onChange={(_, value) =>
+            setFilters((prev) => ({ ...prev, pageTotal: value }))
+          }
+          sx={{
+            marginTop: "1rem",
+            display: "flex",
+            justifyContent: "flex-end",
+            paddingRight: "2rem",
+          }}
+          renderItem={(item) => (
+            <PaginationItem
+              components={{ previous: ArrowBackIcon, next: ArrowForwardIcon }}
+              {...item}
+            />
+          )}
+        />
       </Paper>
     </>
   );

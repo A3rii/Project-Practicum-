@@ -15,7 +15,6 @@ import {
 const ScheduleBox = () => {
   const todayMatches = TodayMatch(); // Returning  today match value
   const upComingMatches = CountUpComingMatches(); // Returning upcoming match value
-
   return (
     <Box
       sx={{

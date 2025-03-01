@@ -72,11 +72,7 @@ export default function IncomingMatch() {
   });
 
   // Fetch all bookings
-  const {
-    data: allBookings = [],
-
-    error,
-  } = useQuery({
+  const { data: allBookings = [], error } = useQuery({
     queryKey: ["allBookings"],
     queryFn: () => incomingBookingAPI.fetchBookings(token),
   });

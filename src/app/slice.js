@@ -183,9 +183,9 @@ export const getCurrentLessor = createAsyncThunk(
       );
       return response.data.lessor;
     } catch (err) {
-      return thunkAPI.rejectWithValue(
-        err.response?.data?.errors || err.message
-      );
+        return thunkAPI.rejectWithValue(
+          err.response?.data?.errors || err.message
+        );
     }
   }
 );
